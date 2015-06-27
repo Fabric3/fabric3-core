@@ -67,7 +67,7 @@ public class ClasspathProcessorRegistryImplTestCase extends TestCase {
         url = new URL("file://url");
         processedUrl = new URL("file://processed");
         contribution = new Contribution(URI.create("test"));
-        contribution.setLocation(url);
+        contribution.overrideLocation(url);
         registry = new ClasspathProcessorRegistryImpl();
         processor = EasyMock.createMock(ClasspathProcessor.class);
         registry.register(processor);

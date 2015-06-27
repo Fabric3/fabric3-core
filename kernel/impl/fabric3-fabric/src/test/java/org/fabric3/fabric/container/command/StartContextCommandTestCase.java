@@ -18,23 +18,23 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 import junit.framework.TestCase;
 
 public class StartContextCommandTestCase extends TestCase {
-    private static final QName DEPLOYABLE = new QName("test", "component");
+    private static final URI CONTRIBUTION_URI = URI.create("test");
     private StartContextCommand command;
 
     public void testEquals() throws Exception {
-        StartContextCommand command2 = new StartContextCommand(DEPLOYABLE, true);
+        StartContextCommand command2 = new StartContextCommand(CONTRIBUTION_URI, true);
         assertEquals(command2, command);
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        command = new StartContextCommand(DEPLOYABLE, true);
+        command = new StartContextCommand(CONTRIBUTION_URI, true);
     }
 
 }

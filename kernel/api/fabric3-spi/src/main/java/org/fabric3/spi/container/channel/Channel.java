@@ -16,7 +16,6 @@
  */
 package org.fabric3.spi.container.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.spi.model.physical.ChannelSide;
@@ -36,11 +35,11 @@ public interface Channel {
     URI getUri();
 
     /**
-     * Returns the composite this channel was deployed with.
+     * Returns the URI of the contribution this channel was deployed with.
      *
-     * @return the deployable composite
+     * @return the contribution URI
      */
-    QName getDeployable();
+    URI getContributionUri();
 
     /**
      * Initializes the channel to receive events.

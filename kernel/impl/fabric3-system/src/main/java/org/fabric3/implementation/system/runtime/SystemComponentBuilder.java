@@ -19,7 +19,6 @@
  */
 package org.fabric3.implementation.system.runtime;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -61,7 +60,6 @@ public class SystemComponentBuilder extends PojoComponentBuilder<PhysicalSystemC
 
     public SystemComponent build(PhysicalSystemComponent physicalComponent) throws Fabric3Exception {
         URI uri = physicalComponent.getComponentUri();
-        QName deployable = physicalComponent.getDeployable();
 
         // get the scope container for this component
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
@@ -73,7 +71,8 @@ public class SystemComponentBuilder extends PojoComponentBuilder<PhysicalSystemC
         createPropertyFactories(physicalComponent, factory);
 
         boolean eager = physicalComponent.isEagerInit();
-        SystemComponent component = new SystemComponent(uri, factory, scopeContainer, deployable, eager);
+        URI contributionUri = physicalComponent.getContributionUri();
+        SystemComponent component = new SystemComponent(uri, factory, scopeContainer, eager, contributionUri);
         export(physicalComponent, component);
         return component;
     }

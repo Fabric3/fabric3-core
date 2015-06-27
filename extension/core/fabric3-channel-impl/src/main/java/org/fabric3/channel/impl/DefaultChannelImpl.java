@@ -16,7 +16,6 @@
  */
 package org.fabric3.channel.impl;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.spi.container.channel.Channel;
@@ -31,7 +30,7 @@ import org.fabric3.spi.model.physical.ChannelSide;
  */
 public class DefaultChannelImpl implements Channel {
     private URI uri;
-    private QName deployable;
+    private URI contributionUri;
     private final ChannelSide channelSide;
 
     private EventStreamHandler headHandler;
@@ -39,21 +38,21 @@ public class DefaultChannelImpl implements Channel {
     private EventStreamHandler inHandler;
     private FanOutHandler fanOutHandler;
 
-    public DefaultChannelImpl(URI uri, QName deployable, FanOutHandler fanOutHandler, ChannelSide channelSide) {
+    public DefaultChannelImpl(URI uri, FanOutHandler fanOutHandler, ChannelSide channelSide, URI contributionUri) {
         this.uri = uri;
-        this.deployable = deployable;
         this.channelSide = channelSide;
         inHandler = new PassThroughHandler();
         this.fanOutHandler = fanOutHandler;
         inHandler.setNext(this.fanOutHandler);
+        this.contributionUri = contributionUri;
     }
 
     public URI getUri() {
         return uri;
     }
 
-    public QName getDeployable() {
-        return deployable;
+    public URI getContributionUri() {
+        return contributionUri;
     }
 
     public void start() {

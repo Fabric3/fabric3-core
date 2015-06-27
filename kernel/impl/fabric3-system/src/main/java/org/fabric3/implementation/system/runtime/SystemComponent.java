@@ -19,7 +19,6 @@
  */
 package org.fabric3.implementation.system.runtime;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.implementation.pojo.component.PojoComponent;
@@ -30,12 +29,8 @@ import org.fabric3.spi.container.component.ScopeContainer;
  * A specialized component that implements runtime functionality and is deployed to the runtime domain.
  */
 public class SystemComponent extends PojoComponent {
-    public SystemComponent(URI componentId,
-                           ImplementationManagerFactory factory,
-                           ScopeContainer scopeContainer,
-                           QName deployable,
-                           boolean eager) {
-        super(componentId, factory, scopeContainer, deployable, eager);
+    public SystemComponent(URI componentId, ImplementationManagerFactory factory, ScopeContainer scopeContainer, boolean eager, URI contributionUri) {
+        super(componentId, factory, scopeContainer, eager, contributionUri);
     }
 
 }

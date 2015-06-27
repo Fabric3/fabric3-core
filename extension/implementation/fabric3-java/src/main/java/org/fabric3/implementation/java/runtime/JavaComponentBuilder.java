@@ -18,7 +18,6 @@
  */
 package org.fabric3.implementation.java.runtime;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.runtime.HostInfo;
@@ -66,8 +65,6 @@ public class JavaComponentBuilder extends PojoComponentBuilder<PhysicalJavaCompo
     private JavaComponent buildManagedComponent(PhysicalJavaComponent physicalComponent) {
         URI uri = physicalComponent.getComponentUri();
 
-        QName deployable = physicalComponent.getDeployable();
-
         // get the scope container for this component
         Scope scopeName = physicalComponent.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
@@ -80,7 +77,8 @@ public class JavaComponentBuilder extends PojoComponentBuilder<PhysicalJavaCompo
 
         boolean eager = physicalComponent.isEagerInit();
 
-        JavaComponent component = new JavaComponent(uri, factory, scopeContainer, deployable, eager);
+        URI contributionUri = physicalComponent.getContributionUri();
+        JavaComponent component = new JavaComponent(uri, factory, scopeContainer, eager, contributionUri);
         buildContexts(component, factory);
         export(physicalComponent, component);
         return component;
@@ -92,7 +90,8 @@ public class JavaComponentBuilder extends PojoComponentBuilder<PhysicalJavaCompo
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
         Object instance = physicalComponent.getInstance();
         NonManagedImplementationManagerFactory factory = new NonManagedImplementationManagerFactory(instance);
-        return new JavaComponent(componentUri, factory, scopeContainer, physicalComponent.getDeployable(), false);
+        URI contributionUri = physicalComponent.getContributionUri();
+        return new JavaComponent(componentUri, factory, scopeContainer, false, contributionUri);
     }
 
 }

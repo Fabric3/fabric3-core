@@ -50,7 +50,7 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
  *
  */
 public class ServiceResolverImpl implements ServiceResolver {
-    private static final QName SYNTHETIC_DEPLOYABLE = new QName(HostNamespaces.SYNTHESIZED, "Synthetic");
+    private static final URI SYNTHETIC_CONTRIBTUTION = URI.create("Synthetic");
 
     private Introspector introspector;
     private LogicalComponentManager lcm;
@@ -104,7 +104,7 @@ public class ServiceResolverImpl implements ServiceResolver {
         }
         LogicalService targetService = services.get(0);
 
-        return new LogicalWire(domainComponent, logicalReference, targetService, SYNTHETIC_DEPLOYABLE);
+        return new LogicalWire(domainComponent, logicalReference, targetService, SYNTHETIC_CONTRIBTUTION);
     }
 
     private LogicalReference createReference(Class<?> interfaze) {

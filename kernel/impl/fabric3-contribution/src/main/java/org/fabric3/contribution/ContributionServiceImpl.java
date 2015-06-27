@@ -39,7 +39,9 @@ import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.contribution.ValidationException;
 import org.fabric3.api.host.failure.ValidationFailure;
+import org.fabric3.api.host.failure.ValidationUtils;
 import org.fabric3.api.host.stream.Source;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContentTypeResolver;
@@ -54,7 +56,6 @@ import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
-import org.fabric3.api.host.failure.ValidationUtils;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
@@ -90,7 +91,6 @@ public class ContributionServiceImpl implements ContributionService {
     public void setListeners(List<ContributionServiceListener> listeners) {
         this.listeners = listeners;
     }
-
 
     public Set<URI> getContributions() {
         Set<Contribution> contributions = metaDataStore.getContributions();
@@ -193,7 +193,7 @@ public class ContributionServiceImpl implements ContributionService {
             ClassLoader loader = contributionLoader.load(contribution);
             // continue processing the contributions. As they are ordered, dependencies will resolve correctly
             processContents(contribution, loader);
-            contribution.setState(ContributionState.INSTALLED);
+            contribution.install();
             for (ContributionServiceListener listener : listeners) {
                 listener.onInstall(contribution);
             }
@@ -277,7 +277,16 @@ public class ContributionServiceImpl implements ContributionService {
                 ClassLoader loader = contributionLoader.load(contribution);
                 // continue processing the contributions. As they are ordered, dependencies will resolve correctly
                 processContents(contribution, loader);
-                contribution.setState(ContributionState.INSTALLED);
+                URI contributionUri = contribution.getUri();
+                contribution.getResources().forEach(r -> {
+                    r.getResourceElements().forEach(re -> {
+                        if (re.getValue() instanceof Composite) {
+                            Composite composite = (Composite) re.getValue();
+                            setContributionUri(composite, contributionUri);
+                        }
+                    });
+                });
+                contribution.install();
                 for (ContributionServiceListener listener : listeners) {
                     listener.onInstall(contribution);
                 }
@@ -304,6 +313,21 @@ public class ContributionServiceImpl implements ContributionService {
         return uris;
     }
 
+    private void setContributionUri(Composite composite, URI contributionUri) {
+        composite.setContributionUri(contributionUri);
+        composite.getComponents().values().forEach(c -> setContributionUri(c, contributionUri));
+        composite.getResources().forEach(r -> r.setContributionUri(contributionUri));
+        composite.getChannels().values().forEach(c -> c.setContributionUri(contributionUri));
+    }
+
+    private void setContributionUri(Component component, URI contributionUri) {
+        component.setContributionUri(contributionUri);
+        if (component.getComponentType() instanceof Composite) {
+            Composite composite = (Composite) component.getComponentType();
+            setContributionUri(composite, contributionUri);
+        }
+    }
+
     private void revertInstall(List<Contribution> contributions) {
         ListIterator<Contribution> iterator = contributions.listIterator(contributions.size());
         while (iterator.hasPrevious()) {
@@ -322,15 +346,14 @@ public class ContributionServiceImpl implements ContributionService {
 
     private void uninstall(Contribution contribution) {
         URI uri = contribution.getUri();
-        if (contribution.getState() != ContributionState.INSTALLED) {
+        if (contribution.getState() == ContributionState.STORED) {
             throw new Fabric3Exception("Contribution not installed: " + uri);
-        }
-        if (contribution.isLocked()) {
-            throw new Fabric3Exception("Contribution is currently in use by a deployment: " + uri);
+        } else if (contribution.getState() == ContributionState.DEPLOYED) {
+            throw new Fabric3Exception("Contribution is currently deployed: " + uri);
         }
         // unload from memory
         contributionLoader.unload(contribution);
-        contribution.setState(ContributionState.STORED);
+        contribution.uninstall();
         for (ContributionServiceListener listener : listeners) {
             listener.onUninstall(contribution);
         }

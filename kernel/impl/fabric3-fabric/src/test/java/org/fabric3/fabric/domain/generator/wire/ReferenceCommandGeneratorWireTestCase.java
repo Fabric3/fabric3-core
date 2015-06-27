@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.generator.wire;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -43,7 +42,7 @@ import org.fabric3.spi.model.type.java.JavaServiceContract;
  *
  */
 public class ReferenceCommandGeneratorWireTestCase extends TestCase {
-    private static final QName DEPLOYABLE = new QName("foo", "bar");
+    private static final URI CONTRIBUTION = URI.create("bar");
     private ReferenceCommandGenerator generator;
     private WireGenerator wireGenerator;
     private LogicalComponentManager lcm;
@@ -70,7 +69,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         referenceDefinition.setServiceContract(contract);
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
-        LogicalWire wire = new LogicalWire(composite, reference, service, DEPLOYABLE);
+        LogicalWire wire = new LogicalWire(composite, reference, service, CONTRIBUTION);
         composite.addWire(reference, wire);
         composite.addComponent(source);
 
@@ -113,7 +112,7 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
 
-        LogicalWire wire = new LogicalWire(composite, reference, service, DEPLOYABLE);
+        LogicalWire wire = new LogicalWire(composite, reference, service, CONTRIBUTION);
         wire.setState(LogicalState.PROVISIONED);
         composite.addWire(reference, wire);
         composite.addComponent(source);
@@ -166,10 +165,10 @@ public class ReferenceCommandGeneratorWireTestCase extends TestCase {
         LogicalReference reference = new LogicalReference(URI.create("source#reference"), referenceDefinition, source);
         source.addReference(reference);
 
-        LogicalWire wire = new LogicalWire(composite, reference, service, DEPLOYABLE);
+        LogicalWire wire = new LogicalWire(composite, reference, service, CONTRIBUTION);
         wire.setState(LogicalState.PROVISIONED);
         composite.addWire(reference, wire);
-        LogicalWire wire2 = new LogicalWire(composite, reference, service2, DEPLOYABLE);
+        LogicalWire wire2 = new LogicalWire(composite, reference, service2, CONTRIBUTION);
         wire2.setState(LogicalState.PROVISIONED);
         composite.addWire(reference, wire2);
         composite.addComponent(source);

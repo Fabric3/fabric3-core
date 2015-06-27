@@ -16,7 +16,6 @@
  */
 package org.fabric3.channel.disruptor.impl;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -38,11 +37,11 @@ public class RingBufferChannelTestCase extends TestCase {
 
     public void testDispatch() throws Exception {
         RingBufferChannel channel = new RingBufferChannel(URI.create("channel"),
-                                                          new QName("test", "test"),
                                                           1024,
                                                           new BlockingWaitStrategy(),
                                                           ChannelSide.CONSUMER,
-                                                          Executors.newScheduledThreadPool(4));
+                                                          Executors.newScheduledThreadPool(4),
+                                                          URI.create("test"));
 
         MockConsumer consumer = new MockConsumer();
 

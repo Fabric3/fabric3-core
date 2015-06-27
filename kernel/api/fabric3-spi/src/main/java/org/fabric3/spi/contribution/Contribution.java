@@ -18,7 +18,6 @@
  */
 package org.fabric3.spi.contribution;
 
-import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URL;
@@ -47,9 +46,8 @@ public class Contribution implements Serializable {
     private List<ContributionWire<?, ?>> wires = new ArrayList<>();
     private List<URI> resolvedExtensionProviders = new ArrayList<>();
 
-    private List<QName> lockOwners = new ArrayList<>();
-
     private List<URL> additionalLocations = new ArrayList<>();
+    private int deployCounter;
 
     public Contribution(URI uri) {
         this.uri = uri;
@@ -57,7 +55,8 @@ public class Contribution implements Serializable {
 
     /**
      * Constructor.
-     *  @param uri         the contribution URI
+     *
+     * @param uri         the contribution URI
      * @param source      the source for reading the contribution contents
      * @param location    the URL for the contribution archive. This can be null for contributions that are not physical archives.
      * @param timestamp   the contribution artifact time stamp
@@ -90,12 +89,47 @@ public class Contribution implements Serializable {
     }
 
     /**
-     * Sets the contribution lifecycle state.
-     *
-     * @param state the contribution lifecycle state
+     * Marks the contribution as installed.
      */
-    public void setState(ContributionState state) {
-        this.state = state;
+    public void install() {
+        if (state != ContributionState.STORED) {
+            throw new IllegalStateException("Contribution must be in STORED state: " + state);
+        }
+        state = ContributionState.INSTALLED;
+    }
+
+    /**
+     * Uninstalls the contribution.
+     */
+    public void uninstall() {
+        if (state != ContributionState.INSTALLED) {
+            throw new IllegalStateException("Contribution must be in INSTALLED state: " + state);
+        }
+        state = ContributionState.STORED;
+    }
+
+    /**
+     * Deploys the contribution.
+     */
+    public void deploy() {
+        if (state != ContributionState.INSTALLED && state != ContributionState.DEPLOYED) {
+            throw new IllegalStateException("Contribution must be in INSTALLED or DEPLOYED state: " + state);
+        }
+        state = ContributionState.DEPLOYED;
+        deployCounter++;
+    }
+
+    /**
+     * Undeploys the contribution.
+     */
+    public void undeploy() {
+        if (state != ContributionState.DEPLOYED) {
+            throw new IllegalStateException("Contribution must be in DEPLOYED state: " + state);
+        }
+        deployCounter--;
+        if (deployCounter == 0) {
+            state = ContributionState.INSTALLED;
+        }
     }
 
     /**
@@ -112,7 +146,7 @@ public class Contribution implements Serializable {
      *
      * @param location the new contribution location
      */
-    public void setLocation(URL location) {
+    public void overrideLocation(URL location) {
         this.location = location;
     }
 
@@ -264,52 +298,6 @@ public class Contribution implements Serializable {
         return type.cast(metadata.get(key));
     }
 
-    /**
-     * Acquires a lock for the contribution. If a contribution is locked, it cannot be uninstalled. Locks may be acquired by multiple owners, for example,
-     * deployable composites that are contained in a contribution when they are deployed.
-     *
-     * @param owner the lock owner
-     */
-    public void acquireLock(QName owner) {
-        if (lockOwners.contains(owner)) {
-            throw new IllegalStateException("Lock already held by owner for contribution " + uri + " :" + owner);
-        }
-        lockOwners.add(owner);
-    }
-
-    /**
-     * Releases a lock held by the given owner.
-     *
-     * @param owner the lock owner
-     */
-    public void releaseLock(QName owner) {
-        if (lockOwners.isEmpty()) {
-            return;
-        }
-        if (!lockOwners.remove(owner)) {
-            throw new IllegalStateException("Lock not held by owner for contribution " + uri + " :" + owner);
-        }
-    }
-
-    /**
-     * Returns the set of current lock owners ordered by time of lock acquisition.
-     *
-     * @return the set of current lock owners
-     */
-    public List<QName> getLockOwners() {
-        return lockOwners;
-    }
-
-    /**
-     * Returns true if the contribution is locked. Locked contributions cannot be uninstalled.
-     *
-     * @return true if the contribution is locked
-     */
-    public boolean isLocked() {
-        return !lockOwners.isEmpty();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

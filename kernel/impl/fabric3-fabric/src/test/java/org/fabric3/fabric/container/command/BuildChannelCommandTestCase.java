@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -36,7 +35,7 @@ public class BuildChannelCommandTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         URI uri = URI.create("channel");
-        QName name = new QName("test", "composite");
+        URI name = URI.create("composite");
         physicalChannel = new PhysicalChannel(uri, name);
     }
 }

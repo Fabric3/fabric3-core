@@ -125,7 +125,7 @@ public class TransactionalIntervalTaskTestCase extends TestCase {
 
         EasyMock.replay(container, factory);
 
-        return new TimerComponent(null, null, null, TimerInstance.class, false, factory, container, null, null, null, null, null, true);
+        return new TimerComponent(null, null, TimerInstance.class, false, factory, container, null, null, null, null, null, true, null);
     }
 
     private interface TimerInstance extends Runnable {

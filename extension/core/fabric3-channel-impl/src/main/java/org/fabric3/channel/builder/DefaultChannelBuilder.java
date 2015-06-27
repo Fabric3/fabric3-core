@@ -16,7 +16,6 @@
  */
 package org.fabric3.channel.builder;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
 
@@ -43,7 +42,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
 
     public Channel build(PhysicalChannel physicalChannel) throws Fabric3Exception {
         URI uri = physicalChannel.getUri();
-        QName deployable = physicalChannel.getDeployable();
+        URI contributionUri = physicalChannel.getContributionUri();
 
         FanOutHandler fanOutHandler;
         if (physicalChannel.isBound()) {
@@ -54,7 +53,7 @@ public class DefaultChannelBuilder implements ChannelBuilder {
             fanOutHandler = new AsyncFanOutHandler(executorService);
         }
 
-        return new DefaultChannelImpl(uri, deployable, fanOutHandler, physicalChannel.getChannelSide());
+        return new DefaultChannelImpl(uri, fanOutHandler, physicalChannel.getChannelSide(), contributionUri);
     }
 
     public void dispose(PhysicalChannel physicalChannel, Channel channel) throws Fabric3Exception {

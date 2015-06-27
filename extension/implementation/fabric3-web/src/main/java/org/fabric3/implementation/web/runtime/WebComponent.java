@@ -18,7 +18,6 @@
  */
 package org.fabric3.implementation.web.runtime;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +52,6 @@ public class WebComponent implements Component {
     // injection site name to <artifact name, injection site>
     private final Map<String, Map<String, InjectionSite>> siteMappings;
     private final WireProxyService proxyService;
-    private final QName groupId;
     private final Map<String, Supplier<?>> propertySuppliers;
     private HostInfo info;
     private final Map<String, Supplier<?>> suppliers;
@@ -63,7 +61,6 @@ public class WebComponent implements Component {
 
     public WebComponent(URI uri,
                         String contextUrl,
-                        QName deployable,
                         URI archiveUri,
                         ClassLoader classLoader,
                         InjectorFactory injectorFactory,
@@ -72,6 +69,7 @@ public class WebComponent implements Component {
                         ChannelProxyService channelProxyService,
                         Map<String, Supplier<?>> propertySuppliers,
                         Map<String, Map<String, InjectionSite>> injectorMappings,
+                        URI contributionUri,
                         HostInfo info) {
         this.uri = uri;
         this.contextUrl = contextUrl;
@@ -82,8 +80,8 @@ public class WebComponent implements Component {
         this.channelProxyService = channelProxyService;
         this.siteMappings = injectorMappings;
         this.proxyService = wireProxyService;
-        this.groupId = deployable;
         this.propertySuppliers = propertySuppliers;
+        this.contributionUri = contributionUri;
         this.info = info;
         suppliers = new ConcurrentHashMap<>();
     }
@@ -94,10 +92,6 @@ public class WebComponent implements Component {
 
     public URI getContributionUri() {
         return contributionUri;
-    }
-
-    public void setContributionUri(URI uri) {
-        this.contributionUri = uri;
     }
 
     public String getName() {
@@ -160,10 +154,6 @@ public class WebComponent implements Component {
         Class<?> type = sites.values().iterator().next().getType();
         Supplier<?> factory = createChannelFactory(type, connection);
         attach(name, factory);
-    }
-
-    public QName getDeployable() {
-        return groupId;
     }
 
     public <B> B getProperty(Class<B> type, String propertyName) throws Fabric3Exception {

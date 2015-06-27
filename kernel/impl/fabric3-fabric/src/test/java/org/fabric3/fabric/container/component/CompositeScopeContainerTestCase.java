@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.component;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -33,7 +33,7 @@ import org.fabric3.spi.container.component.ScopedComponent;
 public class CompositeScopeContainerTestCase extends TestCase {
     protected IMocksControl control;
     protected CompositeScopeContainer scopeContainer;
-    protected QName deployable;
+    protected URI contributionUri;
     protected ScopedComponent component;
     protected Object instance;
 
@@ -46,10 +46,10 @@ public class CompositeScopeContainerTestCase extends TestCase {
         EasyMock.expect(component.isEagerInit()).andStubReturn(false);
         EasyMock.expect(component.createInstance()).andReturn(instance);
         component.startInstance(EasyMock.isA(Object.class));
-        EasyMock.expect(component.getDeployable()).andStubReturn(deployable);
+        EasyMock.expect(component.getContributionUri()).andStubReturn(contributionUri);
         control.replay();
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable);
+        scopeContainer.startContext(contributionUri);
         assertSame(instance, scopeContainer.getInstance(component));
         assertSame(instance, scopeContainer.getInstance(component));
         control.verify();
@@ -61,17 +61,17 @@ public class CompositeScopeContainerTestCase extends TestCase {
         EasyMock.expect(component.createInstance()).andReturn(instance);
         component.startInstance(EasyMock.isA(Object.class));
         component.stopInstance(EasyMock.isA(Object.class));
-        EasyMock.expect(component.getDeployable()).andStubReturn(deployable);
+        EasyMock.expect(component.getContributionUri()).andStubReturn(contributionUri);
         control.replay();
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable);
-        scopeContainer.stopContext(deployable);
+        scopeContainer.startContext(contributionUri);
+        scopeContainer.stopContext(contributionUri);
         control.verify();
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        deployable = new QName("deployable");
+        contributionUri = URI.create("test");
         control = EasyMock.createStrictControl();
         component = control.createMock(ScopedComponent.class);
         instance = new Object();

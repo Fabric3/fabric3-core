@@ -19,7 +19,6 @@
  */
 package org.fabric3.fabric.container.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Severe;
@@ -34,10 +33,10 @@ public interface ScopeContainerMonitor {
     void error(Exception e);
 
     @Severe("Error initializing component {0} ({1})")
-    void initializationError(URI uri, QName deployable, Exception e);
+    void initializationError(URI uri, URI contributionUri, Exception e);
 
     @Severe("Error destroying component {0} ({1})")
-    void destructionError(URI uri, QName deployable, Fabric3Exception e);
+    void destructionError(URI uri, URI contributionUri, Fabric3Exception e);
 
     @Severe("Error electing zone leader")
     void leaderElectionError(Exception e);

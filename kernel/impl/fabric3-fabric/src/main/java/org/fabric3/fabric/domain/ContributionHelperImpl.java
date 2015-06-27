@@ -25,7 +25,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.RuntimeMode;
@@ -79,17 +78,6 @@ public class ContributionHelperImpl implements ContributionHelper {
         return deployables;
     }
 
-//    public Composite findComposite(QName deployable) throws Fabric3Exception {
-//        QNameSymbol symbol = new QNameSymbol(deployable);
-//        ResourceElement<QNameSymbol, Composite> element = metadataStore.find(Composite.class, symbol);
-//        if (element == null) {
-//            String id = deployable.toString();
-//            throw new Fabric3Exception("Deployable not found: " + id);
-//        }
-//
-//        return element.getValue();
-//    }
-//
     public Set<Contribution> findContributions(List<URI> uris) {
         Set<Contribution> contributions = new LinkedHashSet<>(uris.size());
         for (URI uri : uris) {
@@ -102,28 +90,5 @@ public class ContributionHelperImpl implements ContributionHelper {
         return contributions;
     }
 
-    public void lock(Set<Contribution> contributions) throws Fabric3Exception {
-        for (Contribution contribution : contributions) {
-            for (Deployable deployable : contribution.getManifest().getDeployables()) {
-                QName name = deployable.getName();
-                // check if the deployable has already been deployed by querying the lock owners
-                if (contribution.getLockOwners().contains(name)) {
-                    throw new Fabric3Exception("Composite has already been deployed: " + name);
-                }
-                contribution.acquireLock(name);
-            }
-        }
-    }
-
-    public void releaseLocks(Set<Contribution> contributions) {
-        for (Contribution contribution : contributions) {
-            for (Deployable deployable : contribution.getManifest().getDeployables()) {
-                QName name = deployable.getName();
-                if (contribution.getLockOwners().contains(name)) {
-                    contribution.releaseLock(name);
-                }
-            }
-        }
-    }
 
 }

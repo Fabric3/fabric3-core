@@ -16,11 +16,32 @@
  */
 package org.fabric3.api.model.type.component;
 
+import java.net.URI;
+
 import org.fabric3.api.model.type.ModelObject;
 
 /**
  * A resource declared in composite.
  */
 public class Resource extends ModelObject<Composite> {
+    private URI contributionUri;
+
+    /**
+     * Returns the URI of the contribution the component definition is contained in.
+     *
+     * @return the URI of the contribution the component definition is contained in
+     */
+    public URI getContributionUri() {
+        return contributionUri;
+    }
+
+    /**
+     * Sets the URI of the contribution the component definition is contained in.
+     *
+     * @param contributionUri the URI of the contribution the component definition is contained in
+     */
+    public void setContributionUri(URI contributionUri) {
+        this.contributionUri = contributionUri;
+    }
 
 }

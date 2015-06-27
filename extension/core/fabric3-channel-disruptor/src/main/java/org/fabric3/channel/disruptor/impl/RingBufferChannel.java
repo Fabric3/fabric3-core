@@ -16,7 +16,6 @@
  */
 package org.fabric3.channel.disruptor.impl;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +46,11 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
     private static final RingBufferEventFactory EVENT_FACTORY = new RingBufferEventFactory();
 
     private URI uri;
-    private QName deployable;
     private int size;
     private WaitStrategy waitStrategy;
     private ChannelSide channelSide;
     private ExecutorService executorService;
+    private URI contributionUri;
 
     private RingBuffer<RingBufferEvent> ringBuffer;
     private Disruptor<RingBufferEvent> disruptor;
@@ -62,13 +61,13 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
     private int numberProducers;
     private SequenceGroup sequenceGroup;
 
-    public RingBufferChannel(URI uri, QName deployable, int size, WaitStrategy waitStrategy, ChannelSide channelSide, ExecutorService executorService) {
+    public RingBufferChannel(URI uri, int size, WaitStrategy waitStrategy, ChannelSide channelSide, ExecutorService executorService, URI contributionUri) {
         this.uri = uri;
-        this.deployable = deployable;
         this.size = size;
         this.waitStrategy = waitStrategy;
         this.channelSide = channelSide;
         this.executorService = executorService;
+        this.contributionUri = contributionUri;
         subscribers = new HashMap<>();
         sequences = new HashMap<>();
     }
@@ -102,8 +101,8 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
         return uri;
     }
 
-    public QName getDeployable() {
-        return deployable;
+    public URI getContributionUri() {
+        return contributionUri;
     }
 
     public ChannelSide getChannelSide() {

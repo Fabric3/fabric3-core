@@ -94,7 +94,7 @@ public class ContributionsResourceServiceTestCase extends TestCase {
         QName compositeName = new QName("test", "composite");
         Deployable deployable = new Deployable(compositeName);
         contribution.getManifest().addDeployable(deployable);
-        contribution.setState(ContributionState.INSTALLED);
+        contribution.install();
         return contribution;
     }
 

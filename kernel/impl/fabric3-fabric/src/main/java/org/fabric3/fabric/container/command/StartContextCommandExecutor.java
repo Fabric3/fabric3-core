@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.component.Scope;
@@ -65,20 +65,20 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
     }
 
     public void execute(StartContextCommand command) {
-        QName deployable = command.getDeployable();
+        URI uri = command.getUri();
         WorkContextCache.getAndResetThreadWorkContext();
         // Channels must be started before components since the latter may send events during initialization.
         // See https://fabric3.atlassian.net/browse/FABRIC-10
         if (channelManager != null) {
-            channelManager.startContext(deployable);
+            channelManager.startContext(uri);
         }
-        compositeScopeContainer.startContext(deployable);
+        compositeScopeContainer.startContext(uri);
         if (domainScopeContainer != null) {
             // domain scope not available during bootstrap
-            domainScopeContainer.startContext(deployable);
+            domainScopeContainer.startContext(uri);
         }
         if (command.isLog()) {
-            monitor.deployed(deployable);
+            monitor.deployed(uri);
         }
     }
 

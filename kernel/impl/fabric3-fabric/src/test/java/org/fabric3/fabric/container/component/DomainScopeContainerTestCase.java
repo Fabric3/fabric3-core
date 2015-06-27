@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.component;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 import java.util.function.Consumer;
 
 import junit.framework.TestCase;
@@ -36,7 +36,7 @@ public class DomainScopeContainerTestCase extends TestCase {
     private DomainScopeContainer scopeContainer;
     private ScopedComponent component;
     private Object instance;
-    private QName deployable;
+    private URI contributionUri;
     private HostInfo info;
 
     public void testSingleVMStart() throws Exception {
@@ -50,8 +50,8 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, info);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable);
-        scopeContainer.stopContext(deployable);
+        scopeContainer.startContext(contributionUri);
+        scopeContainer.stopContext(contributionUri);
         EasyMock.verify(component, info);
     }
 
@@ -71,8 +71,8 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, info, discoveryAgent);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable);
-        scopeContainer.stopContext(deployable);
+        scopeContainer.startContext(contributionUri);
+        scopeContainer.stopContext(contributionUri);
         EasyMock.verify(component, info, discoveryAgent);
     }
 
@@ -88,8 +88,8 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, info, discoveryAgent);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable);
-        scopeContainer.stopContext(deployable);
+        scopeContainer.startContext(contributionUri);
+        scopeContainer.stopContext(contributionUri);
         EasyMock.verify(component, info, discoveryAgent);
     }
 
@@ -109,11 +109,11 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, info, discoveryAgent);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable);
+        scopeContainer.startContext(contributionUri);
 
         scopeContainer.onLeaderChange(true);
 
-        scopeContainer.stopContext(deployable);
+        scopeContainer.stopContext(contributionUri);
         EasyMock.verify(component, info, discoveryAgent);
     }
 
@@ -131,11 +131,11 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, info, discoveryAgent);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable);
+        scopeContainer.startContext(contributionUri);
         scopeContainer.stop();
 
         scopeContainer.start();
-        scopeContainer.startContext(deployable);
+        scopeContainer.startContext(contributionUri);
 
         EasyMock.verify(component, info, discoveryAgent);
     }
@@ -157,7 +157,7 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, info, discoveryAgent);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable);
+        scopeContainer.startContext(contributionUri);
         scopeContainer.stopAllContexts();
 
         EasyMock.verify(component, info, discoveryAgent);
@@ -180,8 +180,8 @@ public class DomainScopeContainerTestCase extends TestCase {
         EasyMock.replay(component, info, topologyService);
 
         scopeContainer.register(component);
-        scopeContainer.startContext(deployable);
-        scopeContainer.stopContext(deployable);
+        scopeContainer.startContext(contributionUri);
+        scopeContainer.stopContext(contributionUri);
 
         EasyMock.verify(component, info, topologyService);
     }
@@ -189,11 +189,11 @@ public class DomainScopeContainerTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        deployable = new QName("deployable");
+        contributionUri = URI.create("test");
 
         info = EasyMock.createMock(HostInfo.class);
         component = EasyMock.createMock(ScopedComponent.class);
-        EasyMock.expect(component.getDeployable()).andReturn(deployable).anyTimes();
+        EasyMock.expect(component.getContributionUri()).andReturn(contributionUri).anyTimes();
 
         instance = new Object();
 

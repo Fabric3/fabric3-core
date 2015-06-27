@@ -32,14 +32,6 @@ public interface MonitorService {
     void setComponentLevel(String uri, String level);
 
     /**
-     * Sets the monitoring level for components provisioned from the given deployable composite.
-     *
-     * @param deployable the deployable composite qualified name
-     * @param level      the monitoring level to set
-     */
-    void setDeployableLevel(String deployable, String level);
-
-    /**
      * Sets the monitoring level on the library provider.
      *
      * @param key   the provider key

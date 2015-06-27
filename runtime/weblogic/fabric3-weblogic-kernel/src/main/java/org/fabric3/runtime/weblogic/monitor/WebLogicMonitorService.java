@@ -16,7 +16,6 @@
  */
 package org.fabric3.runtime.weblogic.monitor;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
@@ -29,7 +28,7 @@ import org.fabric3.spi.monitor.MonitorService;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
- * No-op implementation of MonitorLevelService.
+ *
  */
 @Management(name = "MonitorService", path = "/runtime/monitor", description = "Sets monitoring levels for the runtime")
 public class WebLogicMonitorService implements MonitorService {
@@ -43,15 +42,6 @@ public class WebLogicMonitorService implements MonitorService {
     public void setComponentLevel(String uri, String level) {
         MonitorLevel parsed = MonitorLevel.valueOf(level);
         List<Component> components = manager.getComponentsInHierarchy(URI.create(uri));
-        for (Component component : components) {
-            component.setLevel(parsed);
-        }
-    }
-
-    @ManagementOperation(description = "Sets the monitoring level for a deployable composite")
-    public void setDeployableLevel(String deployable, String level) {
-        MonitorLevel parsed = MonitorLevel.valueOf(level);
-        List<Component> components = manager.getDeployedComponents(QName.valueOf(deployable));
         for (Component component : components) {
             component.setLevel(parsed);
         }

@@ -16,7 +16,7 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.model.instance.LogicalChannel;
@@ -30,11 +30,11 @@ public interface ChannelGenerator {
     /**
      * Generate the physical channel.
      *
-     * @param channel    the logical channel
-     * @param deployable the deployable the channel is contained in
-     * @param direction  whether the channel will connect a consumer or producer
+     * @param channel         the logical channel
+     * @param contributionUri the contribution URI the channel is deployed for
+     * @param direction       whether the channel will connect a consumer or producer
      * @return the physical channel
      * @throws Fabric3Exception if there is a generation error
      */
-    PhysicalChannel generate(LogicalChannel channel, QName deployable, ChannelDirection direction) throws Fabric3Exception;
+    PhysicalChannel generate(LogicalChannel channel, URI contributionUri, ChannelDirection direction) throws Fabric3Exception;
 }

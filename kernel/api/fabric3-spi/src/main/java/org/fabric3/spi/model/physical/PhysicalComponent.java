@@ -19,7 +19,6 @@
  */
 package org.fabric3.spi.model.physical;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,6 @@ import java.util.List;
  */
 public abstract class PhysicalComponent {
     private URI uri;
-    private QName deployable;
     private URI contributionUri;
     private ClassLoader classLoader;
     private List<PhysicalProperty> properties = new ArrayList<>();
@@ -50,24 +48,6 @@ public abstract class PhysicalComponent {
      */
     public void setComponentUri(URI uri) {
         this.uri = uri;
-    }
-
-    /**
-     * Returns the QName of the deployable composite this component is deployed as part of.
-     *
-     * @return the QName of the deployable composite this component is deployed as part of
-     */
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    /**
-     * Sets the QName of the deployable composite this component is deployed as part of.
-     *
-     * @param deployable the QName of the deployable composite this component is deployed as part of
-     */
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
     }
 
     /**
@@ -124,7 +104,6 @@ public abstract class PhysicalComponent {
         return properties;
     }
 
-    @Override
     public boolean equals(Object obj) {
 
         if (obj == null || obj.getClass() != getClass()) {
@@ -136,12 +115,10 @@ public abstract class PhysicalComponent {
 
     }
 
-    @Override
     public int hashCode() {
         return uri.hashCode();
     }
 
-    @Override
     public String toString() {
         return uri.toString();
     }

@@ -16,7 +16,6 @@
  */
 package org.fabric3.channel.impl;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -93,7 +92,7 @@ public class DefaultChannelImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         fanOutHandler = EasyMock.createMock(FanOutHandler.class);
-        channel = new DefaultChannelImpl(URI.create("channel"), new QName("test", "test"), fanOutHandler, ChannelSide.CONSUMER);
+        channel = new DefaultChannelImpl(URI.create("channel"), fanOutHandler, ChannelSide.CONSUMER, URI.create("test"));
     }
 
     private class BlockingHandler extends PassThroughHandler {

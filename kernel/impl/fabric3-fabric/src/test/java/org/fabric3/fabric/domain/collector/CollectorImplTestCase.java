@@ -18,12 +18,13 @@
  */
 package org.fabric3.fabric.domain.collector;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
 import junit.framework.TestCase;
+import org.fabric3.api.model.type.component.Channel;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Resource;
 import org.fabric3.spi.model.instance.LogicalBindable;
@@ -41,8 +42,8 @@ import org.fabric3.spi.model.instance.LogicalWire;
  *
  */
 public class CollectorImplTestCase extends TestCase {
-    private static final QName DEPLOYABLE1 = new QName("test", "deployable");
-    private static final QName DEPLOYABLE2 = new QName("test", "deployable2");
+    private static final URI CONTRIBUTION_1 = URI.create("deployable");
+    private static final URI CONTRIBUTION_2 = URI.create("deployable2");
 
     private Collector collector;
 
@@ -90,12 +91,12 @@ public class CollectorImplTestCase extends TestCase {
     public void testNoMarkAsProvisioned() {
         LogicalCompositeComponent domain = new LogicalCompositeComponent(URI.create("domain"), null, null);
         URI child1Uri = URI.create("child1");
-        createComponent(child1Uri, DEPLOYABLE1, LogicalState.MARKED, domain);
+        createComponent(child1Uri, CONTRIBUTION_1, LogicalState.MARKED, domain);
         URI child2Uri = URI.create("child2");
-        createComponent(child2Uri, DEPLOYABLE1, LogicalState.MARKED, domain);
-        createChannel(URI.create("channel"), DEPLOYABLE1, LogicalState.MARKED, domain);
-        createWire(child1Uri, child2Uri, DEPLOYABLE1, LogicalState.MARKED, domain);
-        createResource(DEPLOYABLE1, LogicalState.MARKED, domain);
+        createComponent(child2Uri, CONTRIBUTION_1, LogicalState.MARKED, domain);
+        createChannel(URI.create("channel"), CONTRIBUTION_1, LogicalState.MARKED, domain);
+        createWire(child1Uri, child2Uri, CONTRIBUTION_1, LogicalState.MARKED, domain);
+        createResource(CONTRIBUTION_1, LogicalState.MARKED, domain);
 
         collector.markAsProvisioned(domain);
 
@@ -138,7 +139,7 @@ public class CollectorImplTestCase extends TestCase {
         // mark a binding deployed in a different composite as provisioned
         LogicalCompositeComponent domain = new LogicalCompositeComponent(URI.create("domain"), null, null);
         URI child1Uri = URI.create("child1");
-        createComponent(child1Uri, DEPLOYABLE1, LogicalState.NEW, domain);
+        createComponent(child1Uri, CONTRIBUTION_1, LogicalState.NEW, domain);
         domain.getComponents().iterator().next().setState(LogicalState.PROVISIONED);
 
         collector.markAsProvisioned(domain);
@@ -168,10 +169,10 @@ public class CollectorImplTestCase extends TestCase {
         // mark a binding deployed in a different composite as provisioned
         LogicalCompositeComponent domain = new LogicalCompositeComponent(URI.create("domain"), null, null);
         URI child1Uri = URI.create("child1");
-        createComponent(child1Uri, DEPLOYABLE1, LogicalState.PROVISIONED, domain);
+        createComponent(child1Uri, CONTRIBUTION_1, LogicalState.PROVISIONED, domain);
         URI child2Uri = URI.create("child2");
-        createComponent(child2Uri, DEPLOYABLE1, LogicalState.PROVISIONED, domain);
-        createWire(child1Uri, child2Uri, DEPLOYABLE1, LogicalState.NEW, domain);
+        createComponent(child2Uri, CONTRIBUTION_1, LogicalState.PROVISIONED, domain);
+        createWire(child1Uri, child2Uri, CONTRIBUTION_1, LogicalState.NEW, domain);
 
         collector.markAsProvisioned(domain);
 
@@ -186,17 +187,17 @@ public class CollectorImplTestCase extends TestCase {
 
         LogicalCompositeComponent domain = createDomain(LogicalState.PROVISIONED);
 
-        collector.markForCollection(DEPLOYABLE1, URI.create("test"), domain);
+        collector.markForCollection(CONTRIBUTION_1, domain);
 
         for (LogicalComponent component : domain.getComponents()) {
-            if (DEPLOYABLE1.equals(component.getDeployable())) {
+            if (CONTRIBUTION_1.equals(component.getDefinition().getContributionUri())) {
                 assertEquals(LogicalState.MARKED, component.getState());
             } else {
                 assertEquals(LogicalState.PROVISIONED, component.getState());
             }
         }
         for (LogicalChannel channel : domain.getChannels()) {
-            if (DEPLOYABLE1.equals(channel.getDeployable())) {
+            if (CONTRIBUTION_1.equals(channel.getDefinition().getContributionUri())) {
                 assertEquals(LogicalState.MARKED, channel.getState());
             } else {
                 assertEquals(LogicalState.PROVISIONED, channel.getState());
@@ -218,18 +219,17 @@ public class CollectorImplTestCase extends TestCase {
         LogicalCompositeComponent domain = new LogicalCompositeComponent(URI.create("domain"), null, null);
         URI child1Uri = URI.create("child1");
 
-        LogicalComponent<I> component = new LogicalComponent<>(child1Uri, null, domain);
+        LogicalComponent<I> component = new LogicalComponent<>(child1Uri, new Component<>("child1"), domain);
         component.setState(LogicalState.PROVISIONED);
-        component.setDeployable(DEPLOYABLE1);
 
         LogicalService service = new LogicalService(URI.create("child1#service"), null, component);
-        createBinding(service, DEPLOYABLE2, LogicalState.PROVISIONED);
-        createCallbackBinding(service, DEPLOYABLE2, LogicalState.PROVISIONED);
+        createBinding(service, CONTRIBUTION_2, LogicalState.PROVISIONED);
+        createCallbackBinding(service, CONTRIBUTION_2, LogicalState.PROVISIONED);
         component.addService(service);
 
         domain.addComponent(component);
 
-        collector.markForCollection(DEPLOYABLE2, URI.create("test"), domain);
+        collector.markForCollection(CONTRIBUTION_2, domain);
 
         for (LogicalComponent<?> child : domain.getComponents()) {
             for (LogicalService childService : child.getServices()) {
@@ -259,12 +259,12 @@ public class CollectorImplTestCase extends TestCase {
         LogicalCompositeComponent domain = new LogicalCompositeComponent(URI.create("domain"), null, null);
 
         URI child1Uri = URI.create("child1");
-        createComponent(child1Uri, DEPLOYABLE1, LogicalState.PROVISIONED, domain);
+        createComponent(child1Uri, CONTRIBUTION_1, LogicalState.PROVISIONED, domain);
         URI child2Uri = URI.create("child2");
-        createComponent(child2Uri, DEPLOYABLE1, LogicalState.PROVISIONED, domain);
-        createWire(child1Uri, child2Uri, DEPLOYABLE2, LogicalState.PROVISIONED, domain);
+        createComponent(child2Uri, CONTRIBUTION_1, LogicalState.PROVISIONED, domain);
+        createWire(child1Uri, child2Uri, CONTRIBUTION_2, LogicalState.PROVISIONED, domain);
 
-        collector.markForCollection(DEPLOYABLE2, URI.create("test"), domain);
+        collector.markForCollection(CONTRIBUTION_2, domain);
 
         for (List<LogicalWire> wireList : domain.getWires().values()) {
             for (LogicalWire wire : wireList) {
@@ -278,40 +278,40 @@ public class CollectorImplTestCase extends TestCase {
 
     private void verifyDeployable1Collected(LogicalCompositeComponent domain) {
         for (LogicalComponent<?> component : domain.getComponents()) {
-            if (DEPLOYABLE1.equals(component.getDeployable())) {
+            if (CONTRIBUTION_1.equals(component.getDefinition().getContributionUri())) {
                 fail("Component not collected: " + component.getUri());
             }
             for (LogicalService service : component.getServices()) {
                 for (LogicalBinding<?> binding : service.getBindings()) {
-                    if (DEPLOYABLE1.equals(binding.getDeployable())) {
+                    if (CONTRIBUTION_1.equals(binding.getTargetContribution())) {
                         fail("Binding on service not collected: " + service.getUri());
                     }
                 }
                 for (LogicalBinding<?> binding : service.getCallbackBindings()) {
-                    if (DEPLOYABLE1.equals(binding.getDeployable())) {
+                    if (CONTRIBUTION_1.equals(binding.getTargetContribution())) {
                         fail("Binding on service not collected: " + service.getUri());
                     }
                 }
             }
             for (LogicalReference reference : component.getReferences()) {
                 for (LogicalBinding<?> binding : reference.getBindings()) {
-                    if (DEPLOYABLE1.equals(binding.getDeployable())) {
+                    if (CONTRIBUTION_1.equals(binding.getTargetContribution())) {
                         fail("Binding on reference not collected: " + reference.getUri());
                     }
                 }
                 for (LogicalBinding<?> binding : reference.getCallbackBindings()) {
-                    if (DEPLOYABLE1.equals(binding.getDeployable())) {
+                    if (CONTRIBUTION_1.equals(binding.getTargetContribution())) {
                         fail("Binding on reference not collected: " + reference.getUri());
                     }
                 }
             }
         }
         for (LogicalChannel channel : domain.getChannels()) {
-            if (DEPLOYABLE1.equals(channel.getDeployable())) {
+            if (CONTRIBUTION_1.equals(channel.getDefinition().getContributionUri())) {
                 fail("Component not collected: " + channel.getUri());
             }
             for (LogicalBinding<?> binding : channel.getBindings()) {
-                if (DEPLOYABLE1.equals(binding.getDeployable())) {
+                if (CONTRIBUTION_1.equals(binding.getTargetContribution())) {
                     fail("Binding on channel not collected: " + channel.getUri());
                 }
             }
@@ -320,14 +320,14 @@ public class CollectorImplTestCase extends TestCase {
         Collection<List<LogicalWire>> wireList = domain.getWires().values();
         for (List<LogicalWire> wires : wireList) {
             for (LogicalWire wire : wires) {
-                if (DEPLOYABLE1.equals(wire.getDeployable())) {
+                if (CONTRIBUTION_1.equals(wire.getTargetContribution())) {
                     fail("Wire not collected: " + wire.getSource().getUri());
                 }
             }
         }
 
         for (LogicalResource<?> resource : domain.getResources()) {
-            if (DEPLOYABLE1.equals(resource.getDeployable())) {
+            if (CONTRIBUTION_1.equals(resource.getDefinition().getContributionUri())) {
                 fail("Resource not collected");
             }
         }
@@ -337,85 +337,85 @@ public class CollectorImplTestCase extends TestCase {
         LogicalCompositeComponent domain = new LogicalCompositeComponent(URI.create("domain"), null, null);
 
         URI child1Uri = URI.create("child1");
-        createComponent(child1Uri, DEPLOYABLE1, state, domain);
+        createComponent(child1Uri, CONTRIBUTION_1, state, domain);
 
         URI child2Uri = URI.create("child2");
-        createComponent(child2Uri, DEPLOYABLE2, state, domain);
+        createComponent(child2Uri, CONTRIBUTION_2, state, domain);
 
         URI childChannel1 = URI.create("childChannel1");
-        createChannel(childChannel1, DEPLOYABLE1, state, domain);
+        createChannel(childChannel1, CONTRIBUTION_1, state, domain);
 
         URI childChannel2 = URI.create("childChannel2");
-        createChannel(childChannel2, DEPLOYABLE2, state, domain);
+        createChannel(childChannel2, CONTRIBUTION_2, state, domain);
 
         URI childCompositeUri = URI.create("childComposite");
-        LogicalCompositeComponent childComposite = new LogicalCompositeComponent(childCompositeUri, null, domain);
+        LogicalCompositeComponent childComposite = new LogicalCompositeComponent(childCompositeUri, new Component<>("childComposite"), domain);
         childComposite.setState(state);
-        childComposite.setDeployable(DEPLOYABLE1);
+        childComposite.getDefinition().setContributionUri(CONTRIBUTION_1);
         domain.addComponent(childComposite);
 
         URI child3Uri = URI.create("child3");
-        createComponent(child3Uri, DEPLOYABLE1, state, childComposite);
+        createComponent(child3Uri, CONTRIBUTION_1, state, childComposite);
 
-        createWire(child1Uri, child2Uri, DEPLOYABLE1, state, domain);
-        createWire(child2Uri, child2Uri, DEPLOYABLE2, state, domain);
+        createWire(child1Uri, child2Uri, CONTRIBUTION_1, state, domain);
+        createWire(child2Uri, child2Uri, CONTRIBUTION_2, state, domain);
 
-        createResource(DEPLOYABLE1, state, domain);
-        createResource(DEPLOYABLE2, state, domain);
+        createResource(CONTRIBUTION_1, state, domain);
+        createResource(CONTRIBUTION_2, state, domain);
         return domain;
     }
 
-    private <R extends Resource> void createResource(QName deployable, LogicalState state, LogicalCompositeComponent parent) {
-        LogicalResource resource = new LogicalResource<R>(null, parent);
-        resource.setDeployable(deployable);
+    private void createResource(URI contributionUri, LogicalState state, LogicalCompositeComponent parent) {
+        LogicalResource resource = new LogicalResource<>(new Resource(), parent);
+        resource.getDefinition().setContributionUri(contributionUri);
         resource.setState(state);
         parent.addResource(resource);
     }
 
-    private void createWire(URI sourceUri, URI targetUri, QName deployable, LogicalState state, LogicalCompositeComponent domain) {
+    private void createWire(URI sourceUri, URI targetUri, URI contributionUri, LogicalState state, LogicalCompositeComponent domain) {
         LogicalReference source = domain.getComponent(sourceUri).getReference("reference");
         LogicalService target = domain.getComponent(targetUri).getService("service");
-        LogicalWire wire = new LogicalWire(domain, source, target, deployable);
+        LogicalWire wire = new LogicalWire(domain, source, target, contributionUri);
         wire.setState(state);
         domain.addWire(source, wire);
     }
 
-    private void createChannel(URI childChannel1, QName deployable, LogicalState state, LogicalCompositeComponent domain) {
-        LogicalChannel channel = new LogicalChannel(childChannel1, null, domain);
-        channel.setDeployable(deployable);
+    private void createChannel(URI childChannel1, URI contributionUri, LogicalState state, LogicalCompositeComponent domain) {
+        LogicalChannel channel = new LogicalChannel(childChannel1, new Channel("channel"), domain);
+        channel.getDefinition().setContributionUri(contributionUri);
         channel.setState(state);
-        createBinding(channel, deployable, state);
+        createBinding(channel, contributionUri, state);
         domain.addChannel(channel);
     }
 
-    private <I extends Implementation<?>> void createComponent(URI uri, QName deployable, LogicalState state, LogicalCompositeComponent parent) {
-        LogicalComponent<I> component = new LogicalComponent<>(uri, null, parent);
+    private <I extends Implementation<?>> void createComponent(URI uri, URI contributionUri, LogicalState state, LogicalCompositeComponent parent) {
+        LogicalComponent<I> component = new LogicalComponent<>(uri, new Component<>("component"), parent);
         component.setState(state);
-        component.setDeployable(deployable);
+        component.getDefinition().setContributionUri(contributionUri);
 
         LogicalService service = new LogicalService(URI.create(uri.toString() + "#service"), null, component);
-        createBinding(service, deployable, state);
-        createCallbackBinding(service, deployable, state);
+        createBinding(service, contributionUri, state);
+        createCallbackBinding(service, contributionUri, state);
         component.addService(service);
 
         LogicalReference reference = new LogicalReference(URI.create(uri.toString() + "#reference"), null, component);
-        createBinding(reference, deployable, state);
-        createCallbackBinding(reference, deployable, state);
+        createBinding(reference, contributionUri, state);
+        createCallbackBinding(reference, contributionUri, state);
         component.addReference(reference);
 
         parent.addComponent(component);
     }
 
     @SuppressWarnings({"unchecked"})
-    private void createBinding(LogicalBindable bindable, QName deployable, LogicalState state) {
-        LogicalBinding binding = new LogicalBinding(null, bindable, deployable);
+    private void createBinding(LogicalBindable bindable, URI contributionUri, LogicalState state) {
+        LogicalBinding binding = new LogicalBinding(null, bindable, contributionUri);
         binding.setState(state);
         bindable.addBinding(binding);
     }
 
     @SuppressWarnings({"unchecked"})
-    private void createCallbackBinding(LogicalBindable bindable, QName deployable, LogicalState state) {
-        LogicalBinding binding = new LogicalBinding(null, bindable, deployable);
+    private void createCallbackBinding(LogicalBindable bindable, URI contributionUri, LogicalState state) {
+        LogicalBinding binding = new LogicalBinding(null, bindable, contributionUri);
         binding.setCallback(true);
         binding.setState(state);
         bindable.addCallbackBinding(binding);

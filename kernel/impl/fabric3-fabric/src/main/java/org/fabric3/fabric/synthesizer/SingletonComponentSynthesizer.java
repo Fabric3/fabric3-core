@@ -29,6 +29,7 @@ import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
+import org.fabric3.fabric.domain.LogicalComponentManager;
 import org.fabric3.fabric.domain.instantiator.AtomicComponentInstantiator;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.implementation.system.singleton.SingletonComponent;
@@ -37,7 +38,6 @@ import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.container.component.ScopedComponent;
-import org.fabric3.fabric.domain.LogicalComponentManager;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
@@ -162,9 +162,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
         URI uri = logicalComponent.getUri();
         InjectingComponentType type = (InjectingComponentType) logicalComponent.getDefinition().getComponentType();
         type.getInjectionSites();
-        SingletonComponent component = new SingletonComponent(uri, instance, type.getInjectionSites());
-        component.setContributionUri(BOOT_CONTRIBUTION);
-        return component;
+        return new SingletonComponent(uri, instance, type.getInjectionSites(), BOOT_CONTRIBUTION);
     }
 
 }

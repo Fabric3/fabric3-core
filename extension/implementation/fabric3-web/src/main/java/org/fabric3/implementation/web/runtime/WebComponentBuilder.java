@@ -18,7 +18,6 @@
  */
 package org.fabric3.implementation.web.runtime;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
@@ -60,7 +59,6 @@ public class WebComponentBuilder implements ComponentBuilder<PhysicalWebComponen
 
     public WebComponent build(PhysicalWebComponent physicalComponent) throws Fabric3Exception {
         URI uri = physicalComponent.getComponentUri();
-        QName deployable = physicalComponent.getDeployable();
         Map<String, Supplier<?>> propertyFactories = Collections.emptyMap();
         URI contributionUri = physicalComponent.getContributionUri();
         Map<String, Map<String, InjectionSite>> injectorMappings = physicalComponent.getInjectionSiteMappings();
@@ -68,7 +66,6 @@ public class WebComponentBuilder implements ComponentBuilder<PhysicalWebComponen
         String contextUrl = physicalComponent.getContextUrl();
         return new WebComponent(uri,
                                 contextUrl,
-                                deployable,
                                 contributionUri,
                                 cl,
                                 injectorFactory,
@@ -77,6 +74,7 @@ public class WebComponentBuilder implements ComponentBuilder<PhysicalWebComponen
                                 channelProxyService,
                                 propertyFactories,
                                 injectorMappings,
+                                contributionUri,
                                 info);
     }
 

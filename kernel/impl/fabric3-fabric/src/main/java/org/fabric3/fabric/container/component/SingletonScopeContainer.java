@@ -19,7 +19,6 @@
  */
 package org.fabric3.fabric.container.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,13 +48,13 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
     private static final Object EMPTY = new Object();
 
     private final Map<ScopedComponent, Object> instances;
-    // The map of instance/component pairs to destroy keyed by the deployable composite the component was deployed with.
-    // The queues of instance/component pairs are ordered by the sequence in which the deployables were deployed.
+    // The map of instance/component pairs to destroy keyed by the component contribution URI.
+    // The queues of instance/component pairs are ordered by the sequence in which the contribution were deployed.
     // The instance/component pairs themselves are ordered by the sequence in which they were instantiated.
-    private final Map<QName, List<Pair>> destroyQueues;
+    private final Map<URI, List<Pair>> destroyQueues;
 
     // the queue of components to eagerly initialize in each group
-    private final Map<QName, List<ScopedComponent>> initQueues = new HashMap<>();
+    private final Map<URI, List<ScopedComponent>> initQueues = new HashMap<>();
 
     // components that are in the process of being created
     private final Map<ScopedComponent, CountDownLatch> pending;
@@ -70,12 +69,12 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
     public void register(ScopedComponent component) {
         super.register(component);
         if (component.isEagerInit()) {
-            QName deployable = component.getDeployable();
+            URI uri = component.getContributionUri();
             synchronized (initQueues) {
-                List<ScopedComponent> initQueue = initQueues.get(deployable);
+                List<ScopedComponent> initQueue = initQueues.get(uri);
                 if (initQueue == null) {
                     initQueue = new ArrayList<>();
-                    initQueues.put(deployable, initQueue);
+                    initQueues.put(uri, initQueue);
                 }
                 initQueue.add(component);
             }
@@ -85,35 +84,34 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
 
     public void unregister(ScopedComponent component) {
         super.unregister(component);
-        // FIXME should this component be destroyed already or do we need to stop it?
         instances.remove(component);
         if (component.isEagerInit()) {
-            QName deployable = component.getDeployable();
+            URI uri = component.getContributionUri();
             synchronized (initQueues) {
-                List<ScopedComponent> initQueue = initQueues.get(deployable);
+                List<ScopedComponent> initQueue = initQueues.get(uri);
                 initQueue.remove(component);
                 if (initQueue.isEmpty()) {
-                    initQueues.remove(deployable);
+                    initQueues.remove(uri);
                 }
             }
         }
     }
 
-    public void startContext(QName deployable) throws GroupInitializationException {
-        eagerInitialize(deployable);
+    public void startContext(URI contribution) throws GroupInitializationException {
+        eagerInitialize(contribution);
         // Destroy queues must be updated *after* components have been eagerly initialized since the latter may have dependencies from other
         // contexts. These other contexts need to be put into the destroy queue ahead of the current initializing context so the dependencies
         // are destroyed after the eagerly initialized components (the destroy queues are iterated in reverse order).
         synchronized (destroyQueues) {
-            if (!destroyQueues.containsKey(deployable)) {
-                destroyQueues.put(deployable, new ArrayList<>());
+            if (!destroyQueues.containsKey(contribution)) {
+                destroyQueues.put(contribution, new ArrayList<>());
             }
         }
     }
 
-    public void stopContext(QName deployable) {
+    public void stopContext(URI contribution) {
         synchronized (destroyQueues) {
-            List<Pair> list = destroyQueues.get(deployable);
+            List<Pair> list = destroyQueues.get(contribution);
             if (list == null) {
                 // this can happen with domain scope where a non-leader runtime does not activate a context
                 return;
@@ -166,15 +164,15 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
             // if (!component.isInstanceStarted()) {
             component.startInstance(instance);
             List<Pair> queue;
-            QName deployable = component.getDeployable();
+            URI uri = component.getContributionUri();
             synchronized (destroyQueues) {
-                queue = destroyQueues.get(deployable);
+                queue = destroyQueues.get(uri);
                 if (queue == null) {
                     // The context has not been initialized. This can happen if two deployable composites are deployed simultaneously and a
                     // component in the first composite to be deployed references a component in the second composite. In this case,
                     // create the destroy queue prior to the context being started.
                     queue = new ArrayList<>();
-                    destroyQueues.put(deployable, queue);
+                    destroyQueues.put(uri, queue);
                 }
             }
             queue.add(new Pair(component, instance));
@@ -220,11 +218,11 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    private void eagerInitialize(QName contextId) {
+    private void eagerInitialize(URI contextUri) {
         // get and clone initialization queue
         List<ScopedComponent> initQueue;
         synchronized (initQueues) {
-            initQueue = initQueues.get(contextId);
+            initQueue = initQueues.get(contextUri);
             if (initQueue != null) {
                 initQueue = new ArrayList<>(initQueue);
             }
@@ -251,7 +249,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                     causes = new LinkedHashSet<>();
                 }
                 URI uri = component.getUri();
-                monitor.initializationError(uri, component.getDeployable(), e);
+                monitor.initializationError(uri, component.getContributionUri(), e);
                 causes.add(uri);
             }
         }
@@ -282,7 +280,7 @@ public abstract class SingletonScopeContainer extends AbstractScopeContainer {
                 component.stopInstance(instance);
             } catch (Fabric3Exception e) {
                 // log the error from destroy but continue
-                monitor.destructionError(component.getUri(), component.getDeployable(), e);
+                monitor.destructionError(component.getUri(), component.getContributionUri(), e);
             }
         }
     }

@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.instantiator.wire;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +73,8 @@ public class WireInstantiatorImpl implements WireInstantiator {
             }
 
             // create the wire
-            QName deployable = parent.getDeployable();
-            LogicalWire wire = new LogicalWire(parent, reference, service, deployable);
+            URI contributionUri = parent.getDefinition().getContributionUri();
+            LogicalWire wire = new LogicalWire(parent, reference, service, contributionUri);
             String referenceBindingName = referenceTarget.getBinding();
             String serviceBindingName = serviceTarget.getBinding();
             resolveBindings(reference, referenceBindingName, service, wire, serviceBindingName, context);
@@ -141,8 +140,8 @@ public class WireInstantiatorImpl implements WireInstantiator {
         if (service == null) {
             return null;
         }
-        QName deployable = service.getParent().getDeployable();
-        LogicalWire wire = new LogicalWire(parent, reference, service, deployable);
+        URI contributionUri = service.getParent().getDefinition().getContributionUri();
+        LogicalWire wire = new LogicalWire(parent, reference, service, contributionUri);
         String serviceBindingName = target.getBinding();
         resolveBindings(reference, bindingName, service, wire, serviceBindingName, context);
         return wire;

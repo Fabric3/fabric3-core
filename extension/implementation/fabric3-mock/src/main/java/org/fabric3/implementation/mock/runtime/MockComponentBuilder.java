@@ -18,6 +18,7 @@
  */
 package org.fabric3.implementation.mock.runtime;
 
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -39,9 +40,9 @@ public class MockComponentBuilder implements ComponentBuilder<MockPhysicalCompon
         this.control = control;
     }
 
-    public MockComponent build(MockPhysicalComponent componentDefinition) {
-        List<String> interfaces = componentDefinition.getInterfaces();
-        ClassLoader classLoader = componentDefinition.getClassLoader();
+    public MockComponent build(MockPhysicalComponent physicalComponent) {
+        List<String> interfaces = physicalComponent.getInterfaces();
+        ClassLoader classLoader = physicalComponent.getClassLoader();
 
         List<Class<?>> mockedInterfaces = new LinkedList<>();
         for (String interfaze : interfaces) {
@@ -53,7 +54,8 @@ public class MockComponentBuilder implements ComponentBuilder<MockPhysicalCompon
         }
 
         Supplier<Object> supplier = new MockObjectSupplier<>(mockedInterfaces, classLoader, control);
-        return new MockComponent(componentDefinition.getComponentUri(), supplier);
+        URI contributionUri = physicalComponent.getContributionUri();
+        return new MockComponent(physicalComponent.getComponentUri(), supplier, contributionUri);
     }
 
 }

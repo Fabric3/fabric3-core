@@ -16,7 +16,6 @@
  */
 package org.fabric3.channel.builder;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
 
@@ -32,7 +31,7 @@ public class DefaultChannelBuilderTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testBuildChannel() throws Exception {
-        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), new QName("foo", "bar"));
+        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), URI.create("bar"));
 
         Channel channel = EasyMock.createMock(Channel.class);
 

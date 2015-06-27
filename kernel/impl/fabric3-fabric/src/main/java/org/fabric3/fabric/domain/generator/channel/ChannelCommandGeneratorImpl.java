@@ -16,7 +16,7 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.fabric.container.command.BuildChannelCommand;
 import org.fabric3.fabric.container.command.DisposeChannelCommand;
@@ -36,13 +36,13 @@ public class ChannelCommandGeneratorImpl implements ChannelCommandGenerator {
         this.channelGenerator = channelGenerator;
     }
 
-    public BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, ChannelDirection direction) {
-        PhysicalChannel physicalChannel = channelGenerator.generate(channel, deployable, direction);
+    public BuildChannelCommand generateBuild(LogicalChannel channel, URI contributionUri, ChannelDirection direction) {
+        PhysicalChannel physicalChannel = channelGenerator.generate(channel, contributionUri, direction);
         return new BuildChannelCommand(physicalChannel);
     }
 
-    public DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, ChannelDirection direction) {
-        PhysicalChannel physicalChannel = channelGenerator.generate(channel, deployable, direction);
+    public DisposeChannelCommand generateDispose(LogicalChannel channel,URI contributionUri, ChannelDirection direction) {
+        PhysicalChannel physicalChannel = channelGenerator.generate(channel, contributionUri, direction);
         return new DisposeChannelCommand(physicalChannel);
     }
 

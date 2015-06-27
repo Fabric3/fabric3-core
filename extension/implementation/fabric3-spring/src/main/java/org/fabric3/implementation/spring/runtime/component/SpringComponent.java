@@ -16,7 +16,6 @@
  */
 package org.fabric3.implementation.spring.runtime.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -37,7 +36,6 @@ import org.springframework.core.io.UrlResource;
  */
 public class SpringComponent implements Component {
     private URI uri;
-    private QName deployable;
     private List<URL> sources;
     private ClassLoader classLoader;
     private URI contributionUri;
@@ -52,7 +50,6 @@ public class SpringComponent implements Component {
      * Constructor.
      *
      * @param uri         the component URI.
-     * @param deployable  the composite the component is deployed with
      * @param parent      the parent application context for resolving wire and event stream proxies
      * @param sources     the location of the application contexts
      * @param classLoader the contribution classloader containing user-defined application classes and resources
@@ -61,37 +58,29 @@ public class SpringComponent implements Component {
      * @param processors  bean post processors
      */
     public SpringComponent(URI uri,
-                           QName deployable,
                            SCAApplicationContext parent,
                            List<URL> sources,
                            ClassLoader classLoader,
                            boolean validating,
                            Map<String, String> alias,
-                           List<BeanPostProcessor> processors) {
+                           List<BeanPostProcessor> processors,
+                           URI contributionUri) {
         this.uri = uri;
-        this.deployable = deployable;
         this.parent = parent;
         this.sources = sources;
         this.classLoader = classLoader;
         this.validating = validating;
         this.alias = alias;
         this.processors = processors;
+        this.contributionUri = contributionUri;
     }
 
     public URI getUri() {
         return uri;
     }
 
-    public QName getDeployable() {
-        return deployable;
-    }
-
     public URI getContributionUri() {
         return contributionUri;
-    }
-
-    public void setContributionUri(URI uri) {
-        this.contributionUri = uri;
     }
 
     public String getName() {
@@ -173,8 +162,8 @@ public class SpringComponent implements Component {
     /**
      * Adds a Supplier for a wire or producer proxy.
      *
-     * @param name    the reference or producer name
-     * @param type    the interface type implemented by the proxy
+     * @param name     the reference or producer name
+     * @param type     the interface type implemented by the proxy
      * @param supplier the Supplier
      */
     public void attach(String name, Class<?> type, Supplier supplier) {

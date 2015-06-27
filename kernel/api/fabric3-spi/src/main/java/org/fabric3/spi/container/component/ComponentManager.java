@@ -19,15 +19,14 @@
  */
 package org.fabric3.spi.container.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 
 /**
- * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime
- * and hence may be sparse in comparison to the assembly component hierarchy for the domain.
+ * Responsible for tracking and managing the component tree for a runtime instance. The tree corresponds to components deployed to the current runtime and hence
+ * may be sparse in comparison to the assembly component hierarchy for the domain.
  */
 public interface ComponentManager {
 
@@ -43,8 +42,8 @@ public interface ComponentManager {
      * Un-registers a component
      *
      * @param uri the component URI to un-register
-     * @throws Fabric3Exception when an error occurs registering the component
      * @return the the component
+     * @throws Fabric3Exception when an error occurs registering the component
      */
     Component unregister(URI uri) throws Fabric3Exception;
 
@@ -72,11 +71,10 @@ public interface ComponentManager {
     List<Component> getComponentsInHierarchy(URI uri);
 
     /**
-     * Returns a list of components provisioned by the given deployable composite. The list is transitive and includes components in contained in
-     * child composites.
+     * Returns a list of components provisioned by the given contribution.
      *
-     * @param deployable the composite
+     * @param contributionUri the contribution URI
      * @return the components.
      */
-    List<Component> getDeployedComponents(QName deployable);
+    List<Component> getDeployedComponents(URI contributionUri);
 }

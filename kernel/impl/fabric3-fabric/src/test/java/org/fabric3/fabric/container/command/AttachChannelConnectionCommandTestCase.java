@@ -18,17 +18,17 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 import junit.framework.TestCase;
 
 public class AttachChannelConnectionCommandTestCase extends TestCase {
 
     public void testEquals() throws Exception {
-        QName deployable = new QName("test", "composite");
+        URI deployable = URI.create("test");
         StopContextCommand command1 = new StopContextCommand(deployable, true);
         StopContextCommand command2 = new StopContextCommand(deployable, true);
-        StopContextCommand command3 = new StopContextCommand(new QName("test", "composite3"), true);
+        StopContextCommand command3 = new StopContextCommand(URI.create("test3"), true);
         assertEquals(command1, command2);
         assertFalse(command1.equals(command3));
     }

@@ -69,7 +69,7 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
             // No deployables specified, activate the test composite in the domain. If a test composite does not exist, an exception will be raised
             Composite composite = findComposite(qName, metaDataStore);
             domain.include(composite);
-            startContext(qName);
+            startContext(CONTRIBUTION_URI);
         } else {
             // include deployables
             domain.include(Collections.singletonList(uri));
@@ -81,15 +81,15 @@ public class PluginRuntimeImpl<T extends PluginHostInfo> extends DefaultRuntime 
                 ResourceElement<QNameSymbol, Composite> resourceElement = metaDataStore.find(uri, Composite.class, symbol);
                 if (resourceElement != null) {
                     domain.include(resourceElement.getValue());
-                    startContext(qName);
+                    startContext(CONTRIBUTION_URI);
                 }
             }
         }
     }
 
-    public void startContext(QName deployable) throws Fabric3Exception {
+    private void startContext(URI uri) throws Fabric3Exception {
         WorkContextCache.getAndResetThreadWorkContext();
-        getScopeContainer().startContext(deployable);
+        getScopeContainer().startContext(uri);
     }
 
     private Composite findComposite(QName deployable, MetaDataStore metaDataStore) throws Fabric3Exception {

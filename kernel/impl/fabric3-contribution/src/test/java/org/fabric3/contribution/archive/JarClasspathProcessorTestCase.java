@@ -44,7 +44,7 @@ public class JarClasspathProcessorTestCase extends TestCase {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL location = cl.getResource("./repository/1/test.jar");
         Contribution contribution = new Contribution(URI.create("test"));
-        contribution.setLocation(location);
+        contribution.overrideLocation(location);
         List<URL> urls = processor.process(contribution);
         assertEquals(1, urls.size());
         assertEquals(location, urls.get(0));
@@ -59,7 +59,7 @@ public class JarClasspathProcessorTestCase extends TestCase {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL location = cl.getResource("./repository/2/testWithLibraries.jar");
         Contribution contribution = new Contribution(URI.create("test"));
-        contribution.setLocation(location);
+        contribution.overrideLocation(location);
         List<URL> urls = processor.process(contribution);
         assertEquals(2, urls.size());
         assertEquals(location, urls.get(0));
@@ -70,7 +70,7 @@ public class JarClasspathProcessorTestCase extends TestCase {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL location = cl.getResource("./repository/2/testWithLibraries.jar");
         Contribution contribution = new Contribution(URI.create("test"));
-        contribution.setLocation(location);
+        contribution.overrideLocation(location);
         List<URL> classpath = processor.process(contribution);
         assertEquals(2, classpath.size());
         assertEquals(location, classpath.get(0));

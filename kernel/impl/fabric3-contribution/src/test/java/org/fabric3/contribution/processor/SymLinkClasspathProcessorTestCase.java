@@ -62,7 +62,7 @@ public class SymLinkClasspathProcessorTestCase extends TestCase {
         processor = new SymLinkClasspathProcessor(registry);
         URL url = getClass().getResource("sym.contribution");
         contribution = new Contribution(URI.create("test"));
-        contribution.setLocation(url);
+        contribution.overrideLocation(url);
 
     }
 }

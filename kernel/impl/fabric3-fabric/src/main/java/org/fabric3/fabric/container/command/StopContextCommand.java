@@ -18,20 +18,20 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 public class StopContextCommand implements Command {
 
-    private QName deployable;
+    private URI uri;
     private boolean log;
 
-    public StopContextCommand(QName deployable, boolean log) {
-        this.deployable = deployable;
+    public StopContextCommand(URI uri, boolean log) {
+        this.uri = uri;
         this.log = log;
     }
 
-    public QName getDeployable() {
-        return deployable;
+    public URI getUri() {
+        return uri;
     }
 
     public boolean isLog() {
@@ -44,12 +44,11 @@ public class StopContextCommand implements Command {
 
         StopContextCommand that = (StopContextCommand) o;
 
-        return !(deployable != null ? !deployable.equals(that.deployable) : that.deployable != null);
+        return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
 
     }
 
-    @Override
     public int hashCode() {
-        return deployable != null ? deployable.hashCode() : 0;
+        return uri != null ? uri.hashCode() : 0;
     }
 }

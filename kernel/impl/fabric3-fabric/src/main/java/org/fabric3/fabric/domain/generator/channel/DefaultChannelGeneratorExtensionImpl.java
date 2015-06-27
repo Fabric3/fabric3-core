@@ -16,7 +16,6 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -33,12 +32,12 @@ import org.oasisopen.sca.annotation.EagerInit;
 @EagerInit
 public class DefaultChannelGeneratorExtensionImpl implements ChannelGeneratorExtension {
 
-    public PhysicalChannel generate(LogicalChannel channel, QName deployable) throws Fabric3Exception {
+    public PhysicalChannel generate(LogicalChannel channel, URI contributionUri) throws Fabric3Exception {
         URI uri = channel.getUri();
         Channel definition = channel.getDefinition();
         String channelType = definition.getType();
 
-        PhysicalChannel physicalChannel = new PhysicalChannel(uri, deployable, channelType, DeliveryType.DEFAULT);
+        PhysicalChannel physicalChannel = new PhysicalChannel(uri, channelType, DeliveryType.DEFAULT, contributionUri);
         physicalChannel.setMetadata(definition.getMetadata(Object.class));
 
         return physicalChannel;

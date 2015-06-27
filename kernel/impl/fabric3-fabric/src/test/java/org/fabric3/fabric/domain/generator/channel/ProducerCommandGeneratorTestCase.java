@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -37,14 +36,13 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProducer;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalChannel;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**
  *
  */
 public class ProducerCommandGeneratorTestCase extends TestCase {
-    private static final QName DEPLOYABLE = new QName("test", "test");
 
     private URI uri = URI.create("testChannel");
 
@@ -63,7 +61,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
         URI channelUri = URI.create("ChannelNotFound");
         Component definition = new Component("component");
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), definition, parent);
-        component.setDeployable(DEPLOYABLE);
+        definition.setContributionUri(URI.create("test"));
         LogicalProducer producer = new LogicalProducer(URI.create("component#producer"), new Producer("consumer"), component);
         producer.addTarget(channelUri);
         component.addProducer(producer);
@@ -84,7 +82,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateBuild(EasyMock.isA(LogicalChannel.class),
-                                                       EasyMock.isA(QName.class),
+                                                       EasyMock.isA(URI.class),
                                                        EasyMock.isA(ChannelDirection.class))).andReturn(buildChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
@@ -105,7 +103,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateDispose(EasyMock.isA(LogicalChannel.class),
-                                                         EasyMock.isA(QName.class),
+                                                         EasyMock.isA(URI.class),
                                                          EasyMock.isA(ChannelDirection.class))).andReturn(disposeChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
@@ -127,7 +125,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateDispose(EasyMock.isA(LogicalChannel.class),
-                                                         EasyMock.isA(QName.class),
+                                                         EasyMock.isA(URI.class),
                                                          EasyMock.isA(ChannelDirection.class))).andReturn(disposeChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
@@ -162,8 +160,8 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
         parent.addChannel(channel);
 
         Component definition = new Component("component");
+        definition.setContributionUri(URI.create("test"));
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), definition, parent);
-        component.setDeployable(DEPLOYABLE);
         LogicalProducer producer = new LogicalProducer(URI.create("component#producer"), new Producer("consumer"), component);
         producer.addTarget(channelUri);
         component.addProducer(producer);
@@ -171,7 +169,7 @@ public class ProducerCommandGeneratorTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), new QName("foo", "bar"));
+        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), URI.create("bar"));
         buildChannelCommand = new BuildChannelCommand(physicalChannel);
         disposeChannelCommand = new DisposeChannelCommand(physicalChannel);
     }

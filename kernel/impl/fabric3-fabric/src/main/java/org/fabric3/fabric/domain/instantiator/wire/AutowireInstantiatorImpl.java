@@ -18,7 +18,7 @@
  */
 package org.fabric3.fabric.domain.instantiator.wire;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.model.type.component.Component;
@@ -136,7 +136,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
         // create the wires
         for (LogicalService target : candidates) {
             // for autowire, the deployable of the wire is the target since the wire must be removed when the target is undeployed
-            QName deployable = target.getParent().getDeployable();
+            URI contributionUri = target.getParent().getDefinition().getContributionUri();
             // check to see if the wire already exists, in which case do not create a duplicate
             boolean skip = false;
             for (LogicalWire existingWire : existingWires) {
@@ -146,7 +146,7 @@ public class AutowireInstantiatorImpl implements AutowireInstantiator {
                 }
             }
             if (!skip) {
-                LogicalWire wire = new LogicalWire(parentComposite, logicalReference, target, deployable);
+                LogicalWire wire = new LogicalWire(parentComposite, logicalReference, target, contributionUri);
                 parentComposite.addWire(logicalReference, wire);
                 for (LogicalWire existingWire : existingWires) {
                     // existing wires must be marked as new so they can be reinjected

@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -37,7 +36,6 @@ public class BuildComponentCommandTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         physicalComponent = new Mock();
-        physicalComponent.setDeployable(new QName("test", "composite"));
         physicalComponent.setContributionUri(URI.create("classloader"));
         physicalComponent.setComponentUri(URI.create("component"));
         command = new BuildComponentCommand(physicalComponent);

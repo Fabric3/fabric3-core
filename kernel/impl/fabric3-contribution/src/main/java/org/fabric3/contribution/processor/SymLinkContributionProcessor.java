@@ -78,7 +78,7 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
             processorRegistry.processManifest(syntheticContribution, context);
 
             // override the locations
-            contribution.setLocation(syntheticContribution.getLocation());
+            contribution.overrideLocation(syntheticContribution.getLocation());
             contribution.getAdditionalLocations().addAll(syntheticContribution.getAdditionalLocations());
 
             contribution.setManifest(syntheticContribution.getManifest());

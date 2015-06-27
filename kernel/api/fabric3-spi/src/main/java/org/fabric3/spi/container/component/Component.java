@@ -19,7 +19,6 @@
  */
 package org.fabric3.spi.container.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -29,13 +28,6 @@ import org.fabric3.api.host.monitor.Monitorable;
  * The runtime instantiation of a component
  */
 public interface Component extends Monitorable {
-
-    /**
-     * Returns the QName of the deployable composite this component was deployed with.
-     *
-     * @return the group containing this component
-     */
-    QName getDeployable();
 
     /**
      * Returns the component URI.
@@ -50,13 +42,6 @@ public interface Component extends Monitorable {
      * @return the contribution URI
      */
     URI getContributionUri();
-
-    /**
-     * Sets the URI of the contribution the component is contained in.
-     *
-     * @param uri the contribution URI
-     */
-    void setContributionUri(URI uri);
 
     /**
      * Starts the component;

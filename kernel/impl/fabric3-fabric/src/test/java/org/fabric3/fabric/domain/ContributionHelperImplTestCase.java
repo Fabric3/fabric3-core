@@ -121,19 +121,6 @@ public class ContributionHelperImplTestCase extends TestCase {
 
     }
 
-    public void testLocks() throws Exception {
-        URI uri = URI.create("test");
-        QName name1 = new QName("foo", "bar");
-        QName name2 = new QName("foo", "bar2");
-        Contribution contribution = new Contribution(uri);
-        contribution.getManifest().addDeployable(new Deployable(name1, Collections.singletonList(RuntimeMode.VM), Collections.<String>emptyList()));
-        contribution.getManifest().addDeployable(new Deployable(name2, Collections.singletonList(RuntimeMode.VM), Collections.<String>emptyList()));
-        helper.lock(Collections.singleton(contribution));
-        assertTrue(contribution.isLocked());
-        assertTrue(contribution.getLockOwners().contains(name1));
-        assertTrue(contribution.getLockOwners().contains(name2));
-    }
-
     private Composite addComposite(QName name, Contribution contribution) {
         Composite composite = new Composite(name);
         QNameSymbol symbol = new QNameSymbol(name);

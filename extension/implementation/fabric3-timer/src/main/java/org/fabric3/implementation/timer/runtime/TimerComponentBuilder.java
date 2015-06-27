@@ -19,7 +19,6 @@
 package org.fabric3.implementation.timer.runtime;
 
 import javax.transaction.TransactionManager;
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +88,6 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalCom
 
     public TimerComponent build(TimerPhysicalComponent physicalComponent) {
         URI uri = physicalComponent.getComponentUri();
-        QName deployable = physicalComponent.getDeployable();
 
         Scope scopeName = physicalComponent.getScope();
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scopeName);
@@ -101,8 +99,8 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalCom
         createPropertyFactories(physicalComponent, factory);
         TimerData data = physicalComponent.getTriggerData();
         boolean transactional = physicalComponent.isTransactional();
+        URI contributionUri = physicalComponent.getContributionUri();
         TimerComponent component = new TimerComponent(uri,
-                                                      deployable,
                                                       data,
                                                       implClass,
                                                       transactional,
@@ -113,7 +111,8 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalCom
                                                       discoveryAgent,
                                                       info,
                                                       monitor,
-                                                      runtimeStarted);
+                                                      runtimeStarted,
+                                                      contributionUri);
         if (!runtimeStarted) {
             // defer scheduling to after the runtime has started
             scheduleQueue.add(component);

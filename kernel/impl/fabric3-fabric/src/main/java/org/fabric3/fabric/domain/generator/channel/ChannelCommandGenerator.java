@@ -16,7 +16,7 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.fabric.container.command.BuildChannelCommand;
@@ -31,23 +31,23 @@ public interface ChannelCommandGenerator {
     /**
      * Generates a build command.
      *
-     * @param channel    the channel to build
-     * @param deployable the deployable this channel is provisioned for. This may be different than the deployable the channel is defined in as a producer or
-     *                   consumer may be connected to a channel from another composite.
+     * @param channel         the channel to build
+     * @param contributionUri the URI of the contribution this channel is provisioned for. This may be different than the deployable the channel is defined in
+     *                        as a producer or consumer may be connected to a channel from another composite.
      * @return the command
      * @throws Fabric3Exception if a generation error is encountered
      */
-    BuildChannelCommand generateBuild(LogicalChannel channel, QName deployable, ChannelDirection direction) throws Fabric3Exception;
+    BuildChannelCommand generateBuild(LogicalChannel channel, URI contributionUri, ChannelDirection direction) throws Fabric3Exception;
 
     /**
      * Generates an dispose command.
      *
-     * @param channel    the channel to remove
-     * @param deployable the deployable this channel is provisioned for. This may be different than the deployable the channel is defined in as a producer or
-     *                   consumer may be connected to a channel from another composite.
+     * @param channel         the channel to remove
+     * @param contributionUri the URI of the contribution this channel is provisioned for. This may be different than the deployable the channel is defined in
+     *                        as a producer or consumer may be connected to a channel from another composite.
      * @return the command
      * @throws Fabric3Exception if a generation error is encountered
      */
-    DisposeChannelCommand generateDispose(LogicalChannel channel, QName deployable, ChannelDirection direction) throws Fabric3Exception;
+    DisposeChannelCommand generateDispose(LogicalChannel channel, URI contributionUri, ChannelDirection direction) throws Fabric3Exception;
 
 }

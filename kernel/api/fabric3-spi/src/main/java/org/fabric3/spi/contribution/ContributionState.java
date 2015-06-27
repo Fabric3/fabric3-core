@@ -23,5 +23,5 @@ package org.fabric3.spi.contribution;
  */
 public enum ContributionState {
 
-    STORED, INSTALLED
+    STORED, INSTALLED, DEPLOYED
 }

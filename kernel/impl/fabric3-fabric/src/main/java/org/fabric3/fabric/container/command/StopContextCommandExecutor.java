@@ -18,7 +18,7 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.model.type.component.Scope;
@@ -58,16 +58,16 @@ public class StopContextCommandExecutor implements CommandExecutor<StopContextCo
     }
 
     public void execute(StopContextCommand command) {
-        QName deployable = command.getDeployable();
+        URI uri = command.getUri();
         WorkContextCache.getAndResetThreadWorkContext();
-        compositeScopeContainer.stopContext(deployable);
+        compositeScopeContainer.stopContext(uri);
         if (domainScopeContainer != null) {
             // domain scope not available during bootstrap
-            domainScopeContainer.stopContext(deployable);
+            domainScopeContainer.stopContext(uri);
         }
-        channelManager.stopContext(deployable);
+        channelManager.stopContext(uri);
         if (monitor != null && command.isLog()) {
-            monitor.undeployed(deployable);
+            monitor.undeployed(uri);
         }
     }
 

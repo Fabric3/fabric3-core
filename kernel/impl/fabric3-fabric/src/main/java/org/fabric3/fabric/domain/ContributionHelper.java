@@ -22,7 +22,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Contribution;
 
@@ -46,20 +45,5 @@ public interface ContributionHelper {
      * @return the set of contributions
      */
     Set<Contribution> findContributions(List<URI> uris);
-
-    /**
-     * Locks a set of contributions. The lock owners are the deployables in the contribution.
-     *
-     * @param contributions the contributions
-     * @throws Fabric3Exception if a deployable is already deployed
-     */
-    void lock(Set<Contribution> contributions) throws Fabric3Exception;
-
-    /**
-     * Releases locks held on a set of contributions.
-     *
-     * @param contributions the contributions to release locks on
-     */
-    void releaseLocks(Set<Contribution> contributions);
 
 }

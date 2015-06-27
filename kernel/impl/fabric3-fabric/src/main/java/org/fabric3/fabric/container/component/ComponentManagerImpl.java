@@ -19,12 +19,12 @@
  */
 package org.fabric3.fabric.container.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.component.Component;
@@ -72,13 +72,7 @@ public class ComponentManagerImpl implements ComponentManager {
         return hierarchy;
     }
 
-    public List<Component> getDeployedComponents(QName deployable) {
-        List<Component> deployed = new ArrayList<>();
-        for (Component component : components.values()) {
-            if (deployable.equals(component.getDeployable())) {
-                deployed.add(component);
-            }
-        }
-        return deployed;
+    public List<Component> getDeployedComponents(URI contributionUri) {
+        return components.values().stream().filter(component -> contributionUri.equals(component.getContributionUri())).collect(Collectors.toList());
     }
 }

@@ -186,7 +186,7 @@ public class TimerComponentTestCase extends TestCase {
 
         EasyMock.replay(container, monitor, factory);
 
-        return new TimerComponent(null, null, data, TimerInstance.class, transactional, factory, container, timerService, null, null, null, monitor, true);
+        return new TimerComponent(null, data, TimerInstance.class, transactional, factory, container, timerService, null, null, null, monitor, true, null);
     }
 
     private interface TimerInstance extends Runnable {

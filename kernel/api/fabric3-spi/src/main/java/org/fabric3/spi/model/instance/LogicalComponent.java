@@ -19,7 +19,6 @@
  */
 package org.fabric3.spi.model.instance;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,7 +43,6 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     private Map<String, LogicalConsumer> consumers = new HashMap<>();
     private Map<String, LogicalResourceReference<?>> resourceReferences = new HashMap<>();
     private String zone = Names.LOCAL_ZONE;
-    private QName deployable;
     private LogicalState state = LogicalState.NEW;
 
     /**
@@ -83,24 +81,6 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
      */
     public void setZone(String zone) {
         this.zone = zone;
-    }
-
-    /**
-     * Returns the deployable composite name this logical component was instantiated from.
-     *
-     * @return the deployable name
-     */
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    /**
-     * Sets the name of the deployable composite this component was instantiated from.
-     *
-     * @param deployable the deployable name
-     */
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
     }
 
     /**

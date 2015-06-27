@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.api.annotation.monitor.Info;
 
@@ -28,10 +28,10 @@ import org.fabric3.api.annotation.monitor.Info;
  */
 public interface ContextMonitor {
 
-    @Info("Composite {0} deployed")
-    void deployed(QName composite);
+    @Info("{0} deployed")
+    void deployed(URI composite);
 
-    @Info("Composite {0} undeployed")
-    void undeployed(QName composite);
+    @Info("{0} undeployed")
+    void undeployed(URI composite);
 
 }

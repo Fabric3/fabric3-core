@@ -75,7 +75,6 @@ public class BuildComponentCommandExecutor implements CommandExecutor<BuildCompo
         PhysicalComponent physicalComponent = command.getComponent();
         Component component = build(physicalComponent);
         URI contributionUri = physicalComponent.getContributionUri();
-        component.setContributionUri(contributionUri);
         componentManager.register(component);
         for (ComponentBuilderListener listener : listeners) {
             listener.onBuild(component, physicalComponent);

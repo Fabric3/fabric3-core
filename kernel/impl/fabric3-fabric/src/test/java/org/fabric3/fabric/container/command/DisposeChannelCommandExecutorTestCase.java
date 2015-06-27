@@ -19,7 +19,6 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -34,7 +33,7 @@ import org.fabric3.spi.model.physical.PhysicalChannel;
 public class DisposeChannelCommandExecutorTestCase extends TestCase {
 
     public void testDisposeChannel() throws Exception {
-        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), new QName("foo", "bar"));
+        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), URI.create("bar"));
 
         Channel channel = EasyMock.createMock(Channel.class);
 

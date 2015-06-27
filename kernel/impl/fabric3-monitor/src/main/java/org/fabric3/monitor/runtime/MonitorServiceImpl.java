@@ -16,10 +16,8 @@
  */
 package org.fabric3.monitor.runtime;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,7 +51,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     private ComponentManager manager;
     private Map<URI, MonitorLevel> applicationComponentLevels = Collections.emptyMap();
     private Map<URI, MonitorLevel> runtimeComponentLevels = Collections.emptyMap();
-    private Map<QName, MonitorLevel> deployableLevels = Collections.emptyMap();
+    //    private Map<QName, MonitorLevel> deployableLevels = Collections.emptyMap();
     private Map<String, MonitorLevel> providerLevels = new ConcurrentHashMap<>();
     private Map<URI, MonitorLevel> contributionLevels = new ConcurrentHashMap<>();
 
@@ -71,24 +69,6 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
             this.defaultLevel = MonitorLevel.valueOf(defaultLevel.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid monitor level value: " + defaultLevel);
-        }
-    }
-
-    /**
-     * Used at runtime startup to set the monitor levels for components contained in a deployable composite.
-     *
-     * @param levels the mapping of composite name to monitor level.
-     */
-    @Property(required = false)
-    @Source("$systemConfig//f3:runtime/f3:monitor/f3:deployable.levels")
-    public void setDeployableLevels(Element levels) {
-        this.deployableLevels = new HashMap<>();
-        NodeList list = levels.getElementsByTagName("level");
-        for (int i = 0; i < list.getLength(); i++) {
-            Element element = (Element) list.item(i);
-            String value = element.getAttribute("value").toUpperCase();
-            MonitorLevel level = MonitorLevel.valueOf(value.toUpperCase());
-            deployableLevels.put(getQualifiedName(element), level);
         }
     }
 
@@ -133,11 +113,12 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
             component.setLevel(defaultLevel);
         }
 
-        for (Map.Entry<QName, MonitorLevel> entry : deployableLevels.entrySet()) {
+        for (Map.Entry<URI, MonitorLevel> entry : contributionLevels.entrySet()) {
             for (Component component : manager.getDeployedComponents(entry.getKey())) {
                 component.setLevel(entry.getValue());
             }
         }
+
         for (Map.Entry<URI, MonitorLevel> entry : applicationComponentLevels.entrySet()) {
             for (Component component : manager.getComponentsInHierarchy(entry.getKey())) {
                 component.setLevel(entry.getValue());
@@ -154,15 +135,6 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
     public void setComponentLevel(String uri, String level) {
         MonitorLevel parsed = MonitorLevel.valueOf(level.toUpperCase());
         List<Component> components = manager.getComponentsInHierarchy(URI.create(uri));
-        for (Component component : components) {
-            component.setLevel(parsed);
-        }
-    }
-
-    @ManagementOperation(description = "Sets the monitoring level for a deployable composite")
-    public void setDeployableLevel(String deployable, String level) {
-        MonitorLevel parsed = MonitorLevel.valueOf(level.toUpperCase());
-        List<Component> components = manager.getDeployedComponents(QName.valueOf(deployable));
         for (Component component : components) {
             component.setLevel(parsed);
         }
@@ -208,12 +180,7 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
                 return;
             }
         }
-        MonitorLevel level = deployableLevels.get(component.getDeployable());
-        if (level != null) {
-            component.setLevel(level);
-        }
-
-        level = contributionLevels.get(component.getContributionUri());
+        MonitorLevel level = contributionLevels.get(component.getContributionUri());
         if (level != null) {
             component.setLevel(level);
         }
@@ -224,17 +191,4 @@ public class MonitorServiceImpl implements MonitorService, ComponentBuilderListe
         // no-op
     }
 
-    private QName getQualifiedName(Element element) {
-        String text = element.getAttribute("name");
-        int index = text.indexOf(':');
-        if (index < 1 || index == text.length() - 1) {
-            // unqualified form - use the default supplied
-            return new QName(null, text);
-        } else {
-            String prefix = text.substring(0, index);
-            String uri = element.lookupNamespaceURI(prefix);
-            String localPart = text.substring(index + 1);
-            return new QName(uri, localPart, prefix);
-        }
-    }
 }

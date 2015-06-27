@@ -19,7 +19,6 @@
  */
 package org.fabric3.implementation.pojo.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -42,7 +41,6 @@ public abstract class PojoComponent implements ScopedComponent {
     private URI uri;
     private ImplementationManagerFactory factory;
     private ScopeContainer scopeContainer;
-    private QName deployable;
     private boolean eager;
     private ImplementationManager implementationManager;
     private URI contributionUri;
@@ -50,12 +48,12 @@ public abstract class PojoComponent implements ScopedComponent {
     private AtomicBoolean recreate = new AtomicBoolean(true);
     private Object cachedInstance;
 
-    public PojoComponent(URI componentId, ImplementationManagerFactory factory, ScopeContainer scopeContainer, QName deployable, boolean eager) {
+    public PojoComponent(URI componentId, ImplementationManagerFactory factory, ScopeContainer scopeContainer, boolean eager, URI contributionUri) {
         this.uri = componentId;
         this.factory = factory;
         this.scopeContainer = scopeContainer;
-        this.deployable = deployable;
         this.eager = eager;
+        this.contributionUri = contributionUri;
     }
 
     public void start() throws Fabric3Exception {
@@ -80,16 +78,8 @@ public abstract class PojoComponent implements ScopedComponent {
         return uri;
     }
 
-    public QName getDeployable() {
-        return deployable;
-    }
-
     public URI getContributionUri() {
         return contributionUri;
-    }
-
-    public void setContributionUri(URI uri) {
-        this.contributionUri = uri;
     }
 
     public String getName() {

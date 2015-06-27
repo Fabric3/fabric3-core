@@ -29,7 +29,6 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.contribution.wire.QNameContributionWire;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.manifest.QNameExport;
 import org.fabric3.spi.contribution.manifest.QNameImport;
@@ -86,7 +85,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         EasyMock.expect(store.resolve(CONTRIBUTION1_URI, imprt)).andReturn(Collections.singletonList(contribution2));
         EasyMock.replay(store);
 
-        contribution2.setState(ContributionState.STORED);
+        contribution2.uninstall();
 
         List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution1);
@@ -140,7 +139,7 @@ public class DependencyResolverImplTestCase extends TestCase {
         EasyMock.expect(store.resolveCapability("capability")).andReturn(Collections.singleton(contribution3));
         EasyMock.replay(store);
 
-        contribution3.setState(ContributionState.STORED);
+        contribution3.uninstall();
 
         List<Contribution> contributions = new ArrayList<>();
         contributions.add(contribution1);
@@ -200,17 +199,17 @@ public class DependencyResolverImplTestCase extends TestCase {
         contribution1 = new Contribution(CONTRIBUTION1_URI);
         QNameImport imprt = new QNameImport("test", null);
         contribution1.getManifest().addImport(imprt);
-        contribution1.setState(ContributionState.INSTALLED);
+        contribution1.install();
 
         contribution2 = new Contribution(CONTRIBUTION2_URI);
         QNameExport export = new QNameExport("test");
         contribution2.getManifest().addExport(export);
         contribution2.getManifest().addRequiredCapability(capability);
-        contribution2.setState(ContributionState.INSTALLED);
+        contribution2.install();
 
         contribution3 = new Contribution(CONTRIBUTION3_URI);
         contribution3.getManifest().addProvidedCapability(capability);
-        contribution3.setState(ContributionState.INSTALLED);
+        contribution3.install();
 
         QNameContributionWire wire = new QNameContributionWire(imprt, export, CONTRIBUTION1_URI, CONTRIBUTION2_URI);
         contribution1.addWire(wire);

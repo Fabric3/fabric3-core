@@ -110,9 +110,7 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
 
         discoveryAgent = EasyMock.createMock(DiscoveryAgent.class);
 
-        component = new TimerComponent(null,
-                                       null,
-                                       data,
+        component = new TimerComponent(null, data,
                                        TimerInstance.class,
                                        false,
                                        factory,
@@ -121,7 +119,8 @@ public class TimerComponentDomainScopeTestCase extends TestCase {
                                        null, discoveryAgent,
                                        info,
                                        monitor,
-                                       true);
+                                       true,
+                                       null);
     }
 
     private interface TimerInstance extends Runnable {

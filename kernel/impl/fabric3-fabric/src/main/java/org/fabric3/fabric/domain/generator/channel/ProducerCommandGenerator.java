@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -76,12 +75,12 @@ public class ProducerCommandGenerator implements CommandGenerator<ChannelConnect
 
     private void generateCommand(LogicalProducer producer, ChannelConnectionCommand command) {
         LogicalComponent<?> component = producer.getParent();
-        QName deployable = producer.getParent().getDeployable();
+        URI contributionUri = producer.getParent().getDefinition().getContributionUri();
         if (LogicalState.MARKED == component.getState()) {
             Map<LogicalChannel, DeliveryType> channels = new HashMap<>();
             for (URI uri : producer.getTargets()) {
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, producer);
-                DisposeChannelCommand disposeCommand = channelGenerator.generateDispose(channel, deployable, PRODUCER);
+                DisposeChannelCommand disposeCommand = channelGenerator.generateDispose(channel, contributionUri, PRODUCER);
                 command.addDisposeChannelCommand(disposeCommand);
                 channels.put(channel, disposeCommand.getChannel().getDeliveryType());
             }
@@ -94,7 +93,7 @@ public class ProducerCommandGenerator implements CommandGenerator<ChannelConnect
             Map<LogicalChannel, DeliveryType> channels = new HashMap<>();
             for (URI uri : producer.getTargets()) {
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, producer);
-                BuildChannelCommand buildCommand = channelGenerator.generateBuild(channel, deployable, PRODUCER);
+                BuildChannelCommand buildCommand = channelGenerator.generateBuild(channel, contributionUri, PRODUCER);
                 command.addBuildChannelCommand(buildCommand);
                 channels.put(channel, buildCommand.getChannel().getDeliveryType());
             }

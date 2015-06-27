@@ -19,7 +19,6 @@
 package org.fabric3.implementation.timer.runtime;
 
 import javax.transaction.TransactionManager;
-import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.concurrent.ScheduledFuture;
@@ -57,7 +56,6 @@ public class TimerComponent extends JavaComponent {
     private Consumer<Boolean> callback = this::onLeaderElected;
 
     public TimerComponent(URI componentId,
-                          QName deployable,
                           TimerData data,
                           Class<?> implementationClass,
                           boolean transactional,
@@ -68,8 +66,9 @@ public class TimerComponent extends JavaComponent {
                           DiscoveryAgent discoveryAgent,
                           HostInfo info,
                           InvokerMonitor monitor,
-                          boolean scheduleOnStart) {
-        super(componentId, factory, scopeContainer, deployable, false);
+                          boolean scheduleOnStart,
+                          URI contributionUri) {
+        super(componentId, factory, scopeContainer, false, contributionUri);
         this.data = data;
         this.implementationClass = implementationClass;
         this.transactional = transactional;

@@ -19,7 +19,6 @@
  */
 package org.fabric3.implementation.system.singleton;
 
-import javax.xml.namespace.QName;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -61,19 +60,16 @@ public class SingletonComponent implements ScopedComponent {
     private MonitorLevel level = MonitorLevel.INFO;
     private AtomicBoolean started = new AtomicBoolean(false);
 
-    public SingletonComponent(URI componentId, Object instance, Map<InjectionSite, Injectable> mappings) {
+    public SingletonComponent(URI componentId, Object instance, Map<InjectionSite, Injectable> mappings, URI contributionUri) {
         this.uri = componentId;
         this.instance = instance;
+        this.contributionUri = contributionUri;
         this.reinjectionMappings = new HashMap<>();
         initializeInjectionSites(mappings);
     }
 
     public URI getContributionUri() {
         return contributionUri;
-    }
-
-    public void setContributionUri(URI uri) {
-        this.contributionUri = uri;
     }
 
     public String getKey() {
@@ -100,10 +96,6 @@ public class SingletonComponent implements ScopedComponent {
     public void endUpdate() {
         reinjectionMappings.keySet().stream().filter(factory -> factory instanceof MultiplicitySupplier).forEach(factory -> ((MultiplicitySupplier) factory)
                 .endUpdate());
-    }
-
-    public QName getDeployable() {
-        return null;
     }
 
     public boolean isEagerInit() {

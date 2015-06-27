@@ -16,7 +16,6 @@
  */
 package org.fabric3.fabric.container.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -31,7 +30,7 @@ public interface ChannelManager {
     /**
      * Returns the channel or null if one does not exist.
      *
-     * @param uri the channel URI
+     * @param uri         the channel URI
      * @param channelSide the channel side
      * @return the channel or null
      */
@@ -40,7 +39,7 @@ public interface ChannelManager {
     /**
      * Returns the channel and increments its use count or null if one does not exist.
      *
-     * @param uri the channel URI
+     * @param uri         the channel URI
      * @param channelSide the channel side
      * @return the channel or null
      */
@@ -49,7 +48,7 @@ public interface ChannelManager {
     /**
      * Returns the channel and decrements its use count or null if one does not exist.
      *
-     * @param uri the channel URI
+     * @param uri         the channel URI
      * @param channelSide the channel side
      * @return the channel or null
      */
@@ -58,7 +57,7 @@ public interface ChannelManager {
     /**
      * Returns the use count for the channel or -1 if the channel is not registered.
      *
-     * @param uri the channel uri
+     * @param uri         the channel uri
      * @param channelSide the channel side
      * @return the use count
      */
@@ -83,17 +82,17 @@ public interface ChannelManager {
     Channel unregister(URI uri, ChannelSide channelSide) throws Fabric3Exception;
 
     /**
-     * Starts channels contained in the given deployable composite.
+     * Starts channels contained in the given contribution.
      *
-     * @param deployable the composite
+     * @param contributionUri the contribution Uri
      */
-    void startContext(QName deployable);
+    void startContext(URI contributionUri);
 
     /**
-     * Stops channels contained in the given deployable composite.
+     * Stops channels contained in the given contribution.
      *
-     * @param deployable the composite
+     * @param contributionUri the contribution Uri
      */
-    void stopContext(QName deployable);
+    void stopContext(URI contributionUri);
 
 }

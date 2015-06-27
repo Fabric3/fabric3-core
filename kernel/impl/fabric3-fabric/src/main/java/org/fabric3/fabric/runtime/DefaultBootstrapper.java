@@ -38,6 +38,8 @@ import org.fabric3.api.host.runtime.Fabric3Runtime;
 import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.contribution.manifest.ContributionExport;
+import org.fabric3.fabric.container.channel.ChannelManager;
+import org.fabric3.fabric.domain.LogicalComponentManager;
 import org.fabric3.fabric.domain.instantiator.component.AtomicComponentInstantiatorImpl;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapAssemblyFactory;
 import org.fabric3.fabric.runtime.bootstrap.BootstrapCompositeFactory;
@@ -48,18 +50,15 @@ import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.introspection.java.DefaultIntrospectionHelper;
 import org.fabric3.introspection.java.contract.JavaContractProcessorImpl;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.fabric.container.channel.ChannelManager;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.component.ScopeContainer;
 import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.Contribution;
 import org.fabric3.spi.contribution.ContributionManifest;
-import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.manifest.JavaExport;
 import org.fabric3.spi.contribution.manifest.PackageInfo;
-import org.fabric3.fabric.domain.LogicalComponentManager;
 import org.fabric3.spi.introspection.java.ImplementationIntrospector;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
@@ -276,7 +275,7 @@ public class DefaultBootstrapper implements Bootstrapper {
                                                 ClassLoader loader,
                                                 boolean extension) throws Fabric3Exception {
         Contribution contribution = new Contribution(contributionUri);
-        contribution.setState(ContributionState.INSTALLED);
+        contribution.install();
         ContributionManifest manifest = contribution.getManifest();
         manifest.setExtension(extension);
         // add the ContributionExport

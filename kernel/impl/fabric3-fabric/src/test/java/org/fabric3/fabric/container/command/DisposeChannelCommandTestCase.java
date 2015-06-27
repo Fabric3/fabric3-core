@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -33,11 +32,9 @@ public class DisposeChannelCommandTestCase extends TestCase {
         assertEquals(command1, command2);
     }
 
-    @Override
     protected void setUp() throws Exception {
         super.setUp();
         URI uri = URI.create("channel");
-        QName deployable = new QName("test", "composite");
-        physicalChannel = new PhysicalChannel(uri, deployable);
+        physicalChannel = new PhysicalChannel(uri, URI.create("test"));
     }
 }

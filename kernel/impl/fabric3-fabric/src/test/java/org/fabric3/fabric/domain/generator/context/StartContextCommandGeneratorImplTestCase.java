@@ -19,12 +19,12 @@
  */
 package org.fabric3.fabric.domain.generator.context;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
+import org.fabric3.api.model.type.component.Component;
 import org.fabric3.fabric.container.command.Command;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
@@ -33,9 +33,6 @@ import org.fabric3.spi.model.instance.LogicalState;
  *
  */
 public class StartContextCommandGeneratorImplTestCase extends TestCase {
-    private static final QName DEPLOYABLE1 = new QName("component", "1");
-    private static final QName DEPLOYABLE2 = new QName("component", "2");
-    private static final QName DEPLOYABLE3 = new QName("component", "3");
 
     @SuppressWarnings({"unchecked"})
     public void testStart() throws Exception {
@@ -50,9 +47,8 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
         StartContextCommandGeneratorImpl generator = new StartContextCommandGeneratorImpl();
 
         List<LogicalComponent<?>> components = new ArrayList<>();
-        LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), null, null);
-        component1.setZone("zone1");
-        component1.setDeployable(DEPLOYABLE1);
+        LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), new Component("component1"), null);
+        component1.getDefinition().setContributionUri(URI.create("test1"));
         component1.setState(LogicalState.PROVISIONED);
         components.add(component1);
 
@@ -65,17 +61,16 @@ public class StartContextCommandGeneratorImplTestCase extends TestCase {
     private List<LogicalComponent<?>> createComponents() {
         List<LogicalComponent<?>> components = new ArrayList<>();
 
-        LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), null, null);
-        component1.setZone("zone1");
-        component1.setDeployable(DEPLOYABLE1);
-        LogicalComponent<?> component2 = new LogicalComponent(URI.create("component2"), null, null);
+        LogicalComponent<?> component1 = new LogicalComponent(URI.create("component1"), new Component("component1"), null);
+        component1.getDefinition().setContributionUri(URI.create("test1"));
+
+        LogicalComponent<?> component2 = new LogicalComponent(URI.create("component2"), new Component("component2"), null);
         component2.setState(LogicalState.PROVISIONED);
-        component2.setDeployable(DEPLOYABLE2);
-        component2.setZone("zone1");
-        LogicalComponent<?> component3 = new LogicalComponent(URI.create("component3"), null, null);
+        component1.getDefinition().setContributionUri(URI.create("test2"));
+
+        LogicalComponent<?> component3 = new LogicalComponent(URI.create("component3"), new Component("component3"), null);
         component3.setState(LogicalState.MARKED);
-        component3.setDeployable(DEPLOYABLE3);
-        component3.setZone("zone1");
+        component1.getDefinition().setContributionUri(URI.create("test3"));
 
         components.add(component1);
         components.add(component2);

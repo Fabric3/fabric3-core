@@ -19,15 +19,14 @@
  */
 package org.fabric3.fabric.domain.generator.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.component.Implementation;
+import org.fabric3.fabric.container.command.Command;
 import org.fabric3.fabric.domain.generator.CommandGenerator;
 import org.fabric3.fabric.domain.generator.GeneratorRegistry;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
-import org.fabric3.fabric.container.command.Command;
 import org.fabric3.spi.domain.generator.ComponentGenerator;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.physical.PhysicalComponent;
@@ -58,8 +57,6 @@ public abstract class AbstractBuildComponentCommandGenerator<T extends Command> 
         URI contributionUri = component.getDefinition().getContributionUri();
         physicalComponent.setContributionUri(contributionUri);
         physicalComponent.setClassLoader(classLoaderRegistry.getClassLoader(contributionUri));
-        QName deployable = component.getDeployable();
-        physicalComponent.setDeployable(deployable);
         return physicalComponent;
     }
 

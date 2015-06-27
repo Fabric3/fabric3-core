@@ -182,10 +182,10 @@ public class DependencyResolverImpl implements DependencyResolver {
 
     /**
      * Resolves an import where the contribution also exports the same symbol as the import (e.g. a Java package or qualified name).  The following OSGi
-     * resolution algorithm defined in R4 Section 3.1 is followed:   <strong>External</strong> If the import resolves to an export statement in another
-     * bundle, then the overlapping export definition in this contribution is discarded.   <strong>Internal</strong>  If the import is resolved to an
-     * export statement in this module, then the overlapping import definition in this contribution is discarded.   When an import is resolved by an
-     * export from a contribution in the DAG, the later will be updated with an edge from the source contribution vertex to the target contribution vertex.
+     * resolution algorithm defined in R4 Section 3.1 is followed:   <strong>External</strong> If the import resolves to an export statement in another bundle,
+     * then the overlapping export definition in this contribution is discarded.   <strong>Internal</strong>  If the import is resolved to an export statement
+     * in this module, then the overlapping import definition in this contribution is discarded.   When an import is resolved by an export from a contribution
+     * in the DAG, the later will be updated with an edge from the source contribution vertex to the target contribution vertex.
      *
      * @param imprt    the import to resolve
      * @param iterator the import iterator - used to remove the import from the containing manifest if it is resolved by the export in the same contribution
@@ -227,7 +227,7 @@ public class DependencyResolverImpl implements DependencyResolver {
             if (sinks.isEmpty()) {
                 Set<Contribution> resolvedContributions = store.resolveCapability(capability.getName());
                 for (Contribution resolved : resolvedContributions) {
-                    if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
+                    if (resolved != null && ContributionState.INSTALLED != resolved.getState() && ContributionState.DEPLOYED != resolved.getState()) {
                         throw new Fabric3Exception("Contribution " + contribution.getUri() + " requires a capability provided by " + resolved.getUri()
                                                    + " which is not installed");
                     }
@@ -431,7 +431,7 @@ public class DependencyResolverImpl implements DependencyResolver {
 
     private void checkInstalled(Contribution contribution, List<Contribution> resolvedContributions) {
         for (Contribution resolved : resolvedContributions) {
-            if (resolved != null && ContributionState.INSTALLED != resolved.getState()) {
+            if (resolved != null && ContributionState.INSTALLED != resolved.getState() && ContributionState.DEPLOYED != resolved.getState()) {
                 throw new Fabric3Exception("Contribution " + contribution.getUri() + " imports " + resolved.getUri() + " which is not installed");
             }
         }

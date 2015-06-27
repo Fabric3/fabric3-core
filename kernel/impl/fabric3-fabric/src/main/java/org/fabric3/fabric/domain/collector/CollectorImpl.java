@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.collector;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,8 +31,10 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
 import org.fabric3.spi.model.instance.LogicalResource;
 import org.fabric3.spi.model.instance.LogicalService;
-import org.fabric3.spi.model.instance.LogicalState;
 import org.fabric3.spi.model.instance.LogicalWire;
+import static org.fabric3.spi.model.instance.LogicalState.MARKED;
+import static org.fabric3.spi.model.instance.LogicalState.NEW;
+import static org.fabric3.spi.model.instance.LogicalState.PROVISIONED;
 
 /**
  * Default Collector implementation.
@@ -46,110 +47,96 @@ public class CollectorImpl implements Collector {
             if (component instanceof LogicalCompositeComponent) {
                 markAsProvisioned((LogicalCompositeComponent) component);
             }
-            if (LogicalState.NEW == component.getState()) {
-                component.setState(LogicalState.PROVISIONED);
+            if (NEW == component.getState()) {
+                component.setState(PROVISIONED);
             }
             for (LogicalService service : component.getServices()) {
-                service.getBindings().stream().filter(binding -> LogicalState.NEW == binding.getState()).forEach(binding -> {
-                    binding.setState(LogicalState.PROVISIONED);
-                });
-                service.getCallbackBindings().stream().filter(binding -> LogicalState.NEW == binding.getState()).forEach(binding -> {
-                    binding.setState(LogicalState.PROVISIONED);
-                });
+                service.getBindings().stream().filter(binding -> NEW == binding.getState()).forEach(binding -> binding.setState(PROVISIONED));
+                service.getCallbackBindings().stream().filter(binding -> NEW == binding.getState()).forEach(binding -> binding.setState(PROVISIONED));
             }
             for (LogicalReference reference : component.getReferences()) {
-                reference.getBindings().stream().filter(binding -> LogicalState.NEW == binding.getState()).forEach(binding -> {
-                    binding.setState(LogicalState.PROVISIONED);
-                });
-                reference.getCallbackBindings().stream().filter(binding -> LogicalState.NEW == binding.getState()).forEach(binding -> {
-                    binding.setState(LogicalState.PROVISIONED);
-                });
+                reference.getBindings().stream().filter(binding -> NEW == binding.getState()).forEach(binding -> binding.setState(PROVISIONED));
+                reference.getCallbackBindings().stream().filter(binding -> NEW == binding.getState()).forEach(binding -> binding.setState(PROVISIONED));
             }
         }
         for (List<LogicalWire> wires : composite.getWires().values()) {
-            wires.stream().filter(wire -> LogicalState.NEW == wire.getState()).forEach(wire -> {
-                wire.setState(LogicalState.PROVISIONED);
-            });
+            wires.stream().filter(wire -> NEW == wire.getState()).forEach(wire -> wire.setState(PROVISIONED));
         }
         for (LogicalChannel channel : composite.getChannels()) {
-            if (LogicalState.NEW == channel.getState()) {
-                channel.setState(LogicalState.PROVISIONED);
+            if (NEW == channel.getState()) {
+                channel.setState(PROVISIONED);
             }
             LogicalBinding<?> binding = channel.getBinding();
-            if (binding != null && LogicalState.NEW == binding.getState()) {
-                binding.setState(LogicalState.PROVISIONED);
+            if (binding != null && NEW == binding.getState()) {
+                binding.setState(PROVISIONED);
             }
         }
-        composite.getResources().stream().filter(resource -> LogicalState.NEW == resource.getState()).forEach(resource -> {
-            resource.setState(LogicalState.PROVISIONED);
-        });
+        composite.getResources().stream().filter(resource -> NEW == resource.getState()).forEach(resource -> resource.setState(PROVISIONED));
 
     }
 
-    public void markForCollection(QName deployable, URI contribution, LogicalCompositeComponent composite) {
+    public void markForCollection(URI contributionUri, LogicalCompositeComponent composite) {
         for (LogicalComponent<?> component : composite.getComponents()) {
-            if (deployable.equals(component.getDeployable())) {
-                if (component.getDefinition() != null && !contribution.equals(component.getDefinition().getContributionUri())) {
+            if (contributionUri.equals(component.getDefinition().getContributionUri())) {
+                if (component.getDefinition() != null && !contributionUri.equals(component.getDefinition().getContributionUri())) {
                     continue; // composite is not part of the contribution being undeployed
                 }
                 if (component instanceof LogicalCompositeComponent) {
-                    markForCollection(deployable, contribution, (LogicalCompositeComponent) component);
+                    markForCollection(contributionUri, (LogicalCompositeComponent) component);
                 }
-                component.setState(LogicalState.MARKED);
+                component.setState(MARKED);
                 for (LogicalService service : component.getServices()) {
                     for (LogicalBinding<?> binding : service.getBindings()) {
-                        binding.setState(LogicalState.MARKED);
+                        binding.setState(MARKED);
                     }
                 }
                 for (LogicalReference reference : component.getReferences()) {
                     for (LogicalBinding<?> binding : reference.getBindings()) {
-                        binding.setState(LogicalState.MARKED);
+                        binding.setState(MARKED);
                     }
                     for (LogicalWire wire : composite.getWires(reference)) {
-                        wire.setState(LogicalState.MARKED);
+                        wire.setState(MARKED);
                     }
                 }
 
             } else {
                 // mark service and callback bindings that were dynamically added to satisfy a wire when the deployable was provisioned
                 for (LogicalService service : component.getServices()) {
-                    service.getBindings().stream().filter(binding -> deployable.equals(binding.getDeployable())).forEach(binding -> {
-                        binding.setState(LogicalState.MARKED);
-                    });
-                    service.getCallbackBindings().stream().filter(binding -> deployable.equals(binding.getDeployable())).forEach(binding -> {
-                        binding.setState(LogicalState.MARKED);
-                    });
+                    service.getBindings().stream().filter(binding -> contributionUri.equals(binding.getTargetContribution())).forEach(binding -> binding.setState(
+                            MARKED));
+                    service.getCallbackBindings().stream().filter(binding -> contributionUri.equals(binding.getTargetContribution())).forEach(binding -> binding.setState(
+                            MARKED));
                 }
                 // recurse through wires and mark any that were part of the deployable being undeployed
                 // this can occur when a wire is configured in a deployable other than its source component
                 for (List<LogicalWire> wires : composite.getWires().values()) {
                     for (LogicalWire wire : wires) {
-                        if (LogicalState.MARKED == wire.getState()) {
+                        if (MARKED == wire.getState()) {
                             continue;
                         }
-                        if (deployable.equals(wire.getTargetDeployable())) {
-                            wire.setState(LogicalState.MARKED);
+                        if (contributionUri.equals(wire.getTargetContribution())) {
+                            wire.setState(MARKED);
                         }
                     }
                 }
             }
         }
         for (LogicalChannel channel : composite.getChannels()) {
-            if (channel.getDefinition() != null && !contribution.equals(channel.getDefinition().getContributionUri())) {
+            if (channel.getDefinition() != null && !contributionUri.equals(channel.getDefinition().getContributionUri())) {
                 continue; // composite is not part of the contribution being undeployed
             }
-            if (deployable.equals(channel.getDeployable())) {
-                channel.setState(LogicalState.MARKED);
+            if (contributionUri.equals(channel.getDefinition().getContributionUri())) {
+                channel.setState(MARKED);
             }
             LogicalBinding<?> binding = channel.getBinding();
-            if (binding != null && deployable.equals(binding.getDeployable())) {
-                binding.setState(LogicalState.MARKED);
+            if (binding != null && contributionUri.equals(binding.getTargetContribution())) {
+                binding.setState(MARKED);
             }
         }
 
         for (LogicalResource resource : composite.getResources()) {
-            if (deployable.equals(resource.getDeployable())) {
-                resource.setState(LogicalState.MARKED);
+            if (contributionUri.equals(resource.getDefinition().getContributionUri())) {
+                resource.setState(MARKED);
             }
         }
     }
@@ -158,7 +145,7 @@ public class CollectorImpl implements Collector {
         Iterator<LogicalComponent<?>> iter = composite.getComponents().iterator();
         while (iter.hasNext()) {
             LogicalComponent<?> component = iter.next();
-            if (LogicalState.MARKED == component.getState()) {
+            if (MARKED == component.getState()) {
                 iter.remove();
             } else {
                 for (LogicalService service : component.getServices()) {
@@ -178,7 +165,7 @@ public class CollectorImpl implements Collector {
         for (Map.Entry<LogicalReference, List<LogicalWire>> wires : composite.getWires().entrySet()) {
             for (Iterator<LogicalWire> it = wires.getValue().iterator(); it.hasNext(); ) {
                 LogicalWire wire = it.next();
-                if (LogicalState.MARKED == wire.getState()) {
+                if (MARKED == wire.getState()) {
                     it.remove();
                 }
             }
@@ -194,14 +181,14 @@ public class CollectorImpl implements Collector {
         Iterator<LogicalChannel> channelIter = composite.getChannels().iterator();
         while (channelIter.hasNext()) {
             LogicalChannel channel = channelIter.next();
-            if (LogicalState.MARKED == channel.getState()) {
+            if (MARKED == channel.getState()) {
                 channelIter.remove();
             }
         }
         Iterator<LogicalResource<?>> resourceIter = composite.getResources().iterator();
         while (resourceIter.hasNext()) {
             LogicalResource<?> resource = resourceIter.next();
-            if (LogicalState.MARKED == resource.getState()) {
+            if (MARKED == resource.getState()) {
                 resourceIter.remove();
             }
         }
@@ -215,7 +202,7 @@ public class CollectorImpl implements Collector {
     private void removeMarkedBindings(Iterator<LogicalBinding<?>> iter) {
         while (iter.hasNext()) {
             LogicalBinding<?> binding = iter.next();
-            if (LogicalState.MARKED == binding.getState()) {
+            if (MARKED == binding.getState()) {
                 iter.remove();
             }
         }

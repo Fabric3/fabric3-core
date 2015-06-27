@@ -19,39 +19,39 @@
  */
 package org.fabric3.spi.model.instance;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 /**
  * A wire from a reference to a service in the domain. A wire always targets a service in the domain (as opposed to a service hosted externally) and hence is
  * expressed using the SCA URI of the target service. A wire is expressed by using the <code>target</code> attribute of a <code>reference</code> element or
  * using the <code>wire</code> element. Furthermore, a wire may be unbound or explicitly configured with a binding. If the wire is unbound and crosses process
- * boundaries, it will be bound by the runtime using the SCA binding.  During deployment, wires are created and resolved incrementally. A wire is created
- * for When a wire is instantiated, its source reference and target service URI are resolved against the domain.
+ * boundaries, it will be bound by the runtime using the SCA binding.  During deployment, wires are created and resolved incrementally. A wire is created for
+ * When a wire is instantiated, its source reference and target service URI are resolved against the domain.
  */
 public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
     private static final long serialVersionUID = -643283191171197255L;
 
     private LogicalReference source;
     private LogicalService target;
+    private URI contributionUri;
     private LogicalBinding sourceBinding;
     private LogicalBinding targetBinding;
 
-    private QName deployable;
     private LogicalState state = LogicalState.NEW;
 
     /**
      * Instantiates a logical wire.
      *
-     * @param parent     component within which the wire is defined.
-     * @param source     the source reference of the wire
-     * @param target     the target service
-     * @param deployable the target service deployable
+     * @param parent          component within which the wire is defined.
+     * @param source          the source reference of the wire
+     * @param target          the target service
+     * @param contributionUri the target service contribution
      */
-    public LogicalWire(LogicalComponent<?> parent, LogicalReference source, LogicalService target, QName deployable) {
+    public LogicalWire(LogicalComponent<?> parent, LogicalReference source, LogicalService target, URI contributionUri) {
         super(parent);
         this.source = source;
         this.target = target;
-        this.deployable = deployable;
+        this.contributionUri = contributionUri;
     }
 
     /**
@@ -91,13 +91,13 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
     }
 
     /**
-     * Returns the deployable of the target for this wire. A source of a wire may be deployed via a different deployable thant its target. This value is used to
-     * track the target deployable so the wire may be undeployed along wih the target even if the source is not.
+     * Returns the contribution URI of the target for this wire. A source of a wire may be deployed via a different contribution than its target. This value is
+     * used to track the target contribution so the wire may be undeployed along wih the target even if the source is not.
      *
      * @return the deployable that provisioned the wire.
      */
-    public QName getTargetDeployable() {
-        return deployable;
+    public URI getTargetContribution() {
+        return contributionUri;
     }
 
     public LogicalBinding getSourceBinding() {
@@ -116,20 +116,11 @@ public class LogicalWire extends LogicalScaArtifact<LogicalComponent<?>> {
         this.targetBinding = targetBinding;
     }
 
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
-    }
-
     /**
      * Tests for quality whether the source and target URIs are the same.
      *
      * @param obj Object to be tested against.
      */
-    @Override
     public boolean equals(Object obj) {
 
         if (this == obj) {

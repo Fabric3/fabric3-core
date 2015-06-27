@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.container.component;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -54,18 +54,18 @@ public interface ScopeContainer {
     /**
      * Start a new, non-expiring context. The context will remain active until explicitly stopped.
      *
-     * @param deployable the deployable to start the context for
+     * @param contributionUri the URI of the contribution to start the context for
      * @throws Fabric3Exception if an exception starting the context was encountered
      */
-    void startContext(QName deployable) throws Fabric3Exception;
+    void startContext(URI contributionUri) throws Fabric3Exception;
 
     /**
      * Stop the context associated with the current work context.
      *
-     * @param deployable the deployable to start the context for
+     * @param contributionUri he URI of the contribution to stop the context for
      * @throws Fabric3Exception if there is an error stopping the context
      */
-    void stopContext(QName deployable) throws Fabric3Exception;
+    void stopContext(URI contributionUri) throws Fabric3Exception;
 
     /**
      * Returns an instance associated with the current scope context, creating one if necessary

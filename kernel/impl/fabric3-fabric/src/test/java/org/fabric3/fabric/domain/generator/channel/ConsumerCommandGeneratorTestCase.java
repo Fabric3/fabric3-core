@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -37,15 +36,15 @@ import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalConsumer;
 import org.fabric3.spi.model.instance.LogicalState;
-import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 import org.fabric3.spi.model.physical.PhysicalChannel;
+import org.fabric3.spi.model.physical.PhysicalChannelConnection;
 
 /**
  *
  */
 @SuppressWarnings("unchecked")
 public class ConsumerCommandGeneratorTestCase extends TestCase {
-    private static final QName DEPLOYABLE = new QName("test", "test");
+    private static final URI CONTRIBUTION = URI.create("test");
 
     private URI uri = URI.create("testChannel");
 
@@ -64,7 +63,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         URI channelUri = URI.create("NotFoundChannel");
         Component definition = new Component("component");
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), definition, parent);
-        component.setDeployable(DEPLOYABLE);
+        definition.setContributionUri(CONTRIBUTION);
         LogicalConsumer consumer = new LogicalConsumer(URI.create("component#consumer"), new Consumer("consumer"), component);
         component.addConsumer(consumer);
 
@@ -86,7 +85,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateBuild(EasyMock.isA(LogicalChannel.class),
-                                                       EasyMock.isA(QName.class),
+                                                       EasyMock.isA(URI.class),
                                                        EasyMock.isA(ChannelDirection.class))).andReturn(buildChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
@@ -105,12 +104,13 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
     public void testGenerateAttach() throws Exception {
         ConnectionGenerator connectionGenerator = EasyMock.createMock(ConnectionGenerator.class);
-        List<PhysicalChannelConnection> list = Collections.singletonList(new PhysicalChannelConnection(uri, URI.create("test"), null, null, null, false));
+        PhysicalChannelConnection connection = new PhysicalChannelConnection(uri, URI.create("test"), null, null, null, false);
+        List<PhysicalChannelConnection> list = Collections.singletonList(connection);
         EasyMock.expect(connectionGenerator.generateConsumer(EasyMock.isA(LogicalConsumer.class), EasyMock.isA(Map.class))).andReturn(list);
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateBuild(EasyMock.isA(LogicalChannel.class),
-                                                       EasyMock.isA(QName.class),
+                                                       EasyMock.isA(URI.class),
                                                        EasyMock.isA(ChannelDirection.class))).andReturn(buildChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
@@ -131,7 +131,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateDispose(EasyMock.isA(LogicalChannel.class),
-                                                         EasyMock.isA(QName.class),
+                                                         EasyMock.isA(URI.class),
                                                          EasyMock.isA(ChannelDirection.class))).andReturn(disposeChannelCommand);
 
         EasyMock.replay(connectionGenerator, channelGenerator);
@@ -157,7 +157,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
 
         ChannelCommandGenerator channelGenerator = EasyMock.createMock(ChannelCommandGenerator.class);
         EasyMock.expect(channelGenerator.generateDispose(EasyMock.isA(LogicalChannel.class),
-                                                         EasyMock.isA(QName.class),
+                                                         EasyMock.isA(URI.class),
                                                          EasyMock.isA(ChannelDirection.class))).andReturn(disposeChannelCommand);
         EasyMock.replay(connectionGenerator, channelGenerator);
 
@@ -191,8 +191,8 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
         LogicalChannel channel = new LogicalChannel(channelUri, null, parent);
         parent.addChannel(channel);
         Component definition = new Component("component");
+        definition.setContributionUri(CONTRIBUTION);
         LogicalComponent<?> component = new LogicalComponent(URI.create("component"), definition, parent);
-        component.setDeployable(DEPLOYABLE);
         LogicalConsumer consumer = new LogicalConsumer(URI.create("component#consumer"), new Consumer("consumer"), component);
         component.addConsumer(consumer);
 
@@ -202,7 +202,7 @@ public class ConsumerCommandGeneratorTestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), new QName("foo", "bar"));
+        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("test"), URI.create("bar"));
         buildChannelCommand = new BuildChannelCommand(physicalChannel);
         disposeChannelCommand = new DisposeChannelCommand(physicalChannel);
     }

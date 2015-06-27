@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -77,12 +76,12 @@ public class ConsumerCommandGenerator implements CommandGenerator<ChannelConnect
 
     private void generateCommand(LogicalConsumer consumer, ChannelConnectionCommand command) {
         LogicalComponent<?> component = consumer.getParent();
-        QName deployable = consumer.getParent().getDeployable();
+        URI contributionUri = consumer.getParent().getDefinition().getContributionUri();
         if (LogicalState.MARKED == component.getState()) {
             Map<LogicalChannel, DeliveryType> channels = new HashMap<>();
             for (URI uri : consumer.getSources()) {
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, consumer);
-                DisposeChannelCommand disposeCommand = channelGenerator.generateDispose(channel, deployable, CONSUMER);
+                DisposeChannelCommand disposeCommand = channelGenerator.generateDispose(channel, contributionUri, CONSUMER);
                 command.addDisposeChannelCommand(disposeCommand);
                 channels.put(channel, disposeCommand.getChannel().getDeliveryType());
             }
@@ -95,7 +94,7 @@ public class ConsumerCommandGenerator implements CommandGenerator<ChannelConnect
             Map<LogicalChannel, DeliveryType> channels = new HashMap<>();
             for (URI uri : consumer.getSources()) {
                 LogicalChannel channel = InvocableGeneratorHelper.getChannelInHierarchy(uri, consumer);
-                BuildChannelCommand buildCommand = channelGenerator.generateBuild(channel, deployable, CONSUMER);
+                BuildChannelCommand buildCommand = channelGenerator.generateBuild(channel, contributionUri, CONSUMER);
                 command.addBuildChannelCommand(buildCommand);
                 channels.put(channel, buildCommand.getChannel().getDeliveryType());
             }

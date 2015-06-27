@@ -19,7 +19,7 @@
  */
 package org.fabric3.spi.model.instance;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 import org.fabric3.api.model.type.component.Binding;
 
@@ -31,7 +31,7 @@ public class LogicalBinding<BD extends Binding> extends LogicalScaArtifact<Logic
 
     private BD definition;
     private LogicalState state = LogicalState.NEW;
-    private QName deployable;
+    private URI contributionUri;
     private boolean assigned;
     private boolean callback;
 
@@ -40,10 +40,10 @@ public class LogicalBinding<BD extends Binding> extends LogicalScaArtifact<Logic
         this.definition = definition;
     }
 
-    public LogicalBinding(BD definition, LogicalBindable parent, QName deployable) {
+    public LogicalBinding(BD definition, LogicalBindable parent, URI contributionUri) {
         super(parent);
         this.definition = definition;
-        this.deployable = deployable;
+        this.contributionUri = contributionUri;
     }
 
     /**
@@ -74,14 +74,14 @@ public class LogicalBinding<BD extends Binding> extends LogicalScaArtifact<Logic
     }
 
     /**
-     * If this is a service binding, returns the deployable the binding was provisioned with if it was dynamically added to connect a source reference
+     * If this is a service binding, returns the contribution the binding was provisioned with if it was dynamically added to connect a source reference
      * to a target service. Bindings are dynamically added in two instances: to provide a physical transport for binding.sca; and when a reference
      * specifies a binding and the service it is wired to is not configured with a binding of that type.
      *
-     * @return the deployable that dynamically provisioned the binding or null of the binding was not dynamically provisioned
+     * @return the contribution that dynamically provisioned the binding or null of the binding was not dynamically provisioned
      */
-    public QName getDeployable() {
-        return deployable;
+    public URI getTargetContribution() {
+        return contributionUri;
     }
 
     /**

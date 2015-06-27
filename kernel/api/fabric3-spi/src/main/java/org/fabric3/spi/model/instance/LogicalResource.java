@@ -19,8 +19,6 @@
  */
 package org.fabric3.spi.model.instance;
 
-import javax.xml.namespace.QName;
-
 import org.fabric3.api.host.Names;
 import org.fabric3.api.model.type.component.Resource;
 
@@ -32,7 +30,6 @@ public class LogicalResource<R extends Resource> extends LogicalScaArtifact<Logi
 
     private R definition;
     private LogicalState state = LogicalState.NEW;
-    private QName deployable;
     private String zone = Names.LOCAL_ZONE;
 
     /**
@@ -66,24 +63,6 @@ public class LogicalResource<R extends Resource> extends LogicalScaArtifact<Logi
      */
     public void setState(LogicalState state) {
         this.state = state;
-    }
-
-    /**
-     * Returns the deployable composite name this logical resource was instantiated from.
-     *
-     * @return the deployable name
-     */
-    public QName getDeployable() {
-        return deployable;
-    }
-
-    /**
-     * Sets the name of the deployable composite this resource was instantiated from.
-     *
-     * @param deployable the deployable name
-     */
-    public void setDeployable(QName deployable) {
-        this.deployable = deployable;
     }
 
     /**

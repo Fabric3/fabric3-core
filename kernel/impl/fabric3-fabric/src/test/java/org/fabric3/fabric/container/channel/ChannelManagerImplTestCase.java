@@ -16,7 +16,6 @@
  */
 package org.fabric3.fabric.container.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -30,7 +29,6 @@ import org.fabric3.spi.model.physical.ChannelSide;
  */
 public class ChannelManagerImplTestCase extends TestCase {
     private static final URI CHANNEL_URI = URI.create("test");
-    private static final QName DEPLOYABLE = new QName("test", "test");
 
     private Channel channel;
     private ChannelManagerImpl manager;
@@ -94,14 +92,14 @@ public class ChannelManagerImplTestCase extends TestCase {
     public void testStartStopContext() throws Exception {
         EasyMock.expect(channel.getUri()).andReturn(CHANNEL_URI);
         EasyMock.expect(channel.getChannelSide()).andReturn(ChannelSide.CONSUMER);
-        EasyMock.expect(channel.getDeployable()).andReturn(DEPLOYABLE).times(2);
+        EasyMock.expect(channel.getContributionUri()).andReturn(CHANNEL_URI).times(2);
         channel.start();
         channel.stop();
         EasyMock.replay(channel);
 
         manager.register(channel);
-        manager.startContext(DEPLOYABLE);
-        manager.stopContext(DEPLOYABLE);
+        manager.startContext(CHANNEL_URI);
+        manager.stopContext(CHANNEL_URI);
 
         EasyMock.verify(channel);
     }

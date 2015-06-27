@@ -16,7 +16,6 @@
  */
 package org.fabric3.channel.disruptor.builder;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
 
@@ -31,8 +30,8 @@ import org.fabric3.spi.model.physical.PhysicalChannel;
  *
  */
 public class RingBufferChannelBuilderTestCase extends TestCase {
-    public static final QName DEPLOYABLE = new QName("test", "test");
-    public static final URI URI = java.net.URI.create("test");
+    public static final URI CONTRIBUTION_URI = URI.create("test");
+    public static final URI TEST = java.net.URI.create("test");
 
     private RingBufferChannelBuilder builder;
     private PhysicalChannel physicalChannel;
@@ -40,8 +39,8 @@ public class RingBufferChannelBuilderTestCase extends TestCase {
     public void testBuild() throws Exception {
         Channel channel = builder.build(physicalChannel);
 
-        assertEquals(URI, channel.getUri());
-        assertEquals(DEPLOYABLE, channel.getDeployable());
+        assertEquals(TEST, channel.getUri());
+        assertEquals(CONTRIBUTION_URI, channel.getContributionUri());
     }
 
     public void testDispose() throws Exception {
@@ -57,7 +56,7 @@ public class RingBufferChannelBuilderTestCase extends TestCase {
 
         builder = new RingBufferChannelBuilder(executorService);
 
-        physicalChannel = new PhysicalChannel(URI, DEPLOYABLE, "ring.buffer", DeliveryType.ASYNCHRONOUS_WORKER);
+        physicalChannel = new PhysicalChannel(TEST, "ring.buffer", DeliveryType.ASYNCHRONOUS_WORKER, CONTRIBUTION_URI);
         physicalChannel.setMetadata(new RingBufferData());
     }
 }

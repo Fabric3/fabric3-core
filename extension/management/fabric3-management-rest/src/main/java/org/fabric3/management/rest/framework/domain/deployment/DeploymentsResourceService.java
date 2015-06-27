@@ -28,6 +28,7 @@ import org.fabric3.management.rest.framework.ResourceHelper;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.management.rest.model.SelfLink;
 import org.fabric3.spi.contribution.Contribution;
+import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -60,7 +61,7 @@ public class DeploymentsResourceService {
         Set<Contribution> contributions = store.getContributions();
         List<URI> list = new ArrayList<>();
         for (Contribution contribution : contributions) {
-            if (contribution.getLockOwners().isEmpty() || contribution.getManifest().isExtension()) {
+            if (contribution.getState() != ContributionState.DEPLOYED || contribution.getManifest().isExtension()) {
                 // not deployed or not deployed to the application domain
                 continue;
             }

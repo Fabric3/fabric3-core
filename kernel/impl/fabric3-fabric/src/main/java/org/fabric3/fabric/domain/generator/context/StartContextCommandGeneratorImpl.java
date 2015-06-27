@@ -19,14 +19,14 @@
  */
 package org.fabric3.fabric.domain.generator.context;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.Names;
-import org.fabric3.fabric.container.command.StartContextCommand;
 import org.fabric3.fabric.container.command.Command;
+import org.fabric3.fabric.container.command.StartContextCommand;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalState;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -39,12 +39,11 @@ public class StartContextCommandGeneratorImpl implements StartContextCommandGene
 
     public List<Command> generate(List<LogicalComponent<?>> components) throws Fabric3Exception {
         List<Command> commands = new ArrayList<>();
-        // only log application composite deployments
         components.stream().filter(component -> component.getState() == LogicalState.NEW).forEach(component -> {
-            QName deployable = component.getDeployable();
+            URI uri = component.getDefinition().getContributionUri();
             // only log application composite deployments
             boolean log = !component.getUri().toString().startsWith(Names.RUNTIME_NAME);
-            StartContextCommand command = new StartContextCommand(deployable, log);
+            StartContextCommand command = new StartContextCommand(uri, log);
             if (!commands.contains(command)) {
                 commands.add(command);
             }

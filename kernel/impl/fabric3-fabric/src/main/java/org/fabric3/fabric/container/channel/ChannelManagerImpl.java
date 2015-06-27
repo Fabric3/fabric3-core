@@ -16,7 +16,6 @@
  */
 package org.fabric3.fabric.container.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,16 +102,16 @@ public class ChannelManagerImpl implements ChannelManager {
         return holder.channel;
     }
 
-    public void startContext(QName deployable) {
-        doStart(deployable, collocatedChannels);
-        doStart(deployable, consumerChannels);
-        doStart(deployable, producerChannels);
+    public void startContext(URI uri) {
+        doStart(uri, collocatedChannels);
+        doStart(uri, consumerChannels);
+        doStart(uri, producerChannels);
     }
 
-    public void stopContext(QName deployable) {
-        doStop(deployable, producerChannels);
-        doStop(deployable, consumerChannels);
-        doStop(deployable, collocatedChannels);
+    public void stopContext(URI uri) {
+        doStop(uri, producerChannels);
+        doStop(uri, consumerChannels);
+        doStop(uri, collocatedChannels);
     }
 
     private void checkUri(URI uri) {
@@ -136,13 +135,13 @@ public class ChannelManagerImpl implements ChannelManager {
         }
     }
 
-    private void doStart(QName deployable, Map<URI, Holder> map) {
+    private void doStart(URI uri, Map<URI, Holder> map) {
         started = true;
-        map.values().stream().filter(holder -> deployable.equals(holder.channel.getDeployable())).forEach(holder -> holder.channel.start());
+        map.values().stream().filter(holder -> uri.equals(holder.channel.getContributionUri())).forEach(holder -> holder.channel.start());
     }
 
-    private void doStop(QName deployable, Map<URI, Holder> map) {
-        map.values().stream().filter(holder -> deployable.equals(holder.channel.getDeployable())).forEach(holder -> holder.channel.stop());
+    private void doStop(URI uri, Map<URI, Holder> map) {
+        map.values().stream().filter(holder -> uri.equals(holder.channel.getContributionUri())).forEach(holder -> holder.channel.stop());
         started = false;
     }
 

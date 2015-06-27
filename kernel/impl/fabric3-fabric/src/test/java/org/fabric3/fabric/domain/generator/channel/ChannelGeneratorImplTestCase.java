@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 
@@ -36,7 +35,7 @@ import org.fabric3.spi.model.physical.PhysicalChannel;
  *
  */
 public class ChannelGeneratorImplTestCase extends TestCase {
-    private static final QName DEPLOYABLE = new QName("foo", "bar");
+    private static final URI CONTRIBUTION_URI = URI.create("bar");
 
     public void testGenerateLocalChannelBuild() throws Exception {
 
@@ -49,7 +48,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         ChannelGeneratorImpl generator = new ChannelGeneratorImpl();
         generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
-        PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
+        PhysicalChannel physicalChannel = generator.generate(channel, CONTRIBUTION_URI, ChannelDirection.CONSUMER);
 
         assertNotNull(physicalChannel);
 
@@ -67,7 +66,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.PROVISIONED);
-        PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
+        PhysicalChannel physicalChannel = generator.generate(channel, CONTRIBUTION_URI, ChannelDirection.CONSUMER);
 
         assertNotNull(physicalChannel);
 
@@ -85,7 +84,7 @@ public class ChannelGeneratorImplTestCase extends TestCase {
         generator.extensions = Collections.singletonMap("default", channelGenerator);
         LogicalChannel channel = createChannel();
         channel.setState(LogicalState.MARKED);
-        PhysicalChannel physicalChannel = generator.generate(channel, DEPLOYABLE, ChannelDirection.CONSUMER);
+        PhysicalChannel physicalChannel = generator.generate(channel, CONTRIBUTION_URI, ChannelDirection.CONSUMER);
 
         assertNotNull(physicalChannel);
 
@@ -94,8 +93,8 @@ public class ChannelGeneratorImplTestCase extends TestCase {
 
     private ChannelGeneratorExtension getChannelGenerator() throws Fabric3Exception {
         ChannelGeneratorExtension channelGenerator = EasyMock.createMock(ChannelGeneratorExtension.class);
-        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("channel"), new QName("test", "test"));
-        EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class), EasyMock.eq(DEPLOYABLE))).andReturn(physicalChannel);
+        PhysicalChannel physicalChannel = new PhysicalChannel(URI.create("channel"), URI.create("test"));
+        EasyMock.expect(channelGenerator.generate(EasyMock.isA(LogicalChannel.class), EasyMock.eq(CONTRIBUTION_URI))).andReturn(physicalChannel);
         return channelGenerator;
     }
 

@@ -18,7 +18,6 @@
  */
 package org.fabric3.implementation.mock.runtime;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.function.Supplier;
 
@@ -35,9 +34,10 @@ public class MockComponent implements AtomicComponent {
     private final Supplier<Object> supplier;
     private URI contributionUri;
 
-    public MockComponent(URI componentId, Supplier<Object> supplier) {
+    public MockComponent(URI componentId, Supplier<Object> supplier, URI contributionUri) {
         this.componentId = componentId;
         this.supplier = supplier;
+        this.contributionUri = contributionUri;
     }
 
     public URI getUri() {
@@ -46,10 +46,6 @@ public class MockComponent implements AtomicComponent {
 
     public URI getContributionUri() {
         return contributionUri;
-    }
-
-    public void setContributionUri(URI uri) {
-        this.contributionUri = uri;
     }
 
     public Supplier<Object> createSupplier() {
@@ -78,10 +74,6 @@ public class MockComponent implements AtomicComponent {
 
     public void endUpdate() {
 
-    }
-
-    public QName getDeployable() {
-        return null;
     }
 
     public String getName() {

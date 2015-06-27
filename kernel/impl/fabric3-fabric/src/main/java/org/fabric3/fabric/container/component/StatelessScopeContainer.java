@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.component;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,11 +68,11 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         return Collections.emptyList();
     }
 
-    public void startContext(QName deployable) {
+    public void startContext(URI contribution) {
         // no-op
     }
 
-    public void stopContext(QName deployable) {
+    public void stopContext(URI contribution) {
         // no-op
     }
 

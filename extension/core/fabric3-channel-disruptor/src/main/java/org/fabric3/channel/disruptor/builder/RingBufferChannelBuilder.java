@@ -16,7 +16,6 @@
  */
 package org.fabric3.channel.disruptor.builder;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +48,7 @@ public class RingBufferChannelBuilder implements ChannelBuilder {
 
     public Channel build(PhysicalChannel physicalChannel) throws Fabric3Exception {
         URI uri = physicalChannel.getUri();
-        QName deployable = physicalChannel.getDeployable();
+        URI contributionUri = physicalChannel.getContributionUri();
 
         RingBufferData data = physicalChannel.getMetadata(RingBufferData.class);
         int size = data.getRingSize();
@@ -58,7 +57,7 @@ public class RingBufferChannelBuilder implements ChannelBuilder {
 
         ChannelSide channelSide = physicalChannel.getChannelSide();
 
-        return new RingBufferChannel(uri, deployable, size, strategy, channelSide, executorService);
+        return new RingBufferChannel(uri, size, strategy, channelSide, executorService, contributionUri);
     }
 
     public void dispose(PhysicalChannel physicalChannel, Channel channel) throws Fabric3Exception {

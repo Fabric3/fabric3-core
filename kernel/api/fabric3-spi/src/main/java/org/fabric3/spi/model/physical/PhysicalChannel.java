@@ -19,7 +19,6 @@
  */
 package org.fabric3.spi.model.physical;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 /**
@@ -27,21 +26,21 @@ import java.net.URI;
  */
 public class PhysicalChannel {
     private URI uri;
-    private QName deployable;
     private boolean bound;
     private String type;
     private DeliveryType deliveryType;
     private ChannelSide channelSide = ChannelSide.PRODUCER;
 
     private Object metadata;
+    private URI contributionUri;
 
-    public PhysicalChannel(URI uri, QName deployable) {
-        this(uri, deployable, ChannelConstants.DEFAULT_TYPE, DeliveryType.DEFAULT);
+    public PhysicalChannel(URI uri, URI contributionUri) {
+        this(uri, ChannelConstants.DEFAULT_TYPE, DeliveryType.DEFAULT, contributionUri);
     }
 
-    public PhysicalChannel(URI uri, QName deployable, String type, DeliveryType deliveryType) {
+    public PhysicalChannel(URI uri, String type, DeliveryType deliveryType, URI contributionUri) {
         this.uri = uri;
-        this.deployable = deployable;
+        this.contributionUri = contributionUri;
         this.type = type;
         this.deliveryType = deliveryType;
     }
@@ -56,12 +55,12 @@ public class PhysicalChannel {
     }
 
     /**
-     * Returns the deployable composite this channel is defined in.
+     * Returns the contribution Uri this channel is deployed for.
      *
      * @return the composite qualified name
      */
-    public QName getDeployable() {
-        return deployable;
+    public URI getContributionUri() {
+        return contributionUri;
     }
 
     /**

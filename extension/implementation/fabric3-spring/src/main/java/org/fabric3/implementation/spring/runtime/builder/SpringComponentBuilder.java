@@ -72,8 +72,8 @@ public class SpringComponentBuilder implements ComponentBuilder<PhysicalSpringCo
         this.listeners = listeners;
     }
 
-    public org.fabric3.implementation.spring.runtime.component.SpringComponent build(PhysicalSpringComponent springComponent) throws Fabric3Exception {
-        ClassLoader classLoader = springComponent.getClassLoader();
+    public org.fabric3.implementation.spring.runtime.component.SpringComponent build(PhysicalSpringComponent physicalComponent) throws Fabric3Exception {
+        ClassLoader classLoader = physicalComponent.getClassLoader();
         if (classLoader instanceof MultiParentClassLoader) {
             // add the extension classloader as a parent of the app classloader since Spring classes must be visible to the application
             // TODO add a filtering classloader to only expose specific Spring packages
@@ -84,34 +84,33 @@ public class SpringComponentBuilder implements ComponentBuilder<PhysicalSpringCo
             }
         }
         List<URL> sources = new ArrayList<>();
-        if (PhysicalSpringComponent.LocationType.JAR == springComponent.getLocationType()) {
+        if (PhysicalSpringComponent.LocationType.JAR == physicalComponent.getLocationType()) {
             // jar
-            resolveJarSources(springComponent, classLoader, sources);
-        } else if (PhysicalSpringComponent.LocationType.DIRECTORY == springComponent.getLocationType()) {
+            resolveJarSources(physicalComponent, classLoader, sources);
+        } else if (PhysicalSpringComponent.LocationType.DIRECTORY == physicalComponent.getLocationType()) {
             // directory
-            resolveDirectorySources(springComponent, classLoader, sources);
+            resolveDirectorySources(physicalComponent, classLoader, sources);
         } else {
             // file
-            List<String> contextLocations = springComponent.getContextLocations();
+            List<String> contextLocations = physicalComponent.getContextLocations();
             for (String location : contextLocations) {
                 sources.add(classLoader.getResource(location));
             }
         }
-        URI componentUri = springComponent.getComponentUri();
-        QName deployable = springComponent.getDeployable();
+        URI componentUri = physicalComponent.getComponentUri();
 
-        Map<String, Pair> properties = createProperties(springComponent);
+        Map<String, Pair> properties = createProperties(physicalComponent);
 
         SCAApplicationContext parent = createParentContext(classLoader, properties);
-        Map<String, String> alias = springComponent.getDefaultReferenceMappings();
+        Map<String, String> alias = physicalComponent.getDefaultReferenceMappings();
+        URI contributionUri = physicalComponent.getContributionUri();
         return new org.fabric3.implementation.spring.runtime.component.SpringComponent(componentUri,
-                                                                                       deployable,
                                                                                        parent,
                                                                                        sources,
                                                                                        classLoader,
                                                                                        validating,
                                                                                        alias,
-                                                                                       POST_PROCESSORS);
+                                                                                       POST_PROCESSORS, contributionUri);
     }
 
     public void dispose(PhysicalSpringComponent physicalComponent, org.fabric3.implementation.spring.runtime.component.SpringComponent component) {

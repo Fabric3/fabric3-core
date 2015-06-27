@@ -16,7 +16,6 @@
  */
 package org.fabric3.channel.disruptor.generator;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -33,12 +32,12 @@ import static org.fabric3.spi.model.physical.DeliveryType.ASYNCHRONOUS_WORKER;
 @EagerInit
 public class RingBufferChannelGeneratorExtension implements ChannelGeneratorExtension {
 
-    public PhysicalChannel generate(LogicalChannel channel, QName deployable) throws Fabric3Exception {
+    public PhysicalChannel generate(LogicalChannel channel, URI contributionUri) throws Fabric3Exception {
         URI uri = channel.getUri();
         Channel channelDefinition = channel.getDefinition();
         String channelType = channelDefinition.getType();
 
-        PhysicalChannel physicalChannel = new PhysicalChannel(uri, deployable, channelType, ASYNCHRONOUS_WORKER);
+        PhysicalChannel physicalChannel = new PhysicalChannel(uri, channelType, ASYNCHRONOUS_WORKER, contributionUri);
         physicalChannel.setMetadata(channelDefinition.getMetadata(Object.class));
 
         return physicalChannel;

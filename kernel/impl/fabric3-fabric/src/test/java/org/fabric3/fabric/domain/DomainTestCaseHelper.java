@@ -29,7 +29,6 @@ import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.fabric.domain.instantiator.InstantiationContext;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
@@ -53,7 +52,7 @@ public class DomainTestCaseHelper {
             LogicalCompositeComponent domainComposite = (LogicalCompositeComponent) EasyMock.getCurrentArguments()[1];
 
             LogicalComponent logicalComponent = new LogicalComponent(COMPONENT_URI, definition, domainComposite);
-            logicalComponent.setDeployable(DEPLOYABLE);
+            definition.setContributionUri(CONTRIBUTION_URI);
             domainComposite.addComponent(logicalComponent);
             return new InstantiationContext();
         };
@@ -78,7 +77,7 @@ public class DomainTestCaseHelper {
 
     public static Contribution createContribution(MetaDataStore store) {
         Contribution contribution = new Contribution(CONTRIBUTION_URI);
-        contribution.setState(ContributionState.INSTALLED);
+        contribution.install();
 
         EasyMock.expect(store.find(CONTRIBUTION_URI)).andReturn(contribution).anyTimes();
         return contribution;

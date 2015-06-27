@@ -16,7 +16,6 @@
  */
 package org.fabric3.fabric.node;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -24,23 +23,22 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Consumer;
 import org.fabric3.api.model.type.component.Producer;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.api.node.NotFoundException;
-import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionSource;
-import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionTarget;
-import org.fabric3.fabric.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.fabric.container.builder.ChannelConnector;
 import org.fabric3.fabric.container.builder.channel.ChannelBuilderRegistry;
-import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.spi.container.channel.ChannelResolver;
 import org.fabric3.fabric.domain.LogicalComponentManager;
 import org.fabric3.fabric.domain.generator.channel.ChannelGenerator;
 import org.fabric3.fabric.domain.generator.channel.ConnectionGenerator;
+import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionSource;
+import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionTarget;
+import org.fabric3.fabric.node.nonmanaged.NonManagedImplementation;
+import org.fabric3.spi.container.channel.ChannelConnection;
+import org.fabric3.spi.container.channel.ChannelResolver;
 import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
@@ -60,7 +58,7 @@ import static org.fabric3.fabric.domain.generator.channel.ChannelDirection.PRODU
  *
  */
 public class ChannelResolverImpl implements ChannelResolver {
-    private static final QName SYNTHETIC_DEPLOYABLE = new QName(HostNamespaces.SYNTHESIZED, "SyntheticDeployable");
+    private static final URI SYNTHETIC_CONTRIBUTION = URI.create("SyntheticContribution");
 
     private Introspector introspector;
     private LogicalComponentManager lcm;
@@ -91,7 +89,7 @@ public class ChannelResolverImpl implements ChannelResolver {
     public <T> T getProducer(Class<T> interfaze, String name, String topic) {
         LogicalChannel logicalChannel = getChannel(name);
         LogicalProducer producer = createProducer(interfaze, logicalChannel.getUri());
-        PhysicalChannel physicalChannel = channelGenerator.generate(logicalChannel, SYNTHETIC_DEPLOYABLE, PRODUCER);
+        PhysicalChannel physicalChannel = channelGenerator.generate(logicalChannel, SYNTHETIC_CONTRIBUTION, PRODUCER);
 
         channelBuilderRegistry.build(physicalChannel);
 
@@ -110,7 +108,7 @@ public class ChannelResolverImpl implements ChannelResolver {
     public <T> T getConsumer(Class<T> interfaze, String name, String topic) {
         LogicalChannel logicalChannel = getChannel(name);
         LogicalConsumer consumer = createConsumer(interfaze, logicalChannel.getUri());
-        PhysicalChannel physicalChannel = channelGenerator.generate(logicalChannel, SYNTHETIC_DEPLOYABLE, CONSUMER);
+        PhysicalChannel physicalChannel = channelGenerator.generate(logicalChannel, SYNTHETIC_CONTRIBUTION, CONSUMER);
 
         channelBuilderRegistry.build(physicalChannel);
 
@@ -129,7 +127,7 @@ public class ChannelResolverImpl implements ChannelResolver {
     public Object subscribe(Class<?> type, String name, String id, String topic, java.util.function.Consumer<?> consumer) {
         LogicalChannel logicalChannel = getChannel(name);
         LogicalConsumer logicalConsumer = createConsumer(type, logicalChannel.getUri());
-        PhysicalChannel physicalChannel = channelGenerator.generate(logicalChannel, SYNTHETIC_DEPLOYABLE, CONSUMER);
+        PhysicalChannel physicalChannel = channelGenerator.generate(logicalChannel, SYNTHETIC_CONTRIBUTION, CONSUMER);
 
         channelBuilderRegistry.build(physicalChannel);
 

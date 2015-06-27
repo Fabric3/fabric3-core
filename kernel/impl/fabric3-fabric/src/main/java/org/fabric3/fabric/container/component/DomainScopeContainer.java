@@ -19,7 +19,7 @@
  */
 package org.fabric3.fabric.container.component;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +49,7 @@ import org.oasisopen.sca.annotation.Service;
 @Service(ScopeContainer.class)
 public class DomainScopeContainer extends SingletonScopeContainer {
     private HostInfo info;
-    private final List<QName> deferredContexts = new ArrayList<>();
+    private final List<URI> deferredContexts = new ArrayList<>();
     boolean activated;
 
     @Reference(required = false)
@@ -76,28 +76,28 @@ public class DomainScopeContainer extends SingletonScopeContainer {
         super.stop();
     }
 
-    public void startContext(QName deployable) throws GroupInitializationException {
+    public void startContext(URI uri) throws GroupInitializationException {
         if (RuntimeMode.NODE == info.getRuntimeMode() && discoveryAgent == null) {
             return;
         } else if (RuntimeMode.NODE == info.getRuntimeMode() && !discoveryAgent.isLeader()) {
             // defer instantiation until this node becomes zone leader
             synchronized (deferredContexts) {
-                deferredContexts.add(deployable);
+                deferredContexts.add(uri);
             }
             return;
         }
         activated = true;
-        super.startContext(deployable);
+        super.startContext(uri);
     }
 
-    public void stopContext(QName deployable) {
+    public void stopContext(URI uri) {
         synchronized (deferredContexts) {
-            deferredContexts.remove(deployable);
+            deferredContexts.remove(uri);
         }
-        super.stopContext(deployable);
+        super.stopContext(uri);
     }
 
-    public Object getInstance(ScopedComponent component){
+    public Object getInstance(ScopedComponent component) {
         if (discoveryAgent != null && !activated) {
             throw new Fabric3Exception("Component instance not active: " + component.getUri());
         }
@@ -112,9 +112,9 @@ public class DomainScopeContainer extends SingletonScopeContainer {
         // this runtime was elected leader, start the components
         synchronized (deferredContexts) {
             WorkContextCache.getAndResetThreadWorkContext();
-            for (QName deployable : deferredContexts) {
+            for (URI contributionUri : deferredContexts) {
                 try {
-                    super.startContext(deployable);
+                    super.startContext(contributionUri);
                 } catch (GroupInitializationException e) {
                     monitor.leaderElectionError(e);
                 }

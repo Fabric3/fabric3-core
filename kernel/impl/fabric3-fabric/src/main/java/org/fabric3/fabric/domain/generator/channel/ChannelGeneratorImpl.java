@@ -16,7 +16,7 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 import java.util.Map;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -34,14 +34,14 @@ public class ChannelGeneratorImpl implements ChannelGenerator {
     protected Map<String, ChannelGeneratorExtension> extensions;
 
     @SuppressWarnings("unchecked")
-    public PhysicalChannel generate(LogicalChannel channel, QName deployable, ChannelDirection direction) {
+    public PhysicalChannel generate(LogicalChannel channel, URI contributionUri, ChannelDirection direction) {
 
         String type = channel.getDefinition().getType();
         ChannelGeneratorExtension generator = extensions.get(type);
         if (generator == null) {
             throw new Fabric3Exception("Channel generator not found: " + type);
         }
-        PhysicalChannel physicalChannel = generator.generate(channel, deployable);
+        PhysicalChannel physicalChannel = generator.generate(channel, contributionUri);
         if (!channel.getBindings().isEmpty()) {
             // generate binding information
             physicalChannel.setBound(true);

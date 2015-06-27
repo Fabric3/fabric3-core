@@ -37,7 +37,6 @@ import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Capability;
 import org.fabric3.spi.contribution.ContentTypeResolver;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ProcessorRegistry;
 import org.fabric3.spi.contribution.Resource;
@@ -133,7 +132,7 @@ public class ContributionServiceImplTestCase extends TestCase {
     }
 
     public void testUnInstall() throws Exception {
-        contribution.setState(ContributionState.INSTALLED);
+        contribution.install();
         EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
         loader.unload(contribution);
         EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
@@ -145,7 +144,7 @@ public class ContributionServiceImplTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testUnInstallMultiple() throws Exception {
-        contribution.setState(ContributionState.INSTALLED);
+        contribution.install();
         EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
         EasyMock.expect(dependencyResolver.orderForUninstall(EasyMock.isA(List.class))).andReturn(Collections.singletonList(contribution));
         loader.unload(contribution);
@@ -157,31 +156,42 @@ public class ContributionServiceImplTestCase extends TestCase {
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
     }
 
+    @SuppressWarnings({"unchecked"})
     public void testUnInstallContributionLocked() throws Exception {
-        contribution.setState(ContributionState.INSTALLED);
-        contribution.acquireLock(deployableName);
+        contribution.install();
+        contribution.deploy();
         EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
+        EasyMock.expect(dependencyResolver.orderForUninstall(EasyMock.isA(List.class))).andReturn(Collections.singletonList(contribution));
+
         EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
+
         try {
-            service.uninstall(contributionUri);
+            service.uninstall(Collections.singletonList(contributionUri));
             fail();
         } catch (Fabric3Exception e) {
-            // expected
+            assertTrue(e.getMessage().contains("Contribution is currently deployed"));
         }
+
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
+
     }
 
+    @SuppressWarnings({"unchecked"})
     public void testUnInstallContributionNotInstalled() throws Exception {
-        contribution.acquireLock(deployableName);
         EasyMock.expect(store.find(contributionUri)).andReturn(contribution);
+        EasyMock.expect(dependencyResolver.orderForUninstall(EasyMock.isA(List.class))).andReturn(Collections.singletonList(contribution));
+
         EasyMock.replay(processorRegistry, store, loader, resolver, dependencyResolver);
+
         try {
-            service.uninstall(contributionUri);
+            service.uninstall(Collections.singletonList(contributionUri));
             fail();
         } catch (Fabric3Exception e) {
-            // expected
+            assertTrue(e.getMessage().contains("Contribution not installed"));
         }
+
         EasyMock.verify(processorRegistry, store, loader, resolver, dependencyResolver);
+
     }
 
     public void testRemoveContribution() throws Exception {

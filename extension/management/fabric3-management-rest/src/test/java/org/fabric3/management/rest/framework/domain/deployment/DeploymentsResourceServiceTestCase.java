@@ -27,7 +27,6 @@ import org.easymock.EasyMock;
 import org.fabric3.api.host.contribution.Deployable;
 import org.fabric3.management.rest.model.Resource;
 import org.fabric3.spi.contribution.Contribution;
-import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 
 /**
@@ -69,8 +68,8 @@ public class DeploymentsResourceServiceTestCase extends TestCase {
         Contribution contribution = new Contribution(contributionUri);
         Deployable deployable = new Deployable(COMPOSITE_NAME);
         contribution.getManifest().addDeployable(deployable);
-        contribution.setState(ContributionState.INSTALLED);
-        contribution.acquireLock(COMPOSITE_NAME);
+        contribution.install();
+        contribution.deploy();
         return contribution;
     }
 

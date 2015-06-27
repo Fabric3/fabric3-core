@@ -32,7 +32,6 @@ import org.fabric3.api.model.type.component.Implementation;
 import org.fabric3.api.model.type.component.Include;
 import org.fabric3.api.model.type.component.Property;
 import org.fabric3.api.model.type.component.Resource;
-import org.fabric3.spi.model.instance.LogicalChannel;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalProperty;
@@ -129,14 +128,12 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
                 Composite included = include.getIncluded();
                 for (Resource definition : included.getResources()) {
                     LogicalResource<?> resource = new LogicalResource<>(definition, domain);
-                    resource.setDeployable(included.getName());
                     domain.addResource(resource);
                 }
             }
         } else {
             for (Resource definition : composite.getResources()) {
                 LogicalResource<?> resource = new LogicalResource<>(definition, domain);
-                resource.setDeployable(composite.getName());
                 domain.addResource(resource);
             }
         }
@@ -156,7 +153,6 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         List<LogicalComponent<?>> newComponents = new ArrayList<>(definitions.size());
         for (Component<? extends Implementation<?>> definition : definitions) {
             LogicalComponent<?> logicalComponent = instantiate(definition, domain, context);
-            setDeployable(logicalComponent, composite.getName());
             newComponents.add(logicalComponent);
         }
 
@@ -223,14 +219,6 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
         for (Include include : composite.getIncludes().values()) {
             for (Component<? extends Implementation<?>> definition : include.getIncluded().getComponents().values()) {
                 LogicalComponent<?> logicalComponent = instantiate(definition, domain, context);
-                if (synthetic) {
-                    // If it is a synthetic composite, included composites are the deployables.
-                    // Synthetic composites are used to deploy multiple composites as a group. They include the composites (deployables).
-                    // Adding the deployable name to domain-level components allows them to be managed as a group after they are deployed.
-                    setDeployable(logicalComponent, include.getIncluded().getName());
-                } else {
-                    setDeployable(logicalComponent, composite.getName());
-                }
                 newComponents.add(logicalComponent);
                 // add to the domain since includes starting from a deployable composite are "collapsed" to the domain level
                 domain.addComponent(logicalComponent);
@@ -265,28 +253,6 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
 
         }
         return synthesized;
-    }
-
-    /**
-     * Recursively sets the deployable composite the logical component was instantiated from.
-     *
-     * @param component  the logical component
-     * @param deployable the deployable
-     */
-    private void setDeployable(LogicalComponent<?> component, QName deployable) {
-        if (component instanceof LogicalCompositeComponent) {
-            LogicalCompositeComponent composite = (LogicalCompositeComponent) component;
-            for (LogicalComponent<?> child : composite.getComponents()) {
-                setDeployable(child, deployable);
-            }
-            for (LogicalResource<?> resource : composite.getResources()) {
-                resource.setDeployable(deployable);
-            }
-            for (LogicalChannel channel : composite.getChannels()) {
-                channel.setDeployable(deployable);
-            }
-        }
-        component.setDeployable(deployable);
     }
 
 }

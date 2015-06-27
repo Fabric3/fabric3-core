@@ -20,10 +20,8 @@ package org.fabric3.fabric.domain;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -112,40 +110,25 @@ public abstract class AbstractDomain implements Domain {
         if (deployables.isEmpty()) {
             return;
         }
-        // reverse the deployables
-        List<QName> names = new ArrayList<>();
-        ListIterator<Deployable> iter = deployables.listIterator(deployables.size());
-        while (iter.hasPrevious()) {
-            names.add(iter.previous().getName());
-        }
-        for (QName deployable : names) {
-            if (!contribution.getLockOwners().contains(deployable)) {
-                throw new Fabric3Exception("Composite is not deployed: " + deployable);
-            }
-        }
-
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        for (QName deployable : names) {
-            collector.markForCollection(deployable, uri, domain);
-        }
+        collector.markForCollection(uri, domain);
         Deployment deployment = generator.generate(domain);
         collector.collect(domain);
         deployer.deploy(deployment);
-        names.forEach(contribution::releaseLock);
         logicalComponentManager.replaceRootComponent(domain);
+        contribution.undeploy();
     }
 
     public synchronized void undeploy(Composite composite) throws Fabric3Exception {
-        QName deployable = composite.getName();
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
-        collector.markForCollection(deployable, composite.getContributionUri(), domain);
+        URI contributionUri = composite.getContributionUri();
+        collector.markForCollection(contributionUri, domain);
         Deployment deployment = generator.generate(domain);
         collector.collect(domain);
         deployer.deploy(deployment);
-        URI uri = composite.getContributionUri();
-        Contribution contribution = metadataStore.find(uri);
-        contribution.releaseLock(deployable);
         logicalComponentManager.replaceRootComponent(domain);
+        Contribution contribution = metadataStore.find(contributionUri);
+        contribution.undeploy();
     }
 
     /**
@@ -175,34 +158,25 @@ public abstract class AbstractDomain implements Domain {
         LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
 
         for (Contribution contribution : contributions) {
-            if (ContributionState.INSTALLED != contribution.getState()) {
+            if (ContributionState.STORED == contribution.getState()) {
                 throw new Fabric3Exception("Contribution is not installed: " + contribution.getUri());
             }
         }
 
-        // lock the contributions
-        contributionHelper.lock(contributions);
-        try {
-            InstantiationContext context = logicalModelInstantiator.include(deployables, domain);
-            if (context.hasErrors()) {
-                contributionHelper.releaseLocks(contributions);
-                throw new AssemblyException(context.getErrors());
-            }
-            if (!recover || RuntimeMode.VM == info.getRuntimeMode()) {
-                // in single VM mode, recovery includes deployment
-                allocateAndDeploy(domain);
-            } else {
-                allocate(domain);
-                collector.markAsProvisioned(domain);
-            }
-
-            logicalComponentManager.replaceRootComponent(domain);
-
-        } catch (Fabric3Exception e) {
-            // release the contribution locks if there was an error
-            contributionHelper.releaseLocks(contributions);
-            throw e;
+        InstantiationContext context = logicalModelInstantiator.include(deployables, domain);
+        if (context.hasErrors()) {
+            throw new AssemblyException(context.getErrors());
         }
+        if (!recover || RuntimeMode.VM == info.getRuntimeMode()) {
+            // in single VM mode, recovery includes deployment
+            allocateAndDeploy(domain);
+        } else {
+            allocate(domain);
+            collector.markAsProvisioned(domain);
+        }
+
+        logicalComponentManager.replaceRootComponent(domain);
+        contributions.forEach(Contribution::deploy);
     }
 
     /**
@@ -221,31 +195,17 @@ public abstract class AbstractDomain implements Domain {
             throw new Fabric3Exception("Composite not found in metadata store: " + name);
         }
         Contribution contribution = element.getResource().getContribution();
-        if (ContributionState.INSTALLED != contribution.getState()) {
+        if (ContributionState.STORED == contribution.getState()) {
             throw new Fabric3Exception("Contribution is not installed: " + contribution.getUri());
         }
 
-        // check if the deployable has already been deployed by querying the lock owners
-        if (contribution.getLockOwners().contains(name)) {
-            throw new Fabric3Exception("Composite has already been deployed: " + name);
-        }
-        // lock the contribution
-        contribution.acquireLock(name);
         InstantiationContext context = logicalModelInstantiator.include(composite, domain);
         if (context.hasErrors()) {
-            contribution.releaseLock(name);
             throw new AssemblyException(context.getErrors());
         }
-        try {
-            allocateAndDeploy(domain);
-        } catch (Fabric3Exception e) {
-            // release the contribution lock if there was an error
-            if (contribution.getLockOwners().contains(name)) {
-                contribution.releaseLock(name);
-            }
-            throw e;
-        }
+        allocateAndDeploy(domain);
         logicalComponentManager.replaceRootComponent(domain);
+        contribution.deploy();
     }
 
     /**

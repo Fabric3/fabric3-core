@@ -19,22 +19,22 @@
  */
 package org.fabric3.fabric.container.command;
 
-import javax.xml.namespace.QName;
+import java.net.URI;
 
 /**
- * Starts a composite context on a runtime.
+ * Starts a context on a runtime.
  */
 public class StartContextCommand implements Command {
-    private QName deployable;
+    private URI uri;
     private boolean log;
 
-    public StartContextCommand(QName deployable, boolean log) {
-        this.deployable = deployable;
+    public StartContextCommand(URI uri, boolean log) {
+        this.uri = uri;
         this.log = log;
     }
 
-    public QName getDeployable() {
-        return deployable;
+    public URI getUri() {
+        return uri;
     }
 
     public boolean isLog() {
@@ -49,11 +49,11 @@ public class StartContextCommand implements Command {
 
         StartContextCommand that = (StartContextCommand) o;
 
-        return !(deployable != null ? !deployable.equals(that.deployable) : that.deployable != null);
+        return !(uri != null ? !uri.equals(that.uri) : that.uri != null);
 
     }
 
     public int hashCode() {
-        return (deployable != null ? deployable.hashCode() : 0);
+        return (uri != null ? uri.hashCode() : 0);
     }
 }

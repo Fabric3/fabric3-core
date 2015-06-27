@@ -16,7 +16,6 @@
  */
 package org.fabric3.fabric.domain.generator.channel;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 
 import junit.framework.TestCase;
@@ -33,11 +32,11 @@ public class DefaultChannelGeneratorImplTestCase extends TestCase {
     public void testGenerate() throws Exception {
         Channel channelDefinition = new Channel("test");
         LogicalChannel channel = new LogicalChannel(URI.create("test"), channelDefinition, null);
-        QName deployable = new QName("test", "test");
-        channel.setDeployable(deployable);
+        URI contributionUri = URI.create("test");
+        channelDefinition.setContributionUri(contributionUri);
 
-        PhysicalChannel physicalChannel = generator.generate(channel, deployable);
+        PhysicalChannel physicalChannel = generator.generate(channel, contributionUri);
 
-        assertEquals(deployable, physicalChannel.getDeployable());
+        assertEquals(contributionUri, physicalChannel.getContributionUri());
     }
 }

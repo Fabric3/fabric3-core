@@ -18,7 +18,6 @@
  */
 package org.fabric3.fabric.domain.generator.wire;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +51,6 @@ import org.fabric3.spi.model.physical.PhysicalWireTarget;
  */
 public class WireGeneratorImplTestCase extends TestCase {
     private static final URI CONTRIBUTION_URI = URI.create("contribution");
-    private static final QName DEPLOYABLE = new QName("test", "deployable");
     private ClassLoaderRegistry classLoaderRegistry;
 
     @SuppressWarnings({"unchecked"})
@@ -145,7 +143,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
 
-        LogicalWire wire = new LogicalWire(reference.getParent(), reference, service, DEPLOYABLE);
+        LogicalWire wire = new LogicalWire(reference.getParent(), reference, service, CONTRIBUTION_URI);
         PhysicalWire physicalWire = generator.generateWire(wire);
         assertNotNull(physicalWire.getSource());
         assertNotNull(physicalWire.getTarget());
@@ -167,7 +165,7 @@ public class WireGeneratorImplTestCase extends TestCase {
 
         WireGeneratorImpl generator = new WireGeneratorImpl(registry, matcher, operationGenerator, classLoaderRegistry);
 
-        LogicalWire wire = new LogicalWire(reference.getParent(), reference, service, DEPLOYABLE);
+        LogicalWire wire = new LogicalWire(reference.getParent(), reference, service, CONTRIBUTION_URI);
         PhysicalWire physicalWire = generator.generateWireCallback(wire);
         assertNotNull(physicalWire.getSource());
         assertNotNull(physicalWire.getTarget());

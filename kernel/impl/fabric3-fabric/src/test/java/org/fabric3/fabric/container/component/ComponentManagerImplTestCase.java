@@ -19,7 +19,6 @@
  */
 package org.fabric3.fabric.container.component;
 
-import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
 
@@ -121,22 +120,22 @@ public class ComponentManagerImplTestCase extends TestCase {
     public void testGetDeployedComponents() throws Exception {
         Component c1 = EasyMock.createMock(Component.class);
         URI uri1 = URI.create("sca://fabric/component1");
-        QName deployable = new QName("urn:foo", "foo");
+        URI contributionUri = URI.create("foo");
         EasyMock.expect(c1.getUri()).andReturn(uri1).atLeastOnce();
-        EasyMock.expect(c1.getDeployable()).andReturn(deployable).atLeastOnce();
+        EasyMock.expect(c1.getContributionUri()).andReturn(contributionUri).atLeastOnce();
         Component c2 = EasyMock.createMock(Component.class);
         URI uri2 = URI.create("sca://fabric/component2");
         EasyMock.expect(c2.getUri()).andReturn(uri2).atLeastOnce();
-        EasyMock.expect(c2.getDeployable()).andReturn(deployable).atLeastOnce();
+        EasyMock.expect(c2.getContributionUri()).andReturn(contributionUri).atLeastOnce();
         Component c3 = EasyMock.createMock(Component.class);
-        QName deployable3 = new QName("urn:foo", "bar");
+        URI contributionUri3 = URI.create("bar");
         EasyMock.expect(c3.getUri()).andReturn(URI.create("sca://other/component3")).atLeastOnce();
-        EasyMock.expect(c3.getDeployable()).andReturn(deployable3).atLeastOnce();
+        EasyMock.expect(c3.getContributionUri()).andReturn(contributionUri3).atLeastOnce();
         EasyMock.replay(c1, c2, c3);
         manager.register(c1);
         manager.register(c2);
         manager.register(c3);
-        List<Component> components = manager.getDeployedComponents(deployable);
+        List<Component> components = manager.getDeployedComponents(contributionUri);
         assertEquals(2, components.size());
         assertTrue(components.contains(c1));
         assertTrue(components.contains(c2));
