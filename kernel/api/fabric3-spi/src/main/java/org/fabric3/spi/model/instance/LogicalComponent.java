@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fabric3.api.host.Names;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Implementation;
 
@@ -42,7 +41,6 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
     private Map<String, LogicalProducer> producers = new HashMap<>();
     private Map<String, LogicalConsumer> consumers = new HashMap<>();
     private Map<String, LogicalResourceReference<?>> resourceReferences = new HashMap<>();
-    private String zone = Names.LOCAL_ZONE;
     private LogicalState state = LogicalState.NEW;
 
     /**
@@ -63,24 +61,6 @@ public class LogicalComponent<I extends Implementation<?>> extends LogicalScaArt
      */
     public URI getUri() {
         return uri;
-    }
-
-    /**
-     * Returns the zone name where the component is provisioned.
-     *
-     * @return the zone name where the component is provisioned
-     */
-    public String getZone() {
-        return zone;
-    }
-
-    /**
-     * Sets the zone name where the component is provisioned.
-     *
-     * @param zone the zone name where the component is provisioned
-     */
-    public void setZone(String zone) {
-        this.zone = zone;
     }
 
     /**

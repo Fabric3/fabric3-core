@@ -210,17 +210,13 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                                                               PhysicalConnectionTarget target,
                                                               ClassLoader classLoader) {
         // the channel does not have bindings, which means it is a local channel
-        boolean bound = channel.isBound();
-        if (!channel.getZone().equals(consumer.getParent().getZone()) && !bound) {
-            String name = channel.getDefinition().getName();
-            throw new Fabric3Exception("Binding not configured on a channel where the consumer is in a different zone: " + name);
-        }
         // construct a local connection to the channel
         URI uri = channel.getUri();
         PhysicalConnectionSource source = new ChannelSource(uri, ChannelSide.CONSUMER);
         source.setSequence(consumer.getDefinition().getSequence());
         source.setClassLoader(classLoader);
         Class<?> type = getType(consumer);
+        boolean bound = channel.isBound();
         return new PhysicalChannelConnection(uri, consumer.getUri(), source, target, type, bound);
     }
 
@@ -248,16 +244,12 @@ public class ConnectionGeneratorImpl implements ConnectionGenerator {
                                                               LogicalChannel channel,
                                                               PhysicalConnectionSource source,
                                                               ClassLoader classLoader) {
-        boolean bound = channel.isBound();
-        if (!channel.getZone().equals(producer.getParent().getZone()) && !bound) {
-            String name = channel.getDefinition().getName();
-            throw new Fabric3Exception("Binding not configured on a channel where the producer is in a different zone: " + name);
-        }
         URI uri = channel.getUri();
         PhysicalConnectionTarget target = new ChannelTarget(uri, ChannelSide.PRODUCER);
 
         target.setClassLoader(classLoader);
 
+        boolean bound = channel.isBound();
         return new PhysicalChannelConnection(uri, producer.getUri(), source, target, type, bound);
     }
 

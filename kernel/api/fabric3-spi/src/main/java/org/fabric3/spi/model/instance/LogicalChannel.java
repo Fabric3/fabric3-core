@@ -22,7 +22,6 @@ package org.fabric3.spi.model.instance;
 import javax.xml.namespace.QName;
 import java.net.URI;
 
-import org.fabric3.api.host.Names;
 import org.fabric3.api.model.type.component.Channel;
 
 /**
@@ -33,7 +32,6 @@ public class LogicalChannel extends LogicalBindable {
 
     private Channel definition;
 
-    private String zone = Names.LOCAL_ZONE;
     private QName deployable;
     private LogicalState state = LogicalState.NEW;
 
@@ -49,24 +47,6 @@ public class LogicalChannel extends LogicalBindable {
      */
     public Channel getDefinition() {
         return definition;
-    }
-
-    /**
-     * Returns the zone name where the channel is provisioned.
-     *
-     * @return the zone name where the channel is provisioned
-     */
-    public String getZone() {
-        return zone;
-    }
-
-    /**
-     * Sets the zone name where the channel is provisioned.
-     *
-     * @param zone the zone name where the channel is provisioned
-     */
-    public void setZone(String zone) {
-        this.zone = zone;
     }
 
     /**

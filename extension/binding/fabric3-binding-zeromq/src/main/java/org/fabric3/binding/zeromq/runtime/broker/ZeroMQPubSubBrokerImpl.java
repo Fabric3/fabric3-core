@@ -33,9 +33,9 @@ import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.binding.zeromq.model.SocketAddressDefinition;
 import org.fabric3.api.binding.zeromq.model.ZeroMQMetadata;
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.binding.zeromq.runtime.MessagingMonitor;
+import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.binding.zeromq.runtime.ZeroMQPubSubBroker;
 import org.fabric3.binding.zeromq.runtime.context.ContextManager;
 import org.fabric3.binding.zeromq.runtime.handler.PublisherHandler;
@@ -51,7 +51,6 @@ import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
 import org.fabric3.spi.discovery.ChannelEntry;
 import org.fabric3.spi.discovery.DiscoveryAgent;
-import org.fabric3.binding.zeromq.runtime.SocketAddress;
 import org.fabric3.spi.host.Port;
 import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.model.type.java.JavaType;
@@ -81,7 +80,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
     private ZeroMQManagementService managementService;
     private EventService eventService;
     private ExecutorService executorService;
-    private HostInfo info;
     private MessagingMonitor monitor;
     private String hostAddress;
 
@@ -97,7 +95,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
                                   @Reference ZeroMQManagementService managementService,
                                   @Reference EventService eventService,
                                   @Reference(name = "executorService") ExecutorService executorService,
-                                  @Reference HostInfo info,
                                   @Monitor MessagingMonitor monitor) throws UnknownHostException {
         this.manager = manager;
         this.discoveryAgent = discoveryAgent;
@@ -106,7 +103,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         this.managementService = managementService;
         this.eventService = eventService;
         this.executorService = executorService;
-        this.info = info;
         this.monitor = monitor;
         this.hostAddress = InetAddress.getLocalHost().getHostAddress();
     }
@@ -216,8 +212,6 @@ public class ZeroMQPubSubBrokerImpl implements ZeroMQPubSubBroker, Fabric3EventL
         String channelName = metadata.getChannelName();
         PublisherHolder holder = publishers.get(channelName);
         if (holder == null) {
-            String runtimeName = info.getRuntimeName();
-            String zone = info.getZoneName();
             SocketAddress address;
             List<SocketAddressDefinition> addresses = metadata.getSocketAddresses();
             if (addresses != null && !addresses.isEmpty()) {

@@ -29,6 +29,7 @@ import org.fabric3.fabric.container.builder.ConnectorImpl;
 import org.fabric3.fabric.container.builder.channel.ChannelBuilderRegistryImpl;
 import org.fabric3.fabric.container.builder.channel.ChannelSourceAttacher;
 import org.fabric3.fabric.container.builder.channel.ChannelTargetAttacher;
+import org.fabric3.fabric.container.channel.TransformerHandlerFactoryImpl;
 import org.fabric3.fabric.container.command.AttachChannelConnectionCommandExecutor;
 import org.fabric3.fabric.container.command.AttachWireCommandExecutor;
 import org.fabric3.fabric.container.command.BuildChannelCommandExecutor;
@@ -48,7 +49,6 @@ import org.fabric3.fabric.container.command.StopComponentCommandExecutor;
 import org.fabric3.fabric.container.command.StopContextCommandExecutor;
 import org.fabric3.fabric.container.component.DomainScopeContainer;
 import org.fabric3.fabric.container.component.StatelessScopeContainer;
-import org.fabric3.fabric.container.channel.TransformerHandlerFactoryImpl;
 import org.fabric3.fabric.container.wire.TransformerInterceptorFactoryImpl;
 import org.fabric3.fabric.contract.DefaultContractMatcher;
 import org.fabric3.fabric.contract.JavaContractMatcherExtension;
@@ -56,7 +56,6 @@ import org.fabric3.fabric.domain.ContributionHelperImpl;
 import org.fabric3.fabric.domain.DistributedDomain;
 import org.fabric3.fabric.domain.LocalDeployer;
 import org.fabric3.fabric.domain.LogicalComponentManagerImpl;
-import org.fabric3.fabric.domain.NodeAllocator;
 import org.fabric3.fabric.domain.collector.CollectorImpl;
 import org.fabric3.fabric.domain.generator.channel.ChannelCommandGeneratorImpl;
 import org.fabric3.fabric.domain.generator.channel.ChannelGeneratorImpl;
@@ -304,8 +303,6 @@ public class FabricProvider {
         SystemComponentBuilder componentBuilder = newBuilder("ApplicationDomain", DistributedDomain.class);
         componentBuilder.reference("logicalComponentManager", "LogicalComponentManager");
         compositeBuilder.component(componentBuilder.build());
-
-        compositeBuilder.component(newBuilder(NodeAllocator.class).build());
 
         compositeBuilder.component(newBuilder(ContributionHelperImpl.class).build());
 

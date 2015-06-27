@@ -20,7 +20,6 @@ package org.fabric3.fabric.domain;
 
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -41,9 +40,7 @@ import org.fabric3.spi.contribution.ContributionState;
 import org.fabric3.spi.contribution.MetaDataStore;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.contribution.manifest.QNameSymbol;
-import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
-import org.fabric3.spi.model.instance.LogicalState;
 
 /**
  * Base class for a domain.
@@ -59,9 +56,6 @@ public abstract class AbstractDomain implements Domain {
     protected Collector collector;
     protected ContributionHelper contributionHelper;
     protected HostInfo info;
-
-    // The service for allocating to remote zones. Domain subtypes may optionally inject this service if they support distributed domains.
-    protected Allocator allocator;
 
     /**
      * Constructor.
@@ -169,9 +163,8 @@ public abstract class AbstractDomain implements Domain {
         }
         if (!recover || RuntimeMode.VM == info.getRuntimeMode()) {
             // in single VM mode, recovery includes deployment
-            allocateAndDeploy(domain);
+            deploy(domain);
         } else {
-            allocate(domain);
             collector.markAsProvisioned(domain);
         }
 
@@ -203,7 +196,7 @@ public abstract class AbstractDomain implements Domain {
         if (context.hasErrors()) {
             throw new AssemblyException(context.getErrors());
         }
-        allocateAndDeploy(domain);
+        deploy(domain);
         logicalComponentManager.replaceRootComponent(domain);
         contribution.deploy();
     }
@@ -214,30 +207,11 @@ public abstract class AbstractDomain implements Domain {
      * @param domain the domain component
      * @throws Fabric3Exception if an error is encountered during deployment
      */
-    private void allocateAndDeploy(LogicalCompositeComponent domain) throws Fabric3Exception {
-        // Allocate the components to runtime nodes
-        allocate(domain);
+    private void deploy(LogicalCompositeComponent domain) throws Fabric3Exception {
         // generate and provision any new components and new wires
         Deployment deployment = generator.generate(domain);
         collector.markAsProvisioned(domain);
         deployer.deploy(deployment);
-    }
-
-    /**
-     * Delegates to the Allocator to determine which runtimes to deploy the given collection of components to.
-     *
-     * @param domain the domain component
-     * @throws Fabric3Exception if an allocation error occurs
-     */
-    private void allocate(LogicalCompositeComponent domain) throws Fabric3Exception {
-        if (allocator == null) {
-            // allocator is an optional extension
-            return;
-        }
-        domain.getResources().stream().filter(resource -> resource.getState() == LogicalState.NEW).forEach(allocator::allocate);
-        domain.getChannels().stream().filter(channel -> channel.getState() == LogicalState.NEW).forEach(allocator::allocate);
-        Collection<LogicalComponent<?>> components = domain.getComponents();
-        components.stream().filter(component -> component.getState() == LogicalState.NEW).forEach(allocator::allocate);
     }
 
 }

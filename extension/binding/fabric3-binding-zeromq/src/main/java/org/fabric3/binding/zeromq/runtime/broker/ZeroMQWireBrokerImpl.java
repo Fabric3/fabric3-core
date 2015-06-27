@@ -203,8 +203,6 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         }
         String endpointId = uri.toString();
 
-        String runtimeName = info.getRuntimeName();
-        String zone = info.getZoneName();
         SocketAddress address;
 
         if (metadata.getSocketAddresses() != null && !metadata.getSocketAddresses().isEmpty()) {

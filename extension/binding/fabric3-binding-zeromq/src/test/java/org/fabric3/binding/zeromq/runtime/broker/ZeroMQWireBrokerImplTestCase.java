@@ -63,9 +63,6 @@ public class ZeroMQWireBrokerImplTestCase extends TestCase {
 
     public void testConnectToReceiverRelease() throws Exception {
 
-        EasyMock.expect(info.getRuntimeName()).andReturn("runtime");
-        EasyMock.expect(info.getZoneName()).andReturn("zone1");
-
         discoveryAgent.register(EasyMock.isA(ServiceEntry.class));
         EasyMock.expectLastCall();
         discoveryAgent.unregisterService("wire");

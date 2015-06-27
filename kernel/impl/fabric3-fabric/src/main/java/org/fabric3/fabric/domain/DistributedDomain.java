@@ -43,16 +43,6 @@ public class DistributedDomain extends AbstractDomain implements Domain {
     }
 
     /**
-     * Used to optionally inject an Allocator.
-     *
-     * @param allocator the allocator
-     */
-    @Reference(required = false)
-    public void setAllocator(Allocator allocator) {
-        this.allocator = allocator;
-    }
-
-    /**
      * Used to optionally reinject a Deployer
      *
      * @param deployer the deployer

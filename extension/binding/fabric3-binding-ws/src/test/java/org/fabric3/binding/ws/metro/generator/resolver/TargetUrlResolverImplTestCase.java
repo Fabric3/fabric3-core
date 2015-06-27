@@ -56,7 +56,6 @@ public class TargetUrlResolverImplTestCase extends TestCase {
         super.setUp();
         WsBinding definition = new WsBinding("name", URI.create("service"), null, null, 0);
         LogicalComponent<?> component = new LogicalComponent(null, null, null);
-        component.setZone("1");
         LogicalService service = new LogicalService(null, null, component);
         binding = new LogicalBinding<>(definition, service);
     }

@@ -19,7 +19,6 @@
  */
 package org.fabric3.spi.model.instance;
 
-import org.fabric3.api.host.Names;
 import org.fabric3.api.model.type.component.Resource;
 
 /**
@@ -30,7 +29,6 @@ public class LogicalResource<R extends Resource> extends LogicalScaArtifact<Logi
 
     private R definition;
     private LogicalState state = LogicalState.NEW;
-    private String zone = Names.LOCAL_ZONE;
 
     /**
      * Constructor.
@@ -63,24 +61,6 @@ public class LogicalResource<R extends Resource> extends LogicalScaArtifact<Logi
      */
     public void setState(LogicalState state) {
         this.state = state;
-    }
-
-    /**
-     * Returns the zone name where the resource is provisioned.
-     *
-     * @return the zone name where the resource is provisioned
-     */
-    public String getZone() {
-        return zone;
-    }
-
-    /**
-     * Sets the zone name where the channel is provisioned.
-     *
-     * @param zone the zone name where the channel is provisioned
-     */
-    public void setZone(String zone) {
-        this.zone = zone;
     }
 
     public boolean equals(Object obj) {
