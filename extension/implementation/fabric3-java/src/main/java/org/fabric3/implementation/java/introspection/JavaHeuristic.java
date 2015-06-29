@@ -123,8 +123,13 @@ public class JavaHeuristic implements HeuristicProcessor {
                     }
                 }
                 if (selected == null) {
-                    context.addError(new NoConstructorFound(implClass, componentType));
-                    return null;
+                    try {
+                        // select the public default ctor if it is available
+                        selected = implClass.getConstructor();
+                    } catch (NoSuchMethodException e) {
+                        context.addError(new NoConstructorFound(implClass, componentType));
+                        return null;
+                    }
                 }
             }
         }
@@ -132,8 +137,11 @@ public class JavaHeuristic implements HeuristicProcessor {
     }
 
     private void evaluateConstructor(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
-        Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
         Constructor<?> constructor = componentType.getConstructor();
+        if (constructor == null) {
+            return;
+        }
+        Map<InjectionSite, Injectable> sites = componentType.getInjectionSites();
         Type[] parameterTypes = constructor.getGenericParameterTypes();
         for (int i = 0; i < parameterTypes.length; i++) {
             InjectionSite site = new ConstructorInjectionSite(constructor, i);

@@ -137,8 +137,13 @@ public class JUnitHeuristic implements HeuristicProcessor {
                 }
             }
             if (selected == null) {
-                context.addError(new NoConstructorFound(implClass, componentType));
-                return null;
+                try {
+                    // select the public default ctor if it is available
+                    selected = implClass.getConstructor();
+                } catch (NoSuchMethodException e) {
+                    context.addError(new NoConstructorFound(implClass, componentType));
+                    return null;
+                }
             }
         }
         return selected;
