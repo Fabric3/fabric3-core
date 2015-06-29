@@ -214,20 +214,25 @@ public class WireInstantiatorImpl implements WireInstantiator {
                 return null;
             }
         } else {
-            for (LogicalService service : targetComponent.getServices()) {
-                if (targetService != null) {
-                    raiseAmbiguousService(reference, target, context);
-                    return null;
-                }
-                targetService = service;
-            }
-            if (targetService == null) {
+            if (targetComponent.getServices().isEmpty()) {
                 raiseNoService(reference, target, parent, context);
+                return null;
+            } else if (targetComponent.getServices().size() == 1) {
+                targetService = targetComponent.getServices().iterator().next();
+            } else {
+                for (LogicalService service : targetComponent.getServices()) {
+                    if (matcher.isAssignableFrom(reference.getServiceContract(), service.getServiceContract(), false).isAssignable()) {
+                        return service;
+                    }
+
+                }
+                raiseAmbiguousService(reference, target, context);
                 return null;
             }
         }
         validate(reference, targetService, context);
         return targetService;
+
     }
 
     /**
@@ -240,6 +245,7 @@ public class WireInstantiatorImpl implements WireInstantiator {
      * @param serviceBindingName   the service binding name. May be null.
      * @param context              the logical context
      */
+
     private void resolveBindings(LogicalReference reference,
                                  String referenceBindingName,
                                  LogicalService service,

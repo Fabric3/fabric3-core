@@ -147,8 +147,17 @@ public class WireInstantiatorImplTestCase extends TestCase {
         LogicalComponent<?> logicalComponent = createLogicalComponentWithBoundReference(serviceTarget);
         createLogicalService("service2", logicalComponent);
 
+        matcher = EasyMock.createMock(ContractMatcher.class);
+        EasyMock.expect(matcher.isAssignableFrom(EasyMock.isA(ServiceContract.class), EasyMock.isA(ServiceContract.class), EasyMock.anyBoolean())).andReturn(
+                MatchResult.NO_MATCH).atLeastOnce();
+
         WireInstantiatorImpl instantiator = new WireInstantiatorImpl(matcher);
+
+        EasyMock.replay(matcher);
+
         instantiator.instantiateReferenceWires(logicalComponent, context);
+
+        EasyMock.verify(matcher);
 
         assertTrue(context.hasErrors());
         assertTrue(context.getErrors().get(0) instanceof AmbiguousService);
