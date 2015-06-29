@@ -17,6 +17,7 @@
 package org.fabric3.runtime.tomcat.security;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthorizationException;
@@ -44,7 +45,7 @@ public class TomcatAuthorizationService implements AuthorizationService {
         }
         BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
         if (!basicSubject.hasRole(role)) {
-            throw new NotAuthorizedException("Subject not authorized for role");
+            throw new NotAuthorizedException("Subject not authorized");
         }
     }
 
@@ -55,9 +56,22 @@ public class TomcatAuthorizationService implements AuthorizationService {
         BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
         for (String role : roles) {
             if (!basicSubject.hasRole(role)) {
-                throw new NotAuthorizedException("Subject not authorized for role");
+                throw new NotAuthorizedException("Subject not authorized");
             }
         }
+    }
+
+    public void checkHasRole(SecuritySubject subject, List<String> roles) {
+        if (delegate != null) {
+            delegate.checkHasRole(subject, roles);
+        }
+        BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
+        for (String role : roles) {
+            if (basicSubject.hasRole(role)) {
+                return;
+            }
+        }
+        throw new NotAuthorizedException("Subject not authorized");
     }
 
     public void checkPermission(SecuritySubject subject, String role) throws AuthorizationException {

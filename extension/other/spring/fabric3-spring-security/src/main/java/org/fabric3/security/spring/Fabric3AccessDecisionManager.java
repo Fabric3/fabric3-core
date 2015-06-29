@@ -119,6 +119,10 @@ public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager 
         delegate.decide(authentication, null, configs);
     }
 
+    public void checkHasRole(SecuritySubject subject, List<String> roles) {
+        this.checkRoles(subject, roles);
+    }
+
     public void checkPermission(SecuritySubject subject, String role) throws AuthorizationException {
         checkRole(subject, role);
     }

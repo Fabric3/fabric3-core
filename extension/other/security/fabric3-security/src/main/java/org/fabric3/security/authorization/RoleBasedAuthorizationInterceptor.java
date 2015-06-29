@@ -57,7 +57,7 @@ public class RoleBasedAuthorizationInterceptor implements Interceptor {
                 msg.setBodyWithFault(new ServiceRuntimeException("Subject not authenticated"));
                 return msg;
             }
-            authorizationService.checkRoles(subject, roles);
+            authorizationService.checkHasRole(subject, roles);
             return next.invoke(msg);
         } catch (AuthorizationException e) {
             msg.setBodyWithFault(new ServiceRuntimeException(e));

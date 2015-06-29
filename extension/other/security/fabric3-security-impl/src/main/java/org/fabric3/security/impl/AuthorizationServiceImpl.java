@@ -17,6 +17,7 @@
 package org.fabric3.security.impl;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.fabric3.api.SecuritySubject;
 import org.fabric3.spi.security.AuthorizationException;
@@ -39,9 +40,19 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
         for (String role : roles) {
             if (!basicSubject.hasRole(role)) {
-                throw new NotAuthorizedException("Subject not authorized for role");
+                throw new NotAuthorizedException("Subject not authorized");
             }
         }
+    }
+
+    public void checkHasRole(SecuritySubject subject, List<String> roles) {
+        BasicSecuritySubject basicSubject = subject.getDelegate(BasicSecuritySubject.class);
+        for (String role : roles) {
+            if (basicSubject.hasRole(role)) {
+                return;
+            }
+        }
+        throw new NotAuthorizedException("Subject not authorized");
     }
 
     public void checkPermission(SecuritySubject subject, String role) throws AuthorizationException {
