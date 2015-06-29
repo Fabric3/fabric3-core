@@ -16,10 +16,8 @@
  */
 package org.fabric3.contribution.archive;
 
-import java.lang.reflect.Modifier;
 import java.net.URL;
 
-import org.fabric3.api.annotation.model.Component;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
@@ -49,17 +47,21 @@ public class ComponentJavaArtifactIntrospector implements JavaArtifactIntrospect
         } else if (!contribution.getManifest().isExtension()) {
             // If the class  is not annotated or it is abstract, ignore.
             // Abstract classes are ignored, since it is convenient to annotate a common superclass for conciseness.
-            if (clazz.isAnnotationPresent(Component.class) && !Modifier.isAbstract(clazz.getModifiers())) {
-                // class is a component
-                UrlSource source = new UrlSource(url);
-                Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
-                JavaSymbol symbol = new JavaSymbol(name);
-                ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
-                resource.addResourceElement(resourceElement);
-                return resource;
+            if (isComponent(clazz)) {
+                return createResource(name, clazz, url, contribution);
             }
         }
         return null;
+    }
+
+    private Resource createResource(String name, Class<?> clazz, URL url, Contribution contribution) {
+        // class is a component
+        UrlSource source = new UrlSource(url);
+        Resource resource = new Resource(contribution, source, Constants.JAVA_COMPONENT_CONTENT_TYPE);
+        JavaSymbol symbol = new JavaSymbol(name);
+        ResourceElement<JavaSymbol, Class<?>> resourceElement = new ResourceElement<JavaSymbol, Class<?>>(symbol, clazz);
+        resource.addResourceElement(resourceElement);
+        return resource;
     }
 
     private boolean isProvider(String name) {

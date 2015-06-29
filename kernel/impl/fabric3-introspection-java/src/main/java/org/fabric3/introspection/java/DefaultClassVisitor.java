@@ -25,7 +25,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.fabric3.api.annotation.model.Binding;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.java.annotation.AnnotationProcessor;
@@ -117,9 +116,11 @@ public class DefaultClassVisitor implements ClassVisitor {
                 visitField(annotation, field, implClass, componentType, context);
             }
             for (Annotation annotation : annotations) {
-                Binding binding = annotation.annotationType().getAnnotation(Binding.class);
-                if (binding != null) {
-                    visitField(binding, field, implClass, componentType, context);
+                for (Annotation metaAnnotation : annotation.annotationType().getDeclaredAnnotations()) {
+                    if (skipAnnotation(metaAnnotation)) {
+                        continue;
+                    }
+                    visitField(metaAnnotation, field, implClass, componentType, context);
                 }
             }
         }
@@ -132,9 +133,11 @@ public class DefaultClassVisitor implements ClassVisitor {
                 visitMethod(annotation, method, implClass, componentType, context);
             }
             for (Annotation annotation : declaredAnnotations) {
-                Binding binding = annotation.annotationType().getAnnotation(Binding.class);
-                if (binding != null) {
-                    visitMethod(binding, method, implClass, componentType, context);
+                for (Annotation metaAnnotation : annotation.annotationType().getDeclaredAnnotations()) {
+                    if (skipAnnotation(metaAnnotation)) {
+                        continue;
+                    }
+                    visitMethod(metaAnnotation, method, implClass, componentType, context);
                 }
             }
 
@@ -161,9 +164,11 @@ public class DefaultClassVisitor implements ClassVisitor {
                     visitConstructorParameter(annotation, constructor, i, implClass, componentType, context);
                 }
                 for (Annotation annotation : annotations) {
-                    Binding binding = annotation.annotationType().getAnnotation(Binding.class);
-                    if (binding != null) {
-                        visitConstructorParameter(binding, constructor, i, implClass, componentType, context);
+                    for (Annotation metaAnnotation : annotation.annotationType().getDeclaredAnnotations()) {
+                        if (skipAnnotation(metaAnnotation)) {
+                            continue;
+                        }
+                        visitConstructorParameter(metaAnnotation, constructor, i, implClass, componentType, context);
                     }
                 }
             }
@@ -179,6 +184,14 @@ public class DefaultClassVisitor implements ClassVisitor {
             if (policyProcessor != null) {
                 policyProcessor.process(annotation, componentType, context);
             }
+            // check for meta-annotation
+            for (Annotation metaAnnotation : annotation.annotationType().getDeclaredAnnotations()) {
+                if (skipAnnotation(metaAnnotation)) {
+                    continue;
+                }
+                visitType(metaAnnotation, clazz, componentType, context);
+            }
+
         }
     }
 
@@ -242,6 +255,11 @@ public class DefaultClassVisitor implements ClassVisitor {
         if (processor != null) {
             processor.visitConstructorParameter(annotation, constructor, index, implClass, componentType, context);
         }
+    }
+
+    private boolean skipAnnotation(Annotation annotation) {
+        Package pkg = annotation.annotationType().getPackage();
+        return pkg != null && (pkg.getName().startsWith("java.") || pkg.getName().startsWith("javax."));
     }
 
     @SuppressWarnings("unchecked")

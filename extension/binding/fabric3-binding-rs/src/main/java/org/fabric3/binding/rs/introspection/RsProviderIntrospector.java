@@ -17,6 +17,7 @@
 package org.fabric3.binding.rs.introspection;
 
 import javax.ws.rs.ext.Provider;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 
 import org.fabric3.api.annotation.model.Component;
@@ -38,7 +39,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 public class RsProviderIntrospector implements JavaArtifactIntrospector {
 
     public Resource inspect(Class<?> clazz, URL url, Contribution contribution, IntrospectionContext context) {
-        if (!clazz.isAnnotationPresent(Provider.class) || clazz.isAnnotationPresent(Component.class)) {
+        if (!clazz.isAnnotationPresent(Provider.class) || isComponent(clazz) || Modifier.isAbstract(clazz.getModifiers())) {
             // not a provider or already configured as a component
             return null;
         }

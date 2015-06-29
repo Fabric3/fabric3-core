@@ -20,7 +20,6 @@ import javax.xml.namespace.QName;
 import java.net.URL;
 
 import org.fabric3.api.Namespaces;
-import org.fabric3.api.annotation.model.Component;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.spi.contribution.Constants;
 import org.fabric3.spi.contribution.Contribution;
@@ -41,7 +40,7 @@ public class JUnitArtifactIntrospector implements JavaArtifactIntrospector {
         if (contribution.getManifest().isExtension()) {
             return null;
         }
-        if (clazz.isAnnotationPresent(Component.class) || !clazz.isAnnotationPresent(RunWith.class)) {
+        if (isComponent(clazz) || !clazz.isAnnotationPresent(RunWith.class)) {
             // not a Junit component or labeled as a component, avoid creating a duplicate
             return null;
         }
