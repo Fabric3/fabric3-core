@@ -29,6 +29,7 @@ import org.fabric3.spi.contribution.JavaSymbol;
 import org.fabric3.spi.contribution.Resource;
 import org.fabric3.spi.contribution.ResourceElement;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.AnnotationHelper;
 import org.oasisopen.sca.annotation.EagerInit;
 
 /**
@@ -39,7 +40,7 @@ import org.oasisopen.sca.annotation.EagerInit;
 public class RsProviderIntrospector implements JavaArtifactIntrospector {
 
     public Resource inspect(Class<?> clazz, URL url, Contribution contribution, IntrospectionContext context) {
-        if (!clazz.isAnnotationPresent(Provider.class) || isComponent(clazz) || Modifier.isAbstract(clazz.getModifiers())) {
+        if (!AnnotationHelper.isPresent(Provider.class, clazz) || isComponent(clazz) || Modifier.isAbstract(clazz.getModifiers())) {
             // not a provider or already configured as a component
             return null;
         }

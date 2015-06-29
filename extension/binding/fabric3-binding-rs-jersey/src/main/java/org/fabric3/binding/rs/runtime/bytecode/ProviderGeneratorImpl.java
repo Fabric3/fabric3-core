@@ -24,6 +24,7 @@ import java.net.URI;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fabric3.spi.classloader.BytecodeClassLoader;
+import org.fabric3.spi.introspection.java.AnnotationHelper;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -69,19 +70,19 @@ public class ProviderGeneratorImpl implements ProviderGenerator {
     }
 
     private void writeAnnotations(ClassWriter cw, Class<?> delegateClass) {
-        Provider provider = delegateClass.getAnnotation(Provider.class);
+        Provider provider = AnnotationHelper.findAnnotation(Provider.class, delegateClass);
         if (provider != null) {
             AnnotationVisitor av = cw.visitAnnotation(getSignature(Provider.class), true);
             av.visitEnd();
         }
-        Priority priority = delegateClass.getAnnotation(Priority.class);
+        Priority priority =  AnnotationHelper.findAnnotation(Priority.class, delegateClass);
         if (priority != null) {
             AnnotationVisitor av = cw.visitAnnotation(getSignature(Priority.class), true);
             av.visit("value", priority.value());
             av.visitEnd();
         }
 
-        Produces produces = delegateClass.getAnnotation(Produces.class);
+        Produces produces =  AnnotationHelper.findAnnotation(Produces.class, delegateClass);
         if (produces != null) {
             AnnotationVisitor av = cw.visitAnnotation(getSignature(Produces.class), true);
             AnnotationVisitor arrayVisitor = av.visitArray("value");
@@ -92,7 +93,7 @@ public class ProviderGeneratorImpl implements ProviderGenerator {
             av.visitEnd();
         }
 
-        Consumes consumes = delegateClass.getAnnotation(Consumes.class);
+        Consumes consumes =  AnnotationHelper.findAnnotation(Consumes.class, delegateClass);
         if (consumes != null) {
             AnnotationVisitor av = cw.visitAnnotation(getSignature(Consumes.class), true);
             AnnotationVisitor arrayVisitor = av.visitArray("value");

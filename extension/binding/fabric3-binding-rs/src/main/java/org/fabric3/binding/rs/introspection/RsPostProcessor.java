@@ -34,6 +34,7 @@ import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Service;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.AnnotationHelper;
 import org.fabric3.spi.introspection.java.PostProcessor;
 import org.fabric3.spi.model.type.java.JavaServiceContract;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -91,7 +92,7 @@ public class RsPostProcessor implements PostProcessor {
                 }
             }
         }
-        EndpointUri endpointUri = implClass.getAnnotation(EndpointUri.class);
+        EndpointUri endpointUri = AnnotationHelper.findAnnotation(EndpointUri.class, implClass);
         String serviceName = bindingService.getName();
 
         String base = serviceName;

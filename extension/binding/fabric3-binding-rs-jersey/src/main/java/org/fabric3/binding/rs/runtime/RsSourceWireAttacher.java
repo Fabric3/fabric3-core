@@ -18,7 +18,9 @@
  */
 package org.fabric3.binding.rs.runtime;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +41,7 @@ import org.fabric3.spi.container.builder.SourceWireAttacher;
 import org.fabric3.spi.container.wire.InvocationChain;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.host.ServletHost;
+import org.fabric3.spi.introspection.java.AnnotationHelper;
 import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.glassfish.jersey.server.model.Resource;
@@ -53,6 +56,7 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 @Key("org.fabric3.binding.rs.provision.RsWireSource")
 public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
+    private static final String[] EMPTY_ARRAY = new String[0];
     private ServletHost servletHost;
     private RsContainerManager containerManager;
     private ProviderRegistry providerRegistry;
@@ -161,28 +165,44 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
     }
 
     private Resource createResource(F3ResourceHandler handler) {
-        Resource template = Resource.from(handler.getInterface());
+        Class<?> interfaze = handler.getInterface();
+
+        Resource template = Resource.from(interfaze);
         if (template == null) {
-            throw new Fabric3Exception("Interface is not a JAX-RS resource: " + handler.getInterface().getName());
+            throw new Fabric3Exception("Interface is not a JAX-RS resource: " + interfaze.getName());
         }
+
+        // introspect consumes and produces annotations on the JAX-RS type as well as in meta-annotations
+        Consumes consumes = AnnotationHelper.findAnnotation(Consumes.class, interfaze);
+        String[] consumeTypes = consumes != null ? consumes.value() : EMPTY_ARRAY;
+
+        Produces produces = AnnotationHelper.findAnnotation(Produces.class, interfaze);
+        String[] produceTypes = produces != null ? produces.value() : EMPTY_ARRAY;
+
         Resource.Builder resourceBuilder = Resource.builder(template.getPath());
         for (ResourceMethod resourceMethod : template.getAllMethods()) {
-            createMethod(resourceBuilder, resourceMethod, handler);
+            createMethod(resourceBuilder, resourceMethod, handler, consumeTypes, produceTypes);
         }
         for (Resource childTemplate : template.getChildResources()) {
             Resource.Builder childResourceBuilder = Resource.builder(childTemplate.getPath());
             for (ResourceMethod resourceMethod : childTemplate.getAllMethods()) {
-                createMethod(childResourceBuilder, resourceMethod, handler);
+                createMethod(childResourceBuilder, resourceMethod, handler, consumeTypes, produceTypes);
             }
             resourceBuilder.addChildResource(childResourceBuilder.build());
         }
         return resourceBuilder.build();
     }
 
-    private void createMethod(Resource.Builder resourceBuilder, ResourceMethod template, F3ResourceHandler handler) {
+    private void createMethod(Resource.Builder resourceBuilder,
+                              ResourceMethod template,
+                              F3ResourceHandler handler,
+                              String[] consumeTypes,
+                              String[] produceTypes) {
         ResourceMethod.Builder methodBuilder = resourceBuilder.addMethod(template.getHttpMethod());
         methodBuilder.consumes(template.getConsumedTypes());
+        methodBuilder.consumes(consumeTypes);
         methodBuilder.produces(template.getProducedTypes());
+        methodBuilder.produces(produceTypes);
         methodBuilder.handledBy(handler, template.getInvocable().getHandlingMethod());
         if (template.isSuspendDeclared()) {
             methodBuilder.suspended(template.getSuspendTimeout(), template.getSuspendTimeoutUnit());
