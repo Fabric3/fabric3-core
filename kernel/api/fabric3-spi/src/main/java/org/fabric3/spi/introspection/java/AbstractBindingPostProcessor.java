@@ -89,7 +89,7 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
                                                         IntrospectionContext context);
 
     private void processService(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
-        A annotation = implClass.getAnnotation(annotationType);
+        A annotation = AnnotationHelper.findAnnotation(annotationType, implClass);
         if (annotation == null) {
             return;
         }
@@ -181,7 +181,16 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
     private void processBindingAnnotation(AccessibleObject object, Reference reference, Class<?> implClass, IntrospectionContext context) {
         A annotation = object.getAnnotation(annotationType);
         if (annotation == null) {
-            return;
+            // check meta-annotations
+            for (Annotation metaAnnotation : object.getAnnotations()) {
+                if (metaAnnotation.annotationType().equals(annotationType)) {
+                    annotation = annotationType.cast(metaAnnotation);
+                    break;
+                }
+            }
+            if (annotation == null) {
+                return;
+            }
         }
         Binding binding = processReference(annotation, reference, object, implClass, context);
         if (binding == null) {
