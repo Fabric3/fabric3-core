@@ -37,12 +37,13 @@ dependencies {
 
     extensionDependencies(group: 'com.lmax', name: 'disruptor', version: disruptorVersion)
 
+    extensionDependencies project(':extension:implementation:fabric3-java')
+
     extensionDependencies project(':extension:management:fabric3-management-rest')
     extensionDependencies project(':extension:other:databinding:fabric3-databinding-json')
     extensionDependencies project(':extension:core:fabric3-jdk-proxy')
     extensionDependencies project(':extension:core:fabric3-channel-impl')
     extensionDependencies project(':extension:core:fabric3-channel-disruptor')
-    extensionDependencies project(':extension:implementation:fabric3-java')
     extensionDependencies project(':extension:core:fabric3-async')
     extensionDependencies project(':extension:core:fabric3-jetty')
     extensionDependencies project(':extension:core:fabric3-contribution-scanner')

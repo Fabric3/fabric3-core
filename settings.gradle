@@ -1,5 +1,11 @@
 rootProject.name = 'fabric3-core'
 
+if (hasProperty('projects')) {
+    ext.buildType = this['projects'];
+} else {
+    ext.buildType = "default"
+}
+
 // Kernel API projects
 include 'kernel:api:fabric3-api', 'kernel:api:fabric3-model-api', 'kernel:api:fabric3-host-api', 'kernel:api:fabric3-node-api', 'kernel:api:fabric3-spi'
 
@@ -8,58 +14,71 @@ include 'kernel:impl:fabric3-util', 'kernel:impl:fabric3-contribution', 'kernel:
         'kernel:impl:fabric3-monitor', 'kernel:impl:fabric3-pojo', 'kernel:impl:fabric3-system',
         'kernel:impl:fabric3-thread-pool', 'kernel:impl:fabric3-transform', 'kernel:impl:fabric3-jdk-reflection', 'kernel:impl:fabric3-fabric'
 
-// Core extensions
-include 'extension:core:fabric3-async', 'extension:core:fabric3-bytecode-proxy', 'extension:core:fabric3-channel-disruptor',
-        'extension:core:fabric3-channel-impl', 'extension:core:fabric3-contribution-scanner', 'extension:core:fabric3-resource',
-        'extension:core:fabric3-execution', 'extension:core:fabric3-jdk-proxy', 'extension:core:fabric3-jetty', 'extension:core:fabric3-monitor-spi',
-        'extension:core:fabric3-monitor-appender', 'extension:core:fabric3-monitor-impl', 'extension:core:fabric3-monitor-log',
-        'extension:core:fabric3-test-spi'
 
-include 'extension:discovery:fabric3-discovery-etcd', 'extension:discovery:fabric3-discovery-local'
+if (ext.buildType != "kernel") {
+
+// Core extensions
+    include 'extension:core:fabric3-async', 'extension:core:fabric3-bytecode-proxy', 'extension:core:fabric3-channel-disruptor',
+            'extension:core:fabric3-channel-impl', 'extension:core:fabric3-contribution-scanner', 'extension:core:fabric3-resource',
+            'extension:core:fabric3-execution', 'extension:core:fabric3-jdk-proxy', 'extension:core:fabric3-jetty', 'extension:core:fabric3-monitor-spi',
+            'extension:core:fabric3-monitor-appender', 'extension:core:fabric3-monitor-impl', 'extension:core:fabric3-monitor-log',
+            'extension:core:fabric3-test-spi'
+
+
+    include 'extension:implementation:fabric3-java', 'extension:management:fabric3-management-rest'
+
+    include 'extension:other:databinding:fabric3-databinding-json'
+
+    include 'extension:other:security:fabric3-security', 'extension:other:security:fabric3-security-impl'
+
+    include 'runtime:standalone:fabric3-standalone-server', 'runtime:standalone:fabric3-standalone-shutdown', 'runtime:standalone:runtime-standalone'
+    if (ext.buildType != "standalone") {
+        include 'extension:discovery:fabric3-discovery-etcd', 'extension:discovery:fabric3-discovery-local'
 
 // Implementation extensions
-include 'extension:implementation:fabric3-java', 'extension:implementation:fabric3-junit-api', 'extension:implementation:fabric3-junit',
-        'extension:implementation:fabric3-mock', 'extension:implementation:fabric3-spring', 'extension:implementation:fabric3-timer-api',
-        'extension:implementation:fabric3-timer', 'extension:implementation:fabric3-web'
+        include 'extension:implementation:fabric3-junit-api', 'extension:implementation:fabric3-junit',
+                'extension:implementation:fabric3-mock', 'extension:implementation:fabric3-spring', 'extension:implementation:fabric3-timer-api',
+                'extension:implementation:fabric3-timer', 'extension:implementation:fabric3-web'
 
 // Other extensions
-include 'extension:other:cache:fabric3-cache', 'extension:other:cache:fabric3-cache-ehcache', 'extension:other:databinding:fabric3-jaxb',
-        'extension:other:databinding:fabric3-databinding-jaxb', 'extension:other:databinding:fabric3-databinding-json', 'extension:other:fabric3-jndi',
-        'extension:other:tx:fabric3-datasource', 'extension:other:jpa:fabric3-hibernate-library', 'extension:other:jpa:fabric3-jpa-api', 'extension:other:jpa:fabric3-jpa-hibernate',
-        'extension:other:security:fabric3-security', 'extension:other:security:fabric3-security-impl', 'extension:other:spring:fabric3-spring-library',
-        'extension:other:spring:fabric3-spring-spi', 'extension:other:spring:fabric3-spring-security', 'extension:other:timer:fabric3-timer-spi',
-        'extension:other:timer:fabric3-timer-service', 'extension:other:tx:fabric3-tx', 'extension:other:tx:fabric3-atomikos-library',
-        'extension:other:tx:fabric3-atomikos', 'extension:other:tx:fabric3-atomikos-jms',
-        'extension:other:web:fabric3-contribution-war',
-        'extension:other:web:fabric3-contribution-scanner-war', 'extension:other:web:fabric3-container-web-spi', 'extension:other:web:fabric3-container-web-jetty'
+        include 'extension:other:cache:fabric3-cache', 'extension:other:cache:fabric3-cache-ehcache', 'extension:other:databinding:fabric3-jaxb',
+                'extension:other:databinding:fabric3-databinding-jaxb', 'extension:other:fabric3-jndi',
+                'extension:other:tx:fabric3-datasource', 'extension:other:jpa:fabric3-hibernate-library', 'extension:other:jpa:fabric3-jpa-api', 'extension:other:jpa:fabric3-jpa-hibernate',
+                'extension:other:spring:fabric3-spring-library',
+                'extension:other:spring:fabric3-spring-spi', 'extension:other:spring:fabric3-spring-security', 'extension:other:timer:fabric3-timer-spi',
+                'extension:other:timer:fabric3-timer-service', 'extension:other:tx:fabric3-tx', 'extension:other:tx:fabric3-atomikos-library',
+                'extension:other:tx:fabric3-atomikos', 'extension:other:tx:fabric3-atomikos-jms',
+                'extension:other:web:fabric3-contribution-war',
+                'extension:other:web:fabric3-contribution-scanner-war', 'extension:other:web:fabric3-container-web-spi', 'extension:other:web:fabric3-container-web-jetty'
 
-include 'extension:management:fabric3-management-jmx', 'extension:management:fabric3-management-jmx-agent', 'extension:management:fabric3-management-rest'
+        include 'extension:management:fabric3-management-jmx', 'extension:management:fabric3-management-jmx-agent'
 
-include 'extension:binding:fabric3-binding-jms-api', 'extension:binding:fabric3-binding-jms', 'extension:binding:fabric3-activemq'
+        include 'extension:binding:fabric3-binding-jms-api', 'extension:binding:fabric3-binding-jms', 'extension:binding:fabric3-activemq'
 
-include 'extension:binding:fabric3-binding-file-api', 'extension:binding:fabric3-binding-file'
+        include 'extension:binding:fabric3-binding-file-api', 'extension:binding:fabric3-binding-file'
 
-include 'extension:binding:fabric3-binding-rs-api', 'extension:binding:fabric3-binding-rs', 'extension:binding:fabric3-binding-rs-jersey'
+        include 'extension:binding:fabric3-binding-rs-api', 'extension:binding:fabric3-binding-rs', 'extension:binding:fabric3-binding-rs-jersey'
 
-include 'extension:binding:fabric3-binding-test'
+        include 'extension:binding:fabric3-binding-test'
 
-include 'extension:binding:fabric3-binding-ws-api', 'extension:binding:fabric3-binding-ws'
+        include 'extension:binding:fabric3-binding-ws-api', 'extension:binding:fabric3-binding-ws'
 
-include 'extension:binding:fabric3-binding-zeromq-api', 'extension:binding:fabric3-binding-zeromq-library', 'extension:binding:fabric3-binding-zeromq',
-        'extension:binding:fabric3-binding-jeromq'
+        include 'extension:binding:fabric3-binding-zeromq-api', 'extension:binding:fabric3-binding-zeromq-library', 'extension:binding:fabric3-binding-zeromq',
+                'extension:binding:fabric3-binding-jeromq'
 
-include 'runtime:plugin:fabric3-plugin-api', 'runtime:plugin:fabric3-plugin-base', 'runtime:plugin:fabric3-plugin-extension',
-        'runtime:plugin:fabric3-plugin-runtime'
+        include 'runtime:plugin:fabric3-plugin-api', 'runtime:plugin:fabric3-plugin-base', 'runtime:plugin:fabric3-plugin-extension',
+                'runtime:plugin:fabric3-plugin-runtime'
 
-include 'runtime:standalone:fabric3-standalone-server', 'runtime:standalone:fabric3-standalone-shutdown', 'runtime:standalone:runtime-standalone'
 
-include 'runtime:tomcat:fabric3-tomcat-host', 'runtime:tomcat:fabric3-tomcat7-extension', 'runtime:tomcat:fabric3-runtime-tomcat'
+        include 'runtime:tomcat:fabric3-tomcat-host', 'runtime:tomcat:fabric3-tomcat7-extension', 'runtime:tomcat:fabric3-runtime-tomcat'
 
-include 'runtime:weblogic:fabric3-weblogic-mock', 'runtime:weblogic:fabric3-weblogic-api', 'runtime:weblogic:fabric3-weblogic-cluster',
-        'runtime:weblogic:fabric3-weblogic-jms', 'runtime:weblogic:fabric3-weblogic-kernel',
-        'runtime:weblogic:fabric3-weblogic-host', 'runtime:weblogic:fabric3-runtime-weblogic'
+        include 'runtime:weblogic:fabric3-weblogic-mock', 'runtime:weblogic:fabric3-weblogic-api', 'runtime:weblogic:fabric3-weblogic-cluster',
+                'runtime:weblogic:fabric3-weblogic-jms', 'runtime:weblogic:fabric3-weblogic-kernel',
+                'runtime:weblogic:fabric3-weblogic-host', 'runtime:weblogic:fabric3-runtime-weblogic'
 
-include 'runtime:node:fabric3-node', 'runtime:node:fabric3-node-extensions', 'runtime:node:fabric3-node-distribution'
+        include 'runtime:node:fabric3-node', 'runtime:node:fabric3-node-extensions', 'runtime:node:fabric3-node-distribution'
 
-include 'profile:profile-file', 'profile:profile-jms', 'profile:profile-jpa', 'profile:profile-rs', 'profile:profile-jmx',
-        'profile:profile-spring', 'profile:profile-timer', 'profile:profile-web', 'profile:profile-ws', 'profile:profile-zeromq', 'profile:profile-jeromq'
+        include 'profile:profile-file', 'profile:profile-jms', 'profile:profile-jpa', 'profile:profile-rs', 'profile:profile-jmx',
+                'profile:profile-spring', 'profile:profile-timer', 'profile:profile-web', 'profile:profile-ws', 'profile:profile-zeromq', 'profile:profile-jeromq'
+    }
+}

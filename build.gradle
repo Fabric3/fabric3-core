@@ -24,6 +24,10 @@ import javax.xml.transform.stream.StreamResult
  * Note the 'uploadArchives' tasks requires a gradle.properties file to be present containing private key information and authentication parameters
  * (sonatypeUsername and sonatypePassword).
  *
+ * The build also support building project subsets:
+ *
+ * - ./gradlew -Pprojects=kernel              builds the kernel projects
+ * - ./gradlew -Pprojects=standalone          builds the standalone runtime
  */
 project.description 'Fabric3 Core'
 
@@ -32,13 +36,25 @@ if (hasProperty('build')) {
 } else {
     ext.build = 'default';
 }
+if (hasProperty('projects')) {
+    ext.buildType = project['projects']
+} else {
+    ext.buildType = 'default';
+}
+
 
 if (ext.build == 'local') {
     defaultTasks 'jar', 'fabric3Contribution', 'test', 'war', 'fatJar', 'distZip', 'assemble', 'install'
 } else if (ext.build == 'deploy') {
     defaultTasks 'clean', 'test', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install', 'uploadArchives'
 } else {
-    defaultTasks 'clean', 'test', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
+    if (ext.buildType == "kernel") {
+        defaultTasks 'clean', 'test', 'jar', 'install'
+    } else if (ext.buildType == "standalone") {
+        defaultTasks 'clean', 'test', 'jar', 'fabric3Contribution', 'distZip', 'assemble', 'install'
+    } else {
+        defaultTasks 'clean', 'test', 'jar', 'fabric3Contribution', 'war', 'fatJar', 'distZip', 'assemble', 'install'
+    }
 }
 
 if (!hasProperty('sonatypeUsername')) {
