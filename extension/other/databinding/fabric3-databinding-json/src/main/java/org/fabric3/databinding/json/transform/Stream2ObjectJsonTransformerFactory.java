@@ -27,7 +27,7 @@ import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.transform.TransformerFactory;
 
 /**
- * Creates Transformers capable of marshalling serialized XML Strings received as an input stream to Java types using JSON.
+ * Creates Transformers capable of marshalling serialized Strings received as an input stream to Java types using JSON.
  */
 public class Stream2ObjectJsonTransformerFactory implements TransformerFactory {
     private final static Annotations[] DEFAULT_ANNOTATIONS = {Annotations.JACKSON, Annotations.JAXB};

@@ -25,7 +25,7 @@ import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.transform.Transformer;
 
 /**
- * Transforms a serialized XML String received as an input stream to a Java object using JSON.
+ * Transforms a serialized String received as an input stream to a Java object using JSON.
  */
 public class Stream2ObjectJsonTransformer implements Transformer<InputStream, Object> {
     private ObjectMapper mapper;
