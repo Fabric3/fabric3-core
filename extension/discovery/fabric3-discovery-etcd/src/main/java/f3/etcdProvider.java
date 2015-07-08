@@ -6,7 +6,7 @@ import org.fabric3.api.Namespaces;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.Composite;
-import org.fabric3.discovery.etcd.EtcdDiscoveryAgent;
+import org.fabric3.discovery.etcd.EtcdAgent;
 import org.fabric3.spi.model.type.system.SystemComponentBuilder;
 
 /**
@@ -18,7 +18,7 @@ public class etcdProvider {
     @Provides
     public static Composite getComposite() {
         CompositeBuilder builder = CompositeBuilder.newBuilder(QNAME);
-        builder.component(SystemComponentBuilder.newBuilder(EtcdDiscoveryAgent.class).build());
+        builder.component(SystemComponentBuilder.newBuilder(EtcdAgent.class).build());
         builder.deployable();
         return builder.build();
     }

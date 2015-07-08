@@ -17,7 +17,7 @@ import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
 import org.junit.Assert;
 
-public class EtcdDiscoveryAgentTest extends TestCase {
+public class EtcdAgentTest extends TestCase {
     private static final String RESPONSE_REGISTER = "{\"action\":\"set\",\"node\":{\"key\":\"/subdomain/services/runtime1:foo\","
                                                     + "\"value\":\"{\\\"key\\\":\\\"runtime1:foo\\\",\\\"name\\\":\\\"foo\\\",\\\"transport\\\":\\\"http\\\","
                                                     + "\\\"address\\\":\\\"localhost\\\",\\\"port\\\":2001,\\\"path\\\":\\\"foo\\\"}\",\"modifiedIndex\":120,"
@@ -54,7 +54,7 @@ public class EtcdDiscoveryAgentTest extends TestCase {
 
     private static final int PORT = 4002;   // to run against etcd, change to 4001; some tests assume keys are already in etcd.
 
-    private EtcdDiscoveryAgent agent;
+    private EtcdAgent agent;
 
     private MockWebServer server;
 
@@ -157,7 +157,7 @@ public class EtcdDiscoveryAgentTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        agent = new EtcdDiscoveryAgent();
+        agent = new EtcdAgent();
         agent.setAddresses("http://127.0.0.1:" + PORT);
         agent.leaderElectionEnabled = false;
         agent.executorService = EasyMock.createNiceMock(ExecutorService.class);

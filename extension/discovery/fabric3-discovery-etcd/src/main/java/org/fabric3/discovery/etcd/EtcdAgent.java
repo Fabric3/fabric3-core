@@ -44,6 +44,8 @@ import org.oasisopen.sca.annotation.Reference;
  * is watched for changes in a background thread, which are dispatched to registered listeners. Each entry has a TTL, which is periodically updated in another
  * background thread.
  *
+ * Configuration entries are placed under {@code [domain]/configuration/}.
+ *
  * This implementation also supports leader election based on the ZooKeeper algorithm described here:
  *
  * https://zookeeper.apache.org/doc/trunk/recipes.html#sc_leaderElection
@@ -53,7 +55,7 @@ import org.oasisopen.sca.annotation.Reference;
  * background TTL thread also periodically updates leadership entries.
  */
 @EagerInit
-public class EtcdDiscoveryAgent implements DiscoveryAgent, ConfigurationAgent {
+public class EtcdAgent implements DiscoveryAgent, ConfigurationAgent {
     public static final String V2_KEYS = "/v2/keys/";
 
     private String[] addresses = {"http://127.0.0.1:4001"};
