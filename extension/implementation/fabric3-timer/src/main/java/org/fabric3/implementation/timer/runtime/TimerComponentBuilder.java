@@ -96,7 +96,6 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalCom
         Class<?> implClass = managerDefinition.getImplementationClass();
         ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition);
 
-        createPropertyFactories(physicalComponent, factory);
         TimerData data = physicalComponent.getTriggerData();
         boolean transactional = physicalComponent.isTransactional();
         URI contributionUri = physicalComponent.getContributionUri();
@@ -117,6 +116,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalCom
             // defer scheduling to after the runtime has started
             scheduleQueue.add(component);
         }
+        createPropertyFactories(physicalComponent, component, factory);
         buildContexts(component, factory);
         export(physicalComponent, component);
         return component;

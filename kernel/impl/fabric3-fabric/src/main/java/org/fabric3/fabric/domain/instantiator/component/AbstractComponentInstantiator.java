@@ -76,28 +76,35 @@ public abstract class AbstractComponentInstantiator {
 
         for (Property property : componentType.getProperties().values()) {
             String name = property.getName();
+            boolean required = property.isRequired();
             PropertyValue propertyValue = propertyValues.get(name);
             if (propertyValue != null && propertyValue.getInstanceValue() != null) {
                 // instance value is set
-                LogicalProperty logicalProperty = new LogicalProperty(name, propertyValue.getInstanceValue(), logicalComponent);
+                Object value = propertyValue.getInstanceValue();
+                LogicalProperty logicalProperty = LogicalProperty.Builder.newBuilder(name, logicalComponent).instanceValue(value).build();
                 logicalComponent.setProperties(logicalProperty);
             } else {
-                Document value;
+                Document value = null;
+                String propertyKey = null;
                 if (propertyValue == null) {
                     String source = property.getSource();
                     if (source != null) {
-                        // get the value by evaluating an XPath against the composite properties
-                        try {
-                            F3NamespaceContext nsContext = new F3NamespaceContext();
-                            for (Map.Entry<String, String> entry : property.getNamespaces().entrySet()) {
-                                nsContext.add(entry.getKey(), entry.getValue());
+                        if (source.startsWith("${") && source.endsWith("}")) {
+                            propertyKey = source.substring(2, source.length() - 1);
+                        } else {
+                            // get the value by evaluating an XPath against the composite properties
+                            try {
+                                F3NamespaceContext nsContext = new F3NamespaceContext();
+                                for (Map.Entry<String, String> entry : property.getNamespaces().entrySet()) {
+                                    nsContext.add(entry.getKey(), entry.getValue());
+                                }
+                                propertyValue = new PropertyValue("name", source);
+                                value = deriveValueFromXPath(propertyValue, parent, nsContext);
+                            } catch (PropertyTypeException e) {
+                                InvalidProperty error = new InvalidProperty(name, logicalComponent, e);
+                                context.addError(error);
+                                return;
                             }
-                            propertyValue = new PropertyValue("name", source);
-                            value = deriveValueFromXPath(propertyValue, parent, nsContext);
-                        } catch (PropertyTypeException e) {
-                            InvalidProperty error = new InvalidProperty(name, logicalComponent, e);
-                            context.addError(error);
-                            return;
                         }
                     } else {
                         // use default value from component type
@@ -124,7 +131,13 @@ public abstract class AbstractComponentInstantiator {
                     }
 
                 }
-                if (property.isRequired() && value == null && (propertyValue == null || (propertyValue != null && propertyValue.getInstanceValue() == null))) {
+                if (propertyKey != null) {
+                    boolean many = property.isMany();
+                    LogicalProperty.Builder builder = LogicalProperty.Builder.newBuilder(name, logicalComponent);
+                    LogicalProperty logicalProperty = builder.key(propertyKey).many(many).required(required).build();
+                    logicalComponent.setProperties(logicalProperty);
+                } else if (property.isRequired() && value == null && (propertyValue == null || (propertyValue != null
+                                                                                                && propertyValue.getInstanceValue() == null))) {
                     // The XPath expression returned an empty value. Since the property is required, throw an exception
                     PropertySourceNotFound error = new PropertySourceNotFound(name, logicalComponent);
                     context.addError(error);
@@ -134,13 +147,9 @@ public abstract class AbstractComponentInstantiator {
                 } else {
                     // set the property value
                     boolean many = property.isMany();
-                    LogicalProperty logicalProperty;
                     QName type = property.getType();
-                    if (type == null) {
-                        logicalProperty = new LogicalProperty(name, value, many, logicalComponent);
-                    } else {
-                        logicalProperty = new LogicalProperty(name, value, many, type, logicalComponent);
-                    }
+                    LogicalProperty.Builder builder = LogicalProperty.Builder.newBuilder(name, logicalComponent);
+                    LogicalProperty logicalProperty = builder.xmlValue(value).many(many).type(type).required(required).build();
                     logicalComponent.setProperties(logicalProperty);
                 }
             }
@@ -160,7 +169,7 @@ public abstract class AbstractComponentInstantiator {
             if (propertyValue.getType() != null && property.getType() != null && !propertyValue.getType().equals(property.getType())) {
                 throw new PropertyTypeException("Property types are incompatible:" + name + " and " + propertyValue.getName());
             }
-            Document value = property.getValue();
+            Document value = property.getXmlValue();
             if (value == null || value.getDocumentElement().getChildNodes().getLength() == 0) {
                 return null;
             }

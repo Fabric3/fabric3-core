@@ -125,7 +125,7 @@ public class AbstractComponentInstantiatorTestCase extends TestCase {
         property.appendChild(root);
         value = property.createElement("value");
         root.appendChild(value);
-        LogicalProperty logicalProperty = new LogicalProperty("domain", property, false, domain);
+        LogicalProperty logicalProperty = LogicalProperty.Builder.newBuilder("domain", domain).xmlValue(property).many(false).build();
         domain.setProperties(logicalProperty);
     }
 

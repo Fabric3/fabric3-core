@@ -75,13 +75,17 @@ public class GenerationHelperImpl implements GenerationHelper {
         for (LogicalProperty property : component.getAllProperties().values()) {
             String name = property.getName();
             boolean many = property.isMany();
-            if (property.getValue() != null) {
-                Document document = property.getValue();
-                PhysicalProperty physicalProperty = new PhysicalProperty(name, document, many);
+            boolean required = property.isRequired();
+            if (property.getKey() != null) {
+                PhysicalProperty physicalProperty = PhysicalProperty.Builder.newBuilder(name).key(property.getKey()).required(required).many(many).build();
+                pojoComponent.setProperty(physicalProperty);
+            } else if (property.getXmlValue() != null) {
+                Document document = property.getXmlValue();
+                PhysicalProperty physicalProperty = PhysicalProperty.Builder.newBuilder(name).xmlValue(document).required(required).many(many).build();
                 pojoComponent.setProperty(physicalProperty);
             } else if (property.getInstanceValue() != null) {
                 Object value = property.getInstanceValue();
-                PhysicalProperty physicalProperty = new PhysicalProperty(name, value, many);
+                PhysicalProperty physicalProperty = PhysicalProperty.Builder.newBuilder(name).instanceValue(value).required(required).many(many).build();
                 pojoComponent.setProperty(physicalProperty);
             }
         }

@@ -73,12 +73,12 @@ public class JavaComponentBuilder extends PojoComponentBuilder<PhysicalJavaCompo
         ImplementationManagerDefinition managerDefinition = physicalComponent.getFactoryDefinition();
         ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition);
 
-        createPropertyFactories(physicalComponent, factory);
 
         boolean eager = physicalComponent.isEagerInit();
 
         URI contributionUri = physicalComponent.getContributionUri();
         JavaComponent component = new JavaComponent(uri, factory, scopeContainer, eager, contributionUri);
+        createPropertyFactories(physicalComponent, component, factory);
         buildContexts(component, factory);
         export(physicalComponent, component);
         return component;

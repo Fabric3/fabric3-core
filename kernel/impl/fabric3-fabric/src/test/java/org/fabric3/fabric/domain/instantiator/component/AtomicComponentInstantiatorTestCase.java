@@ -106,7 +106,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
 
         LogicalComponent logicalComponent = instantiator.instantiate(component, parent, context);
         LogicalProperty logicalProperty = logicalComponent.getProperties("property");
-        assertNotNull(logicalProperty.getValue());
+        assertNotNull(logicalProperty.getXmlValue());
     }
 
     public void testPropertyValueOnComponentDefinition() {
@@ -118,7 +118,7 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         component.add(value);
         LogicalComponent logicalComponent = instantiator.instantiate(component, parent, context);
         LogicalProperty logicalProperty = logicalComponent.getProperties("property");
-        assertNotNull(logicalProperty.getValue());
+        assertNotNull(logicalProperty.getXmlValue());
     }
 
     public void testPropertyValueXPathSource() throws Exception {
@@ -136,12 +136,12 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
         Element valElement = document.createElement("value");
         valElement.setTextContent("test");
         root.appendChild(valElement);
-        parent.setProperties(new LogicalProperty("theProp", document, false, parent));
+        parent.setProperties(LogicalProperty.Builder.newBuilder("theProp", parent).xmlValue(document).many(false).build());
 
         LogicalComponent logicalComponent = instantiator.instantiate(component, parent, context);
 
         LogicalProperty logicalProperty = logicalComponent.getProperties("property");
-        Element rootReturned = logicalProperty.getValue().getDocumentElement();
+        Element rootReturned = logicalProperty.getXmlValue().getDocumentElement();
         assertEquals("values", rootReturned.getNodeName());
         assertEquals("value", rootReturned.getChildNodes().item(0).getNodeName());
     }
@@ -149,10 +149,10 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
     public void testPropertyValueFileSource() throws Exception {
         createFileSourceProperty("property.xml");
 
-        parent.setProperties(new LogicalProperty("theProp", null, false, parent));
+        parent.setProperties(LogicalProperty.Builder.newBuilder("theProp", parent).many(false).build());
         LogicalComponent logicalComponent = instantiator.instantiate(component, parent, context);
         LogicalProperty logicalProperty = logicalComponent.getProperties("property");
-        Element rootReturned = logicalProperty.getValue().getDocumentElement();
+        Element rootReturned = logicalProperty.getXmlValue().getDocumentElement();
         assertEquals("values", rootReturned.getNodeName());
         assertEquals("value", rootReturned.getChildNodes().item(0).getNodeName());
     }
@@ -160,10 +160,10 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
     public void testPropertyValueNoValuesElementFileSource() throws Exception {
         createFileSourceProperty("propertyNoValues.xml");
 
-        parent.setProperties(new LogicalProperty("theProp", null, false, parent));
+        parent.setProperties(LogicalProperty.Builder.newBuilder("theProp", parent).many(false).build());
         LogicalComponent logicalComponent = instantiator.instantiate(component, parent, context);
         LogicalProperty logicalProperty = logicalComponent.getProperties("property");
-        Element rootReturned = logicalProperty.getValue().getDocumentElement();
+        Element rootReturned = logicalProperty.getXmlValue().getDocumentElement();
         assertEquals("values", rootReturned.getNodeName());
         assertEquals("value", rootReturned.getChildNodes().item(0).getNodeName());
     }
@@ -171,10 +171,10 @@ public class AtomicComponentInstantiatorTestCase extends TestCase {
     public void testPropertyValueNoRootElementFileSource() throws Exception {
         createFileSourceProperty("propertyNoRoot.xml");
 
-        parent.setProperties(new LogicalProperty("theProp", null, false, parent));
+        parent.setProperties(LogicalProperty.Builder.newBuilder("theProp", parent).many(false).build());
         LogicalComponent logicalComponent = instantiator.instantiate(component, parent, context);
         LogicalProperty logicalProperty = logicalComponent.getProperties("property");
-        Element rootReturned = logicalProperty.getValue().getDocumentElement();
+        Element rootReturned = logicalProperty.getXmlValue().getDocumentElement();
         assertEquals("values", rootReturned.getNodeName());
         assertEquals("value", rootReturned.getChildNodes().item(0).getNodeName());
     }

@@ -236,13 +236,13 @@ public class WebComponentGenerator implements ComponentGenerator<LogicalComponen
         for (LogicalProperty property : component.getAllProperties().values()) {
             String name = property.getName();
             boolean many = property.isMany();
-            if (property.getValue() != null) {
-                Document document = property.getValue();
-                PhysicalProperty physicalProperty = new PhysicalProperty(name, document, many);
+            if (property.getXmlValue() != null) {
+                Document document = property.getXmlValue();
+                PhysicalProperty physicalProperty =  PhysicalProperty.Builder.newBuilder(name).xmlValue(document).many(many).build();
                 physical.setProperty(physicalProperty);
             } else if (property.getInstanceValue() != null) {
                 Object value = property.getInstanceValue();
-                PhysicalProperty physicalProperty = new PhysicalProperty(name, value, many);
+                PhysicalProperty physicalProperty =  PhysicalProperty.Builder.newBuilder(name).instanceValue(value).many(many).build();
                 physical.setProperty(physicalProperty);
             }
         }

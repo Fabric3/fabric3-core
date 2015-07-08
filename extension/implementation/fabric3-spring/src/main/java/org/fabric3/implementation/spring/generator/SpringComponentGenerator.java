@@ -160,15 +160,15 @@ public class SpringComponentGenerator implements ComponentGenerator<LogicalCompo
         for (LogicalProperty property : component.getAllProperties().values()) {
             String name = property.getName();
             boolean many = property.isMany();
-            if (property.getValue() != null) {
-                Document document = property.getValue();
+            if (property.getXmlValue() != null) {
+                Document document = property.getXmlValue();
                 ComponentType componentType = component.getDefinition().getImplementation().getComponentType();
                 QName type = componentType.getProperties().get(property.getName()).getType();
-                PhysicalProperty physicalProperty = new PhysicalProperty(name, document, many, type);
+                PhysicalProperty physicalProperty =  PhysicalProperty.Builder.newBuilder(name).xmlValue(document).many(many).type(type).build();
                 springComponent.setProperty(physicalProperty);
             } else if (property.getInstanceValue() != null) {
                 Object value = property.getInstanceValue();
-                PhysicalProperty physicalProperty = new PhysicalProperty(name, value, many);
+                PhysicalProperty physicalProperty =  PhysicalProperty.Builder.newBuilder(name).instanceValue(value).many(many).build();
                 springComponent.setProperty(physicalProperty);
             }
         }

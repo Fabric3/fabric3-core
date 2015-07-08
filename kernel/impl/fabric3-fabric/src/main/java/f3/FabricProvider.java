@@ -52,6 +52,7 @@ import org.fabric3.fabric.container.component.StatelessScopeContainer;
 import org.fabric3.fabric.container.wire.TransformerInterceptorFactoryImpl;
 import org.fabric3.fabric.contract.DefaultContractMatcher;
 import org.fabric3.fabric.contract.JavaContractMatcherExtension;
+import org.fabric3.fabric.discovery.ConfigurationRegistryImpl;
 import org.fabric3.fabric.domain.ContributionHelperImpl;
 import org.fabric3.fabric.domain.DistributedDomain;
 import org.fabric3.fabric.domain.LocalDeployer;
@@ -128,6 +129,8 @@ public class FabricProvider {
         addBindingSubsystem(compositeBuilder);
 
         addNodeSubsystem(compositeBuilder);
+
+        addDiscoverySubsystem(compositeBuilder);
 
         return compositeBuilder.build();
     }
@@ -315,4 +318,9 @@ public class FabricProvider {
         compositeBuilder.wire(WireBuilder.newBuilder().source("RuntimeDomain/deployer").target("LocalDeployer").build());
 
     }
+
+    private static void addDiscoverySubsystem(CompositeBuilder compositeBuilder) {
+        compositeBuilder.component(newBuilder(ConfigurationRegistryImpl.class).build());
+    }
+
 }

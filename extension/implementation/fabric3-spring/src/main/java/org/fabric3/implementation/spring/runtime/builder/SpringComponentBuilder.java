@@ -191,7 +191,7 @@ public class SpringComponentBuilder implements ComponentBuilder<PhysicalSpringCo
                 Pair pair = new Pair(Object.class, property::getInstanceValue);
                 values.put(name, pair);
             } else {
-                Document document = property.getValue();
+                Document document = property.getXmlValue();
                 String value = document.getElementsByTagName("value").item(0).getFirstChild().getNodeValue();
                 QName type = property.getType();
                 if (XSD_BOOLEAN.equals(type)) {

@@ -165,7 +165,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         Composite composite = BootstrapCompositeFactory.createSystemComposite(bootContribution, hostInfo, bootClassLoader, implementationIntrospector);
 
         // create the property and merge it into the composite
-        LogicalProperty logicalProperty = new LogicalProperty("systemConfig", systemConfig, false, domain);
+        LogicalProperty logicalProperty = LogicalProperty.Builder.newBuilder("systemConfig", domain).xmlValue(systemConfig).many(false).build();
         domain.setProperties(logicalProperty);
 
         // deploy the composite to the runtime domain

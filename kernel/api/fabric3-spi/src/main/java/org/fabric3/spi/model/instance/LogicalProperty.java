@@ -21,38 +21,19 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Document;
 
 /**
- * Holds a parsed component property as a DOM.
+ * Holds a parsed component property.
  */
 @SuppressWarnings("NonSerializableFieldInSerializableClass")
 public class LogicalProperty extends LogicalScaArtifact<LogicalComponent<?>> {
     private static final long serialVersionUID = 4648573312983221666L;
 
     private String name;
-    private Document value;
+    private Document xmlValue;
     private Object instanceValue;
+    private String key;
     private boolean many;
     private QName type;
-
-    public LogicalProperty(String name, Document value, boolean many, LogicalComponent<?> parent) {
-        super(parent);
-        this.name = name;
-        this.value = value;
-        this.many = many;
-    }
-
-    public LogicalProperty(String name, Document value, boolean many, QName type, LogicalComponent<?> parent) {
-        super(parent);
-        this.name = name;
-        this.value = value;
-        this.many = many;
-        this.type = type;
-    }
-
-    public LogicalProperty(String name, Object instanceValue, LogicalComponent<?> parent) {
-        super(parent);
-        this.name = name;
-        this.instanceValue = instanceValue;
-    }
+    private boolean required = true;
 
     /**
      * Returns the property name.
@@ -68,8 +49,8 @@ public class LogicalProperty extends LogicalScaArtifact<LogicalComponent<?>> {
      *
      * @return the value
      */
-    public Document getValue() {
-        return value;
+    public Document getXmlValue() {
+        return xmlValue;
     }
 
     /**
@@ -79,6 +60,15 @@ public class LogicalProperty extends LogicalScaArtifact<LogicalComponent<?>> {
      */
     public Object getInstanceValue() {
         return instanceValue;
+    }
+
+    /**
+     * Returns the key if the property is sourced externally.
+     *
+     * @return the key or null
+     */
+    public String getKey() {
+        return key;
     }
 
     /**
@@ -97,6 +87,68 @@ public class LogicalProperty extends LogicalScaArtifact<LogicalComponent<?>> {
      */
     public QName getType() {
         return type;
+    }
+
+    /**
+     * Returns true if the property is required.
+     *
+     * @return true if the property is required
+     */
+    public boolean isRequired() {
+        return required;
+    }
+
+    private LogicalProperty(String name, LogicalComponent<?> parent) {
+        super(parent);
+        this.name = name;
+    }
+
+    public static class Builder {
+        private LogicalProperty property;
+
+        public static Builder newBuilder(String name, LogicalComponent<?> parent) {
+            return new Builder(name, parent);
+        }
+
+        public Builder xmlValue(Document value) {
+            property.xmlValue = value;
+            return this;
+        }
+
+        public Builder type(QName type) {
+            property.type = type;
+            return this;
+        }
+
+        public Builder many(boolean value) {
+            property.many = value;
+            return this;
+        }
+
+        public Builder required(boolean value) {
+            property.required = value;
+            return this;
+        }
+
+        public Builder instanceValue(Object value) {
+            property.instanceValue = value;
+            return this;
+        }
+
+        public Builder key(String key) {
+            property.key = key;
+            return this;
+        }
+
+        public LogicalProperty build() {
+            return property;
+        }
+
+        private Builder(String name, LogicalComponent<?> parent) {
+            property = new LogicalProperty(name, parent);
+            property.name = name;
+        }
+
     }
 }
 

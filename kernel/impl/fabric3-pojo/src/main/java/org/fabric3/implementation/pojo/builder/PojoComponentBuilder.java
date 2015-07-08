@@ -29,6 +29,7 @@ import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
 import org.fabric3.api.model.type.java.ManagementInfo;
+import org.fabric3.implementation.pojo.component.PojoComponent;
 import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
@@ -36,6 +37,7 @@ import org.fabric3.implementation.pojo.provision.PhysicalPojoComponent;
 import org.fabric3.spi.container.builder.ComponentBuilder;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.discovery.ConfigurationRegistry;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
@@ -44,6 +46,7 @@ import org.fabric3.spi.model.physical.PhysicalProperty;
 import org.fabric3.spi.model.type.java.JavaGenericType;
 import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.model.type.java.JavaTypeInfo;
+import org.oasisopen.sca.annotation.Reference;
 import org.w3c.dom.Document;
 
 /**
@@ -55,6 +58,9 @@ public abstract class PojoComponentBuilder<PCD extends PhysicalPojoComponent, C 
     private PropertySupplierBuilder propertyBuilder;
     private ManagementService managementService;
 
+    @Reference
+    protected ConfigurationRegistry configurationRegistry;
+
     protected PojoComponentBuilder(PropertySupplierBuilder propertyBuilder, ManagementService managementService, IntrospectionHelper helper, HostInfo info) {
         this.propertyBuilder = propertyBuilder;
         this.managementService = managementService;
@@ -62,7 +68,7 @@ public abstract class PojoComponentBuilder<PCD extends PhysicalPojoComponent, C 
         this.info = info;
     }
 
-    protected void createPropertyFactories(PCD definition, ImplementationManagerFactory factory) throws Fabric3Exception {
+    protected void createPropertyFactories(PCD definition, PojoComponent component, ImplementationManagerFactory factory) throws Fabric3Exception {
         List<PhysicalProperty> properties = definition.getProperties();
 
         TypeMapping typeMapping = new TypeMapping();
@@ -74,14 +80,30 @@ public abstract class PojoComponentBuilder<PCD extends PhysicalPojoComponent, C 
             if (property.getInstanceValue() != null) {
                 factory.setSupplier(source, property::getInstanceValue);
             } else {
-                Document value = property.getValue();
+                String key = property.getKey();
+                if (key != null) {
+                    // handle externally sourced properties
+                    String value = configurationRegistry.getValue(key);
+                    if (property.isRequired() && value == null) {
+                        throw new Fabric3Exception("External property " + key + " not found for component " + component.getUri());
+                    }
+                    factory.setSupplier(source, () -> value);
+                    // register a listener for property changes
+                    configurationRegistry.registerListener(key, (newValue) -> {
+                        component.startUpdate();
+                        component.setSupplier(source, () -> newValue);
+                        component.endUpdate();
+                    });
+                } else {
+                    Document value = property.getXmlValue();
 
-                Type type = factory.getGenericType(source);
-                DataType dataType = getDataType(type, typeMapping);
+                    Type type = factory.getGenericType(source);
+                    DataType dataType = getDataType(type, typeMapping);
 
-                ClassLoader classLoader = factory.getImplementationClass().getClassLoader();
-                boolean many = property.isMany();
-                factory.setSupplier(source, propertyBuilder.createSupplier(name, dataType, value, many, classLoader));
+                    ClassLoader classLoader = factory.getImplementationClass().getClassLoader();
+                    boolean many = property.isMany();
+                    factory.setSupplier(source, propertyBuilder.createSupplier(name, dataType, value, many, classLoader));
+                }
             }
         }
     }
@@ -102,7 +124,7 @@ public abstract class PojoComponentBuilder<PCD extends PhysicalPojoComponent, C 
         }
     }
 
-    protected void buildContexts(org.fabric3.implementation.pojo.component.PojoComponent component, ImplementationManagerFactory factory) {
+    protected void buildContexts(PojoComponent component, ImplementationManagerFactory factory) {
         PojoRequestContext requestContext = new PojoRequestContext();
         factory.setSupplier(Injectable.OASIS_REQUEST_CONTEXT, () -> requestContext);
         PojoComponentContext componentContext = new PojoComponentContext(component, requestContext, info);

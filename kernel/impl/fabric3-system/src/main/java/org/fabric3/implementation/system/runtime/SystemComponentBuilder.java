@@ -68,11 +68,11 @@ public class SystemComponentBuilder extends PojoComponentBuilder<PhysicalSystemC
         ImplementationManagerDefinition managerDefinition = physicalComponent.getFactoryDefinition();
         ImplementationManagerFactory factory = factoryBuilder.build(managerDefinition);
 
-        createPropertyFactories(physicalComponent, factory);
 
         boolean eager = physicalComponent.isEagerInit();
         URI contributionUri = physicalComponent.getContributionUri();
         SystemComponent component = new SystemComponent(uri, factory, scopeContainer, eager, contributionUri);
+        createPropertyFactories(physicalComponent, component, factory);
         export(physicalComponent, component);
         return component;
     }
