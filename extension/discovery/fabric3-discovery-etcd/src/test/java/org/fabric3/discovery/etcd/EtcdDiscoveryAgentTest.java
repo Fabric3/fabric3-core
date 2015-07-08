@@ -12,6 +12,7 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
 import org.junit.Assert;
@@ -162,6 +163,7 @@ public class EtcdDiscoveryAgentTest extends TestCase {
         agent.executorService = EasyMock.createNiceMock(ExecutorService.class);
 
         agent.info = EasyMock.createMock(HostInfo.class);
+        EasyMock.expect(agent.info.getRuntimeMode()).andReturn(RuntimeMode.NODE).anyTimes();
         EasyMock.expect(agent.info.getRuntimeName()).andReturn("runtime1").anyTimes();
         URI subdomain = URI.create("fabric3://subdomain");
         EasyMock.expect(agent.info.getDomain()).andReturn(subdomain).anyTimes();

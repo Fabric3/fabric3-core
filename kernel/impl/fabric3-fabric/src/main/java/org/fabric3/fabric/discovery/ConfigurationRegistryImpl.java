@@ -33,11 +33,11 @@ public class ConfigurationRegistryImpl implements ConfigurationRegistry {
         return value;
     }
 
-    public void registerListener(String key, Consumer<String> consumer) {
-        agents.forEach(a -> a.registerListener(key, consumer));
+    public void registerListener(String key, Consumer<String> listener) {
+        agents.forEach(a -> a.registerListener(key, listener));
     }
 
-    public void unRegisterListener(String key) {
-        agents.forEach(a -> a.unRegisterListener(key));
+    public void unregisterListener(String key, Consumer<String> listener) {
+        agents.forEach(a -> a.unregisterListener(key, listener));
     }
 }

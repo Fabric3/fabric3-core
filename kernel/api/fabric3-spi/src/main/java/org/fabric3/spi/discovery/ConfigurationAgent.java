@@ -19,15 +19,16 @@ public interface ConfigurationAgent {
      * Registers a value change listener
      *
      * @param key      the key to listen for
-     * @param consumer the callback to invoke when a value changes
+     * @param listener the callback to invoke when a value changes
      */
-    void registerListener(String key, Consumer<String> consumer);
+    void registerListener(String key, Consumer<String> listener);
 
     /**
      * Un-Registers a value change listener
      *
      * @param key the key to listen for
+     * @param listener the listener
      */
-    void unRegisterListener(String key);
+    void unregisterListener(String key, Consumer<String> listener);
 
 }

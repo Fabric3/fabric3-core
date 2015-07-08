@@ -24,8 +24,10 @@ import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.annotation.Source;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.spi.discovery.AbstractEntry;
 import org.fabric3.spi.discovery.ChannelEntry;
+import org.fabric3.spi.discovery.ConfigurationAgent;
 import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
@@ -51,7 +53,7 @@ import org.oasisopen.sca.annotation.Reference;
  * background TTL thread also periodically updates leadership entries.
  */
 @EagerInit
-public class EtcdDiscoveryAgent implements DiscoveryAgent {
+public class EtcdDiscoveryAgent implements DiscoveryAgent, ConfigurationAgent {
     public static final String V2_KEYS = "/v2/keys/";
 
     private String[] addresses = {"http://127.0.0.1:4001"};
@@ -84,6 +86,7 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
     private Map<String, List<BiConsumer<EntryChange, ServiceEntry>>> serviceListeners = new HashMap<>(); // service name to listeners
     private Map<String, List<BiConsumer<EntryChange, ChannelEntry>>> channelListeners = new HashMap<>(); // channel name to listeners
     private List<Consumer<Boolean>> leaderListeners = new ArrayList<>();
+    private Map<String, List<Consumer<String>>> configurationListeners = new HashMap<>(); // key to listeners
 
     private Map<String, Request> updatingEntries = new HashMap<>();
 
@@ -116,7 +119,8 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
         mapper = new ObjectMapper();
         pinnedAddress = getAddress();
 
-        if (leaderElectionEnabled) {
+        if (RuntimeMode.NODE == info.getRuntimeMode() && leaderElectionEnabled) {
+            // only enable leader election on node runtime
             createLeaderEntry();
             checkLeader();
         }
@@ -196,6 +200,53 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
             list.remove(listener);
             if (list.isEmpty()) {
                 channelListeners.remove(name);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public String getValue(String key) {
+        String address = pinnedAddress;
+        while (true) {
+            try {
+                Request request = new Request.Builder().url(address + V2_KEYS + authority + "/configuration/" + key).build();
+                Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) {
+                    monitor.debug("Response retrieving configuration {0}: {1}", key, response.code());
+                    return null;
+                }
+                Map<String, Object> body = mapper.readValue(response.body().string(), Map.class);
+                Map<String, Object> node = (Map<String, Object>) body.get("node");
+                if (node == null) {
+                    monitor.severe("Error retrieving configuration from etcd for: {0}. Node property not found.", key);
+                    return null;
+                }
+                return (String) node.get("value");
+            } catch (IOException e) {
+                monitor.severe("Error retrieving configuration from etcd for: {0}. Trying next etcd instance.", key, e);
+                synchronized (this) {
+                    pinnedAddress = getAddress();
+                    if (pinnedAddress.equals(address)) {
+                        // all of the available addresses have been recycled
+                        monitor.severe("No available etcd instance retrieving configuration for: {0}", key);
+                        return null;
+                    }
+                }
+            }
+        }
+    }
+
+    public void registerListener(String key, Consumer<String> listener) {
+        List<Consumer<String>> list = configurationListeners.computeIfAbsent(key, k -> new ArrayList<>());
+        list.add(listener);
+    }
+
+    public void unregisterListener(String key, Consumer<String> listener) {
+        List<Consumer<String>> list = configurationListeners.get(key);
+        if (list != null) {
+            list.remove(listener);
+            if (list.isEmpty()) {
+                channelListeners.remove(key);
             }
         }
     }
@@ -493,7 +544,7 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent {
             try {
                 Response response = client.newCall(request).execute();
                 if (!response.isSuccessful()) {
-                    monitor.severe("Error registering {0} with etc: {1}", key, response.code());
+                    monitor.severe("Error registering {0} with etcd: {1}", key, response.code());
                 } else {
                     return Optional.of(response);
                 }
