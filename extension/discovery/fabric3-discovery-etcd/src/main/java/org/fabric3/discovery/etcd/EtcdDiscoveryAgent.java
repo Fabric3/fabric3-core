@@ -237,11 +237,13 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent, ConfigurationAgent {
     }
 
     public void registerListener(String key, Consumer<String> listener) {
+        key = prefixConfigurationKey(key);
         List<Consumer<String>> list = configurationListeners.computeIfAbsent(key, k -> new ArrayList<>());
         list.add(listener);
     }
 
     public void unregisterListener(String key, Consumer<String> listener) {
+        key = prefixConfigurationKey(key);
         List<Consumer<String>> list = configurationListeners.get(key);
         if (list != null) {
             list.remove(listener);
@@ -273,7 +275,12 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent, ConfigurationAgent {
                     } else if ("create".equals(action)) {
                         // ignore creates
                     } else if ("update".equals(action)) {
-                        // ignore updates as they will be triggered by ttl updates
+                        Map node = (Map) data.get("node");
+                        String key = (String) node.get("key");
+                        // ignore updates for channels and services as they will be triggered by ttl updates
+                        if (key.startsWith("/" + authority + "/configuration/")) {
+                            processChange(node, EntryChange.SET);
+                        }
                     } else {
                         monitor.debug("Invalid action returned from etcd key watch: " + action);
                     }
@@ -306,7 +313,7 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent, ConfigurationAgent {
     }
 
     /**
-     * Processes a change received from etcd. Changes may be a modification of a service or channel entry, or a change in leadership.
+     * Processes a change received from etcd. Changes may be a modification of a service entry, channel entry, configuration entry, or a change in leadership.
      *
      * @param node   the change node
      * @param change the change type
@@ -320,6 +327,8 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent, ConfigurationAgent {
                 notifyServiceChange(value, change);
             } else if (key.startsWith("/" + authority + "/channels/")) {
                 notifyChannelChange(value, change);
+            } else if (key.startsWith("/" + authority + "/configuration/")) {
+                notifyConfigurationChange(key, value, change);
             } else if (key.startsWith("/" + authority + "/leader/")) {
                 checkLeader();
             }
@@ -335,6 +344,16 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent, ConfigurationAgent {
                     }
                 }
             }
+        }
+    }
+
+    private void notifyConfigurationChange(String key, String value, EntryChange change) {
+        List<Consumer<String>> listeners = configurationListeners.getOrDefault(key, Collections.emptyList());
+        if (change == EntryChange.DELETE || change == EntryChange.EXPIRE) {
+            // inject null for deleted and expired values
+            listeners.forEach(l -> l.accept(null));
+        } else {
+            listeners.forEach(l -> l.accept(value));
         }
     }
 
@@ -603,6 +622,10 @@ public class EtcdDiscoveryAgent implements DiscoveryAgent, ConfigurationAgent {
             index = 0;
         }
         return addresses[index++];
+    }
+
+    private String prefixConfigurationKey(String key) {
+        return "/" + authority + "/configuration/" + key;
     }
 
 }

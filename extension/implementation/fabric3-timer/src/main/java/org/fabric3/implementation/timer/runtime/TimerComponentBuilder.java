@@ -35,7 +35,6 @@ import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition
 import org.fabric3.implementation.timer.provision.TimerPhysicalComponent;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.container.component.ScopeContainer;
-import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
@@ -51,7 +50,6 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalComponent, TimerComponent> implements Fabric3EventListener<RuntimeStart> {
-    private ScopeRegistry scopeRegistry;
     private ImplementationManagerFactoryBuilder factoryBuilder;
     private TimerService timerService;
     private TransactionManager tm;
@@ -64,8 +62,7 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalCom
     @Reference(required = false)
     protected DiscoveryAgent discoveryAgent;
 
-    public TimerComponentBuilder(@Reference ScopeRegistry scopeRegistry,
-                                 @Reference ImplementationManagerFactoryBuilder factoryBuilder,
+    public TimerComponentBuilder(@Reference ImplementationManagerFactoryBuilder factoryBuilder,
                                  @Reference ClassLoaderRegistry classLoaderRegistry,
                                  @Reference PropertySupplierBuilder propertyBuilder,
                                  @Reference TimerService timerService,
@@ -76,7 +73,6 @@ public class TimerComponentBuilder extends PojoComponentBuilder<TimerPhysicalCom
                                  @Reference HostInfo info,
                                  @Monitor InvokerMonitor monitor) {
         super(propertyBuilder, managementService, helper, info);
-        this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
         this.timerService = timerService;
         this.tm = tm;

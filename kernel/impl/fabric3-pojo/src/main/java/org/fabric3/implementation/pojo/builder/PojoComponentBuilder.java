@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
+import org.fabric3.api.model.type.component.Scope;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.api.model.type.java.Injectable;
 import org.fabric3.api.model.type.java.InjectableType;
@@ -34,9 +35,11 @@ import org.fabric3.implementation.pojo.component.PojoComponentContext;
 import org.fabric3.implementation.pojo.component.PojoRequestContext;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.provision.PhysicalPojoComponent;
+import org.fabric3.implementation.pojo.supplier.UpdatableSupplier;
 import org.fabric3.spi.container.builder.ComponentBuilder;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.Component;
+import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.discovery.ConfigurationRegistry;
 import org.fabric3.spi.introspection.TypeMapping;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
@@ -60,6 +63,9 @@ public abstract class PojoComponentBuilder<PCD extends PhysicalPojoComponent, C 
 
     @Reference
     protected ConfigurationRegistry configurationRegistry;
+
+    @Reference
+    protected ScopeRegistry scopeRegistry;
 
     protected PojoComponentBuilder(PropertySupplierBuilder propertyBuilder, ManagementService managementService, IntrospectionHelper helper, HostInfo info) {
         this.propertyBuilder = propertyBuilder;
@@ -87,12 +93,14 @@ public abstract class PojoComponentBuilder<PCD extends PhysicalPojoComponent, C 
                     if (property.isRequired() && value == null) {
                         throw new Fabric3Exception("External property " + key + " not found for component " + component.getUri());
                     }
-                    factory.setSupplier(source, () -> value);
-                    // register a listener for property changes
+                    // use an updatable supplier so it can be updated by the listener below
+                    factory.setSupplier(source, new UpdatableSupplier<>(() -> value));
+                    // register a listener for property changes that initiates re-injection
                     configurationRegistry.registerListener(key, (newValue) -> {
                         component.startUpdate();
                         component.setSupplier(source, () -> newValue);
                         component.endUpdate();
+                        scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
                     });
                 } else {
                     Document value = property.getXmlValue();

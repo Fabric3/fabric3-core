@@ -29,7 +29,6 @@ import org.fabric3.implementation.pojo.manager.ImplementationManagerFactory;
 import org.fabric3.implementation.pojo.manager.ImplementationManagerFactoryBuilder;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.spi.container.component.ScopeContainer;
-import org.fabric3.spi.container.component.ScopeRegistry;
 import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.management.ManagementService;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -40,17 +39,14 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class JavaComponentBuilder extends PojoComponentBuilder<PhysicalJavaComponent, JavaComponent> {
-    private ScopeRegistry scopeRegistry;
     private ImplementationManagerFactoryBuilder factoryBuilder;
 
-    public JavaComponentBuilder(@Reference ScopeRegistry scopeRegistry,
-                                @Reference ImplementationManagerFactoryBuilder factoryBuilder,
+    public JavaComponentBuilder(@Reference ImplementationManagerFactoryBuilder factoryBuilder,
                                 @Reference PropertySupplierBuilder propertyBuilder,
                                 @Reference ManagementService managementService,
                                 @Reference IntrospectionHelper helper,
                                 @Reference HostInfo info) {
         super(propertyBuilder, managementService, helper, info);
-        this.scopeRegistry = scopeRegistry;
         this.factoryBuilder = factoryBuilder;
     }
 

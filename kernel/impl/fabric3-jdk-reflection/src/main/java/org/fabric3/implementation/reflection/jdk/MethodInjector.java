@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.implementation.pojo.supplier.MultiplicitySupplier;
+import org.fabric3.implementation.pojo.supplier.UpdatableSupplier;
 import org.fabric3.spi.container.injection.InjectionAttributes;
 import org.fabric3.spi.container.injection.Injector;
 
@@ -50,9 +51,10 @@ public class MethodInjector implements Injector<Object> {
             target = null;
         } else {
             target = supplier.get();
-            if (target == null) {
+            if (target == null && !(supplier instanceof UpdatableSupplier)) {
                 // The Supplier is "empty", e.g. a reference has not been wired yet. Avoid injecting onto the instance.
-                // Note this is a correct assumption as there is no mechanism for configuring null values in SCA
+                // Note: this is a correct assumption as there is no mechanism for configuring null values in SCA
+                // Note: the UpdatableSupplier check is made since a property value could be updated to null
                 return;
             }
         }

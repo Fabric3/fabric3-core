@@ -41,6 +41,7 @@ import org.fabric3.implementation.pojo.supplier.ListMultiplicitySupplier;
 import org.fabric3.implementation.pojo.supplier.MapMultiplicitySupplier;
 import org.fabric3.implementation.pojo.supplier.MultiplicitySupplier;
 import org.fabric3.implementation.pojo.supplier.SetMultiplicitySupplier;
+import org.fabric3.implementation.pojo.supplier.UpdatableSupplier;
 import org.fabric3.spi.container.injection.InjectionAttributes;
 import org.fabric3.spi.container.injection.Injector;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
@@ -133,12 +134,18 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
         setSupplier(injectable, supplier, InjectionAttributes.EMPTY_ATTRIBUTES);
     }
 
+    @SuppressWarnings("unchecked")
     public void setSupplier(Injectable injectable, Supplier<?> supplier, InjectionAttributes attributes) {
         if (InjectableType.REFERENCE == injectable.getType() || InjectableType.CALLBACK == injectable.getType()) {
             setUpdatableFactory(injectable, supplier, attributes);
         } else {
             // the factory corresponds to a property or context, which will override previous values if re-injected
-            factories.put(injectable, supplier);
+            Supplier<?> factory = factories.get(injectable);
+            if (factory instanceof UpdatableSupplier) {
+                ((UpdatableSupplier) factory).update(supplier);
+            } else {
+                factories.put(injectable, supplier);
+            }
         }
     }
 
@@ -265,7 +272,7 @@ public class ImplementationManagerFactoryImpl implements ImplementationManagerFa
         // determine if Supplier is present. if so, must be updated.
         Supplier<?> factory = factories.get(injectable);
         if (factory == null) {
-            // factory not present, add it first checking ot see if it is a collection type and, if so, wrapping it in a collection-based factory
+            // factory not present, add it first checking to see if it is a collection type and, if so, wrapping it in a collection-based factory
             Class<?> type = getMemberType(injectable);
             if (Map.class.equals(type)) {
                 MapMultiplicitySupplier mapFactory = new MapMultiplicitySupplier();

@@ -120,13 +120,13 @@ public class ImplementationManagerImpl implements ImplementationManager {
         updatedInjectors.clear();
     }
 
-    public void updated(Object instance, String referenceName) {
+    public void updated(Object instance, String name) {
         if (instance != null && !reinjectable) {
             throw new IllegalStateException("Implementation is not reinjectable: " + instance.getClass().getName());
         }
         for (int i = 0; i < injectables.length; i++) {
             Injectable attribute = injectables[i];
-            if (attribute.getName().equals(referenceName)) {
+            if (attribute.getName().equals(name)) {
                 Injector<Object> injector = injectors[i];
                 if (instance != null) {
                     updatedInjectors.add(injector);
@@ -135,13 +135,13 @@ public class ImplementationManagerImpl implements ImplementationManager {
         }
     }
 
-    public void removed(Object instance, String referenceName) {
+    public void removed(Object instance, String name) {
         if (instance != null && !reinjectable) {
             throw new IllegalStateException("Implementation is not reinjectable: " + instance.getClass().getName());
         }
         for (int i = 0; i < injectables.length; i++) {
             Injectable attribute = injectables[i];
-            if (attribute.getName().equals(referenceName)) {
+            if (attribute.getName().equals(name)) {
                 Injector<Object> injector = injectors[i];
                 injector.clearSupplier();
                 if (instance != null) {
