@@ -29,6 +29,10 @@
         <f3:implementation.system class="org.fabric3.implementation.pojo.builder.CollectionBuilderImpl"/>
     </component>
 
+    <component name="JsonObjectBuilder">
+        <f3:implementation.system class="org.fabric3.implementation.pojo.builder.JsonObjectBuilderImpl"/>
+    </component>
+
     <component name="MapBuilder">
         <f3:implementation.system class="org.fabric3.implementation.pojo.builder.MapBuilderImpl"/>
     </component>

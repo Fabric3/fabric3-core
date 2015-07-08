@@ -22,6 +22,7 @@ package org.fabric3.implementation.pojo.builder;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.runtime.HostInfo;
@@ -67,6 +68,9 @@ public abstract class PojoComponentBuilder<PCD extends PhysicalPojoComponent, C 
     @Reference
     protected ScopeRegistry scopeRegistry;
 
+    @Reference(required = false)
+    protected JsonObjectBuilder jsonObjectBuilder;
+
     protected PojoComponentBuilder(PropertySupplierBuilder propertyBuilder, ManagementService managementService, IntrospectionHelper helper, HostInfo info) {
         this.propertyBuilder = propertyBuilder;
         this.managementService = managementService;
@@ -93,12 +97,20 @@ public abstract class PojoComponentBuilder<PCD extends PhysicalPojoComponent, C 
                     if (property.isRequired() && value == null) {
                         throw new Fabric3Exception("External property " + key + " not found for component " + component.getUri());
                     }
+
+                    Type type = factory.getGenericType(source);
+                    DataType dataType = getDataType(type, typeMapping);
+
+                    ClassLoader classLoader = factory.getImplementationClass().getClassLoader();
+
                     // use an updatable supplier so it can be updated by the listener below
-                    factory.setSupplier(source, new UpdatableSupplier<>(() -> value));
+                    Supplier<?> supplier = jsonObjectBuilder != null ? jsonObjectBuilder.createSupplier(name, value, dataType, classLoader) : () -> value;
+                    factory.setSupplier(source, new UpdatableSupplier<>(supplier));
                     // register a listener for property changes that initiates re-injection
                     configurationRegistry.registerListener(key, (newValue) -> {
                         component.startUpdate();
-                        component.setSupplier(source, () -> newValue);
+                        Supplier<?> newSup = jsonObjectBuilder != null ? jsonObjectBuilder.createSupplier(name, newValue, dataType, classLoader) : () -> newValue;
+                        component.setSupplier(source, newSup);
                         component.endUpdate();
                         scopeRegistry.getScopeContainer(Scope.COMPOSITE).reinject();
                     });

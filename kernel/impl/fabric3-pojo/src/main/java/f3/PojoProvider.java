@@ -24,6 +24,7 @@ import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.implementation.pojo.builder.ArrayBuilderImpl;
 import org.fabric3.implementation.pojo.builder.CollectionBuilderImpl;
+import org.fabric3.implementation.pojo.builder.JsonObjectBuilderImpl;
 import org.fabric3.implementation.pojo.builder.MapBuilderImpl;
 import org.fabric3.implementation.pojo.builder.ObjectBuilderImpl;
 import org.fabric3.implementation.pojo.builder.PropertySupplierBuilderImpl;
@@ -56,6 +57,7 @@ public class PojoProvider {
         compositeBuilder.component(newBuilder(ObjectBuilderImpl.class).build());
         compositeBuilder.component(newBuilder(ChannelProxyServiceImpl.class).build());
         compositeBuilder.component(newBuilder(WireProxyServiceImpl.class).build());
+        compositeBuilder.component(newBuilder(JsonObjectBuilderImpl.class).build());
 
         return compositeBuilder.build();
     }
