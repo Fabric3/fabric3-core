@@ -18,6 +18,7 @@
  */
 package org.fabric3.contribution;
 
+import java.net.URI;
 import java.util.List;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -29,8 +30,8 @@ import org.fabric3.spi.contribution.Contribution;
 public interface DependencyResolver {
 
     /**
-     * Resolves dependencies for the given contributions. An ordered list is returned based on a reverse topological sort of contribution resolved
-     * imports and capability requirements.
+     * Resolves dependencies for the given contributions. An ordered list is returned based on a reverse topological sort of contribution resolved imports and
+     * capability requirements.
      *
      * @param contributions the  list of contributions to order
      * @return the ordered list of contributions
@@ -39,12 +40,20 @@ public interface DependencyResolver {
     List<Contribution> resolve(List<Contribution> contributions) throws Fabric3Exception;
 
     /**
-     * Orders a list of contributions to uninstall. Ordering is calculated by topologically sorting the list based on resolved contribution imports
-     * and capability requirements.
+     * Orders a list of contributions to uninstall. Ordering is calculated by topologically sorting the list based on resolved contribution imports and
+     * capability requirements.
      *
      * @param contributions the contributions to order
      * @return the ordered list of contributions
      */
     List<Contribution> orderForUninstall(List<Contribution> contributions);
 
+    /**
+     * Returns the contribution and its transitive dependents in order. For example, if C2 depends on C1 and C3 on C2, the collection returned will be {C3, C2,
+     * C1}.
+     *
+     * @param uri the contribution URI
+     * @return an ordered collection containing the contribution and its transitive dependents
+     */
+    List<Contribution> orderContributionAndDependents(URI uri);
 }

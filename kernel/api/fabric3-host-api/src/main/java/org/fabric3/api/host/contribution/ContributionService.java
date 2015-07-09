@@ -47,6 +47,15 @@ public interface ContributionService {
     Set<URI> getContributions();
 
     /**
+     * Returns the URIs of the contribution and its transitive dependents in order. For example, if C2 depends on C1 and C3 on C2, the collection returned will
+     * be {C3, C2, C1}.
+     *
+     * @param uri the contribution URI
+     * @return an ordered collection containing the URIs of the contribution and its transitive dependents
+     */
+    List<URI> getContributionAndDependents(URI uri);
+
+    /**
      * Returns true if a contribution for the given URI exists.
      *
      * @param uri the contribution URI

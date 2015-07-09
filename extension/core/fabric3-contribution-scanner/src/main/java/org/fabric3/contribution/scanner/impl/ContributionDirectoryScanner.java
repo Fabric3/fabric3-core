@@ -59,13 +59,13 @@ import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Scans deployment directories for contributions. In production mode, deployment directories will be scanned once at startup and any contained contributions
- * will be deployed. In the default dynamic (non-production) mode, scanning will be periodic with support for adding, updating, and removing contributions.
- * In dynamic mode, the scanner watches deployment directories at a fixed interval. Files are tracked as a {@link FileSystemResource}, which provides a
- * consistent view across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval, removed files are
- * determined by comparing the current directory contents with the contents from the previous pass. Changes or additions are also determined by comparing the
- * current directory state with that of the previous pass. Detected changes and additions are cached for the following interval. Detected changes and additions
- * from the previous interval are then compared using a timestamp to see if they have changed again. If so, they remain cached. If they have not changed, they
- * are processed, contributed via the ContributionService, and deployed in the domain.
+ * will be deployed. In the default dynamic (non-production) mode, scanning will be periodic with support for adding, updating, and removing contributions. In
+ * dynamic mode, the scanner watches deployment directories at a fixed interval. Files are tracked as a {@link FileSystemResource}, which provides a consistent
+ * view across various types such as jars and exploded directories. Unknown file types are ignored. At the specified interval, removed files are determined by
+ * comparing the current directory contents with the contents from the previous pass. Changes or additions are also determined by comparing the current
+ * directory state with that of the previous pass. Detected changes and additions are cached for the following interval. Detected changes and additions from the
+ * previous interval are then compared using a timestamp to see if they have changed again. If so, they remain cached. If they have not changed, they are
+ * processed, contributed via the ContributionService, and deployed in the domain.
  */
 @EagerInit
 public class ContributionDirectoryScanner implements Runnable, Fabric3EventListener {
@@ -254,6 +254,7 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
         List<ContributionSource> sources = new ArrayList<>();
         List<FileSystemResource> updatedResources = new ArrayList<>();
         List<URI> uris = new ArrayList<>();
+        Set<URI> undeployed = new HashSet<>();
         for (FileSystemResource resource : cache.values()) {
             if (resource.getState() != FileSystemResourceState.UPDATED) {
                 continue;
@@ -263,22 +264,26 @@ public class ContributionDirectoryScanner implements Runnable, Fabric3EventListe
                 URI artifactUri = new URI(name);
                 URL location = resource.getLocation();
                 long timestamp = resource.getTimestamp();
-                // undeploy any deployed composites in the reverse order that they were deployed in
-                try {
-                    domain.undeploy(artifactUri);
-                } catch (Fabric3Exception e) {
-                    monitor.error(e);
-                    return;
-                }
-                // if the resource has changed, wait until the next pass as updates may still be in progress
-                if (resource.isChanged()) {
-                    resource.checkpoint();
-                    continue;
-                }
-                ContributionSource source = new FileContributionSource(artifactUri, location, timestamp, false);
-                sources.add(source);
-                updatedResources.add(resource);
-                uris.add(artifactUri);
+                // undeploy the contribution and any dependent contributions in order
+                List<URI> affected = contributionService.getContributionAndDependents(artifactUri);
+                affected.forEach(contribution -> {
+                    if (undeployed.contains(contribution)) {
+                        // already seen, skip
+                        return;
+                    }
+                    try {
+                        domain.undeploy(contribution);
+                    } catch (Fabric3Exception e) {
+                        monitor.error(e);
+                        return;
+                    }
+                    undeployed.add(contribution);
+                    ContributionSource source = new FileContributionSource(contribution, location, timestamp, false);
+                    sources.add(source);
+                    updatedResources.add(resource);
+                    uris.add(contribution);
+                });
+
             } catch (URISyntaxException e) {
                 resource.setState(FileSystemResourceState.ERROR);
                 monitor.error(e);

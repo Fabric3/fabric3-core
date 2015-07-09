@@ -103,6 +103,11 @@ public class ContributionServiceImpl implements ContributionService {
         return metaDataStore.find(uri) != null;
     }
 
+    public List<URI> getContributionAndDependents(URI uri) {
+        List<Contribution> contributions = dependencyResolver.orderContributionAndDependents(uri);
+        return contributions.stream().map(Contribution::getUri).collect(Collectors.toList());
+    }
+
     public List<Deployable> getDeployables(URI uri) {
         Contribution contribution = find(uri);
         List<Deployable> list = new ArrayList<>();

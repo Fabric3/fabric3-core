@@ -114,19 +114,39 @@ public class DependencyResolverImpl implements DependencyResolver {
         List<Cycle<Contribution>> cycles = detector.findCycles(dag);
         if (!cycles.isEmpty()) {
             // this is a programming error
-            throw new AssertionError("Cylces detected");
+            throw new AssertionError("Cycles detected");
         }
         try {
             List<Vertex<Contribution>> vertices = sorter.sort(dag);
             List<Contribution> ordered = new ArrayList<>(vertices.size());
-            for (Vertex<Contribution> vertex : vertices) {
-                ordered.add(vertex.getEntity());
-            }
+            ordered.addAll(vertices.stream().map(Vertex::getEntity).collect(Collectors.toList()));
             return ordered;
         } catch (GraphException e) {
             // this is a programming error
             throw new AssertionError(e);
         }
+    }
+
+    public List<Contribution> orderContributionAndDependents(URI uri) {
+        Contribution contribution = store.find(uri);
+        List<Contribution> dependents = new ArrayList<>();
+        Set<Contribution> contributions = store.getContributions();
+        addDependents(contribution, dependents, contributions);
+        return orderForUninstall(dependents);
+    }
+
+    private void addDependents(Contribution current, List<Contribution> dependents, Set<Contribution> contributions)  {
+        dependents.add(current);
+        URI currentUri = current.getUri();
+        contributions.forEach(c -> {
+            if (dependents.contains(c)) {
+                return;
+            }
+            c.getWires().stream().filter(wire -> {
+                URI exportedUri = wire.getExportContributionUri();
+                return currentUri.equals(exportedUri);
+            }).forEach(wire -> addDependents(c, dependents, contributions));
+        });
     }
 
     /**

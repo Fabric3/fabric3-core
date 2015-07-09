@@ -271,10 +271,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
         return extensions;
     }
 
-    private <S extends Symbol, V> ResourceElement<S, V> resolve(Contribution contribution,
-                                                                                     Class<V> type,
-                                                                                     S symbol,
-                                                                                     IntrospectionContext context) {
+    private <S extends Symbol, V> ResourceElement<S, V> resolve(Contribution contribution, Class<V> type, S symbol, IntrospectionContext context) {
         ResourceElement<S, V> element;
         // resolve by delegating to exporting contributions first
         for (ContributionWire<?, ?> wire : contribution.getWires()) {
@@ -333,10 +330,7 @@ public class MetaDataStoreImpl implements MetaDataStore {
     }
 
     @SuppressWarnings({"unchecked"})
-    private <S extends Symbol, V> ResourceElement<S, V> resolveInternal(Contribution contribution,
-                                                                                             Class<V> type,
-                                                                                             S symbol,
-                                                                                             IntrospectionContext context) {
+    private <S extends Symbol, V> ResourceElement<S, V> resolveInternal(Contribution contribution, Class<V> type, S symbol, IntrospectionContext context) {
         for (Resource resource : contribution.getResources()) {
             for (ResourceElement<?, ?> element : resource.getResourceElements()) {
                 if (element.getSymbol().equals(symbol)) {
