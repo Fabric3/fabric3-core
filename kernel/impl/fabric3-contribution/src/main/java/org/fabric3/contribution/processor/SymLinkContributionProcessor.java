@@ -119,7 +119,14 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
             // take the first entry in the file as the main contribution location
             String pathname = paths.get(0);
             // expand variables of the form ${..}
-            pathname = RegexHelper.expandExpression(pathname, (s) -> System.getenv().getOrDefault(s.substring(2, s.length() - 1), ""));
+            pathname = RegexHelper.expandExpression(pathname, (s) -> {
+                String var = s.substring(2, s.length() - 1);
+                String path = System.getenv().get(var);
+                if (path == null) {
+                    throw new Fabric3Exception("Contribution location environment variable not set: " + var);
+                }
+                return path;
+            });
             File file = new File(pathname);
             URL dereferencedLocation = file.toURI().toURL();
             URI contributionUri = URI.create(file.getName());
@@ -131,10 +138,17 @@ public class SymLinkContributionProcessor implements ContributionProcessor {
 
             if (paths.size() > 1) {
                 for (int i = 1; i < paths.size(); i++) {
-                    String path = paths.get(i);
-                     // expand variables of the form ${..}
-                    path = RegexHelper.expandExpression(path, (s) -> System.getenv().getOrDefault(s.substring(2, s.length() - 1), ""));
-                    syntheticContribution.addAdditionalLocation(new File(path).toURI().toURL());
+                    String subPath = paths.get(i);
+                    // expand variables of the form ${..}
+                    subPath = RegexHelper.expandExpression(subPath, (s) -> {
+                        String var = s.substring(2, s.length() - 1);
+                        String path = System.getenv().get(var);
+                        if (path == null) {
+                            throw new Fabric3Exception("Contribution location environment variable not set: " + var);
+                        }
+                        return path;
+                    });
+                    syntheticContribution.addAdditionalLocation(new File(subPath).toURI().toURL());
                 }
             }
 
