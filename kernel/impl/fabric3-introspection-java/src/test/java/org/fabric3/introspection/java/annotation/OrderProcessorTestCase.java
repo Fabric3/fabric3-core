@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.fabric3.api.annotation.wire.Order;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.DefaultIntrospectionContext;
-import org.fabric3.spi.introspection.java.InvalidAnnotation;
 
 /**
  *
@@ -40,17 +39,6 @@ public class OrderProcessorTestCase extends TestCase {
         assertEquals(1, type.getOrder());
     }
 
-    public void testInvalidKey() throws Exception {
-        InvalidAnnotated annotated = new InvalidAnnotated();
-        Order annotation = annotated.getClass().getAnnotation(Order.class);
-
-        processor.visitType(annotation, annotated.getClass(), type, context);
-
-        assertTrue(context.hasErrors());
-        assertTrue(context.getErrors().get(0) instanceof InvalidAnnotation);
-    }
-
-    @Override
     public void setUp() throws Exception {
         super.setUp();
         processor = new OrderProcessor();
@@ -63,8 +51,4 @@ public class OrderProcessorTestCase extends TestCase {
 
     }
 
-    @Order()
-    private static class InvalidAnnotated {
-
-    }
 }

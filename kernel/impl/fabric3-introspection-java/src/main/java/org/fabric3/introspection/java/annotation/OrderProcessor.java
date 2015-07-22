@@ -32,10 +32,6 @@ public class OrderProcessor extends AbstractAnnotationProcessor<Order> {
     }
 
     public void visitType(Order annotation, Class<?> type, InjectingComponentType componentType, IntrospectionContext context) {
-        if (annotation.value() == Integer.MIN_VALUE) {
-            context.addError(new InvalidAnnotation("A value must be specified for @Order", type, annotation, type));
-            return;
-        }
         componentType.setOrder(annotation.value());
     }
 }
