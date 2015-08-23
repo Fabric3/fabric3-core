@@ -28,7 +28,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Optional;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.host.stream.UrlSource;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -86,16 +88,18 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
             implementation.setComponentType(type);
 
             // check if an explicit component type file is present (required for backward compatibility)
-            ComponentType componentType = loadComponentType(context);
-            for (Map.Entry<String, Reference<ComponentType>> entry : componentType.getReferences().entrySet()) {
-                type.add(entry.getValue());
-            }
-            for (Map.Entry<String, Property> entry : componentType.getProperties().entrySet()) {
-                type.add(entry.getValue());
-            }
+            Optional<ComponentType> optional = loadComponentType(context);
+            optional.ifPresent((componentType)->{
+                for (Map.Entry<String, Reference<ComponentType>> entry : componentType.getReferences().entrySet()) {
+                    type.add(entry.getValue());
+                }
+                for (Map.Entry<String, Property> entry : componentType.getProperties().entrySet()) {
+                    type.add(entry.getValue());
+                }
+            });
         } catch (LoaderException e) {
             if (e.getCause() instanceof FileNotFoundException) {
-                // ignore since we allow component types not to be specified in the web app 
+                // ignore since component do not need to be specified in the web app
             } else {
                 ElementLoadFailure failure = new ElementLoadFailure("Error loading web.componentType", e, startLocation);
                 context.addError(failure);
@@ -129,7 +133,7 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
         return uri;
     }
 
-    private ComponentType loadComponentType(IntrospectionContext context) throws LoaderException {
+    private Optional<ComponentType> loadComponentType(IntrospectionContext context) throws LoaderException {
         URL url;
         try {
             url = new URL(context.getSourceBase(), "web.componentType");
@@ -139,14 +143,22 @@ public class WebComponentLoader extends AbstractValidatingTypeLoader<WebImplemen
         }
         Source source = new UrlSource(url);
         IntrospectionContext childContext = new DefaultIntrospectionContext(null, context.getClassLoader(), url);
-        ComponentType componentType = registry.load(source, ComponentType.class, childContext);
-        if (childContext.hasErrors()) {
-            context.addErrors(childContext.getErrors());
+        try {
+            ComponentType componentType = registry.load(source, ComponentType.class, childContext);
+            if (childContext.hasErrors()) {
+                context.addErrors(childContext.getErrors());
+            }
+            if (childContext.hasWarnings()) {
+                context.addWarnings(childContext.getWarnings());
+            }
+            return Optional.of(componentType);
+        } catch (Fabric3Exception e) {
+            if (e.getCause() instanceof FileNotFoundException) {
+                // ignore component type
+                return Optional.empty();
+            }
+            throw e;
         }
-        if (childContext.hasWarnings()) {
-            context.addWarnings(childContext.getWarnings());
-        }
-        return componentType;
     }
 
     /**
