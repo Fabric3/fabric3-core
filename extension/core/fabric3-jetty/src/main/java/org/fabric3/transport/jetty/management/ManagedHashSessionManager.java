@@ -60,12 +60,6 @@ public class ManagedHashSessionManager extends HashSessionManager {
     }
 
     @Override
-    @ManagementOperation(description = "Invalidates all live sessions")
-    protected void invalidateSessions() throws Exception {
-        super.invalidateSessions();
-    }
-
-    @Override
     @ManagementOperation(description = "The maximum session cookie age in seconds")
     public int getSessionsMax() {
         return super.getSessionsMax();

@@ -16,8 +16,10 @@
  */
 package org.fabric3.management.rest.runtime;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -253,6 +255,21 @@ public class MarshallerImplTestCase extends TestCase {
         public boolean markSupported() {
             return stream.markSupported();
         }
+
+        @Override
+        public boolean isFinished() {
+            return false;
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public void setReadListener(ReadListener readListener) {
+
+        }
     }
 
     private class MockOutputStream extends ServletOutputStream {
@@ -265,6 +282,16 @@ public class MarshallerImplTestCase extends TestCase {
         @Override
         public void write(byte[] b) throws IOException {
             // ignore
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public void setWriteListener(WriteListener writeListener) {
+
         }
     }
 

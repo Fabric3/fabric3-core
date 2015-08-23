@@ -60,6 +60,16 @@ public class JettyLogger implements Logger {
         }
     }
 
+    public void debug(String msg, long value) {
+        if (DEBUG_ENABLED) {
+            if (MONITOR != null) {
+                MONITOR.debug(msg);
+            } else {
+                System.err.println(":DEBUG:  " + msg);
+            }
+        }
+    }
+
     public void debug(Throwable thrown) {
         debug(thrown.getMessage(), thrown);
     }

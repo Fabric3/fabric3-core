@@ -165,13 +165,13 @@ public class JettyServiceImplTestCase extends TestCase {
         EasyMock.replay(info);
 
         Port port = EasyMock.createMock(Port.class);
-        EasyMock.expect(port.getNumber()).andReturn(8585).anyTimes();
+        EasyMock.expect(port.getNumber()).andReturn(HTTP_PORT).anyTimes();
         port.bind(Port.TYPE.TCP);
         EasyMock.expectLastCall().atLeastOnce();
 
         PortAllocator portAllocator = EasyMock.createMock(PortAllocator.class);
         EasyMock.expect(portAllocator.isPoolEnabled()).andReturn(false).times(2);
-        EasyMock.expect(portAllocator.reserve("HTTP", "HTTP", 8585)).andReturn(port).atLeastOnce();
+        EasyMock.expect(portAllocator.reserve("HTTP", "HTTP", HTTP_PORT)).andReturn(port).atLeastOnce();
         portAllocator.release("HTTP");
         EasyMock.expectLastCall().atLeastOnce();
         EasyMock.replay(portAllocator, port);

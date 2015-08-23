@@ -6,17 +6,29 @@ dependencies {
     providedCompile project(':kernel:api:fabric3-spi')
     providedCompile project(':kernel:impl:fabric3-util')
 
-    compile group: 'org.eclipse.jetty', name: 'jetty-webapp', version: jettyVersion
-    compile(group: 'org.eclipse.jetty', name: 'jetty-security', version: jettyVersion) {
-        exclude group: 'javax.servlet', module: 'servlet-api'
+    compile (group: 'org.eclipse.jetty', name: 'jetty-webapp', version: jettyVersion) {
+        exclude module: 'javax.servlet-api'
     }
-    compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: jettyVersion
-    compile group: 'org.eclipse.jetty', name: 'jetty-jmx', version: jettyVersion
-    compile group: 'org.eclipse.jetty', name: 'jetty-annotations', version: jettyVersion
+    compile(group: 'org.eclipse.jetty', name: 'jetty-security', version: jettyVersion) {
+        exclude module: 'javax.servlet-api'
+    }
+    compile (group: 'org.eclipse.jetty', name: 'jetty-servlets', version: jettyVersion){
+        exclude module: 'javax.servlet-api'
+    }
+    compile( group: 'org.eclipse.jetty', name: 'jetty-jmx', version: jettyVersion){
+        exclude module: 'javax.servlet-api'
+    }
+    compile (group: 'org.eclipse.jetty', name: 'jetty-annotations', version: jettyVersion){
+        exclude module: 'javax.servlet-api'
+    }
 
-    compile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: jettyVersion
+    compile (group: 'org.eclipse.jetty', name: 'jetty-continuation', version: jettyVersion){
+        exclude module: 'javax.servlet-api'
+    }
 
-    compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: jettyVersion
+    compile (group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: jettyVersion){
+        exclude module: 'javax.servlet-api'
+    }
 
 }
 

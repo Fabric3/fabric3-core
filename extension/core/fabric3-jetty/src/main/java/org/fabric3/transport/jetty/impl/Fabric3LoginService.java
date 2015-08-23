@@ -20,6 +20,7 @@
 package org.fabric3.transport.jetty.impl;
 
 import javax.security.auth.Subject;
+import javax.servlet.ServletRequest;
 import java.security.Principal;
 import java.util.Set;
 
@@ -49,7 +50,7 @@ public class Fabric3LoginService implements LoginService {
         return "fabric3";
     }
 
-    public UserIdentity login(String username, Object credentials) {
+    public UserIdentity login(String username, Object credentials, ServletRequest request) {
         UsernamePasswordToken token = new UsernamePasswordToken(username, credentials.toString());
         try {
             SecuritySubject subject = authenticationService.authenticate(token);

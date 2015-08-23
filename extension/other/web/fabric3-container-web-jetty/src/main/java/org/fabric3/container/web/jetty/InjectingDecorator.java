@@ -19,72 +19,35 @@
  */
 package org.fabric3.container.web.jetty;
 
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import java.util.EventListener;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.Decorator;
 import org.fabric3.spi.container.injection.Injector;
 
 /**
  * Injects a servlet or filter with reference proxies, properties, and the component context.
  */
-public class InjectingDecorator implements ServletContextHandler.Decorator {
+public class InjectingDecorator implements Decorator {
     private Map<String, List<Injector<?>>> injectorMappings;
 
     public InjectingDecorator(Map<String, List<Injector<?>>> injectorMappings) {
         this.injectorMappings = injectorMappings;
     }
 
-    public <T extends Filter> T decorateFilterInstance(T filter) throws ServletException {
-        inject(filter);
-        return filter;
-    }
-
-    public <T extends Servlet> T decorateServletInstance(T servlet) throws ServletException {
-        inject(servlet);
-        return servlet;
-    }
-
-    public <T extends EventListener> T decorateListenerInstance(T listener) throws ServletException {
-        inject(listener);
-        return listener;
-    }
-
-    public void decorateFilterHolder(FilterHolder filter) throws ServletException {
-        inject(filter);
-
-    }
-
-    public void decorateServletHolder(ServletHolder servlet) throws ServletException {
-        inject(servlet);
-    }
-
-    public void destroyServletInstance(Servlet s) {
-
-    }
-
-    public void destroyFilterInstance(Filter f) {
-
-    }
-
-    public void destroyListenerInstance(EventListener f) {
-
-    }
-
+    @Override
     @SuppressWarnings({"unchecked"})
-    private void inject(Object instance) throws ServletException {
+    public <T> T decorate(T instance) {
         List<Injector<?>> injectors = injectorMappings.get(instance.getClass().getName());
         if (injectors != null) {
             for (Injector injector : injectors) {
                 injector.inject(instance);
             }
         }
+        return instance;
     }
 
+    public void destroy(Object o) {
+
+    }
 }

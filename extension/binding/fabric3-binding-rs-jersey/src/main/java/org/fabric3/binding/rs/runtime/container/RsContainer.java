@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -229,6 +230,10 @@ public final class RsContainer extends HttpServlet {
             return delegate.getSession();
         }
 
+        public String changeSessionId() {
+            return delegate.changeSessionId();
+        }
+
         public boolean isRequestedSessionIdValid() {
             return delegate.isRequestedSessionIdValid();
         }
@@ -265,6 +270,10 @@ public final class RsContainer extends HttpServlet {
             return delegate.getPart(name);
         }
 
+        public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
+            return delegate.upgrade(handlerClass);
+        }
+
         public Object getAttribute(String name) {
             return delegate.getAttribute(name);
         }
@@ -283,6 +292,10 @@ public final class RsContainer extends HttpServlet {
 
         public int getContentLength() {
             return delegate.getContentLength();
+        }
+
+        public long getContentLengthLong() {
+          return delegate.getContentLengthLong();
         }
 
         public String getContentType() {

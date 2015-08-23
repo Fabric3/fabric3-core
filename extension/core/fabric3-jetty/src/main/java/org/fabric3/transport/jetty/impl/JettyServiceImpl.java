@@ -707,9 +707,9 @@ public class JettyServiceImpl implements JettyService, Transport {
         String workerName = hostInfo.getRuntimeName().replace(".", "_"); // Jetty does not accept names with '.' characters
         sessionIdManager.setWorkerName(workerName);
         server.setSessionIdManager(sessionIdManager);
-        sessionManager.setIdManager(sessionIdManager);
         SessionHandler sessionHandler = new SessionHandler(sessionManager);
         servletHandler = new ManagedServletHandler();
+        servletHandler.setEnsureDefaultServlet(false);
         sessionHandler.setHandler(servletHandler);
         contextHandler.setHandler(sessionHandler);
 
