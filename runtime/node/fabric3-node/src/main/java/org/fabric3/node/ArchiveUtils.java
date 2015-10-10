@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
@@ -146,31 +147,47 @@ public class ArchiveUtils {
      */
     public static List<File> unpack(File archive, File destination) throws IOException {
         List<File> expandedFiles = new ArrayList<>();
-        JarInputStream jarStream = null;
-        try {
-
-            jarStream = new JarInputStream(new FileInputStream(archive));
-            JarEntry entry;
-            while ((entry = jarStream.getNextJarEntry()) != null) {
-                if (entry.isDirectory()) {
-                    continue;
+        String fileName = archive.toString();
+        int pos = fileName.indexOf(".jar!");
+        if (pos > 0) {
+            // running from a Jar so extract the embedded Jar and then expand it
+            try (InputStream stream = ArchiveUtils.class.getClassLoader().getResourceAsStream(fileName.substring(pos + 6))) {   // 6 == ".jar!/"
+                File destinationFile = getFile(stream, archive.getName(), destination);
+                if (destinationFile != null) {
+                    expandedFiles.addAll(unpack(destinationFile, destination));
                 }
-                String simpleName = parseSimpleName(entry);
-                if (simpleName == null) {
-                    continue;
-                }
-                File jarFile = new File(destination, simpleName);
-                if (jarFile.exists()) {
-                    // jar already exists, skip
-                    continue;
-                }
-                copy(jarStream, jarFile);
-                expandedFiles.add(jarFile);
             }
-            return expandedFiles;
-        } finally {
-            IOHelper.closeQuietly(jarStream);
+        } else {
+            try (JarInputStream stream = new JarInputStream(new FileInputStream(archive))) {
+
+                JarEntry entry;
+                while ((entry = stream.getNextJarEntry()) != null) {
+                    if (entry.isDirectory()) {
+                        continue;
+                    }
+                    String simpleName = parseSimpleName(entry);
+                    File destinationFile = getFile(stream, simpleName, destination);
+                    if (destinationFile == null) {
+                        continue;
+                    }
+                    expandedFiles.add(destinationFile);
+                }
+            }
         }
+        return expandedFiles;
+    }
+
+    private static File getFile(InputStream stream, String name, File destination) throws IOException {
+        if (name == null) {
+            return null;
+        }
+        File jarFile = new File(destination, name);
+        if (jarFile.exists()) {
+            // jar already exists, skip
+            return null;
+        }
+        copy(stream, jarFile);
+        return jarFile;
     }
 
     /**
@@ -202,7 +219,7 @@ public class ArchiveUtils {
      * @param destination the destination
      * @throws IOException if there is an error copying
      */
-    private static void copy(JarInputStream stream, File destination) throws IOException {
+    private static void copy(InputStream stream, File destination) throws IOException {
         try (OutputStream os = new BufferedOutputStream(new FileOutputStream(destination))) {
             IOHelper.copy(stream, os);
             os.flush();
