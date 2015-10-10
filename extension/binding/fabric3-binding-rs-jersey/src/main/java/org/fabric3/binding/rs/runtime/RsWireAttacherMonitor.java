@@ -41,4 +41,7 @@ public interface RsWireAttacherMonitor {
     @Info("REST endpoint removed at {0}")
     void removedEndpoint(String address);
 
+    @Info("Servlet container not configured. REST endpoints will be disabled.")
+    void noServletContainer();
+
 }

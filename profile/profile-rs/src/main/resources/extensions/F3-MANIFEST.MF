@@ -1,0 +1,2 @@
+Name: Fabric3 RS Binding Profile
+Vendor: fabric3.org

@@ -33,6 +33,6 @@ public @interface Cache {
      *
      * @return the name of the cache to be provided or the default cache if not specified
      */
-    public abstract String name() default "default";
+    String name() default "default";
 
 }

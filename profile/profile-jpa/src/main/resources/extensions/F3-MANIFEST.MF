@@ -1,0 +1,2 @@
+Name: Fabric3 JPA Profile
+Vendor: fabric3.org

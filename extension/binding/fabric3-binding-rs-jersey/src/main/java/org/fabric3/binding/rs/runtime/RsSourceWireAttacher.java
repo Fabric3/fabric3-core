@@ -64,11 +64,14 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
     private RsWireAttacherMonitor monitor;
     private Level logLevel = Level.WARNING;
 
-    public RsSourceWireAttacher(@Reference ServletHost servletHost,
+    public RsSourceWireAttacher(@Reference (required = false) ServletHost servletHost,
                                 @Reference RsContainerManager containerManager,
                                 @Reference ProviderRegistry providerRegistry,
                                 @Reference NameBindingFilterProvider provider,
                                 @Monitor RsWireAttacherMonitor monitor) {
+        if (servletHost == null) {
+            monitor.noServletContainer();
+        }
         this.servletHost = servletHost;
         this.containerManager = containerManager;
         this.providerRegistry = providerRegistry;
@@ -84,6 +87,9 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
     }
 
     public void attach(RsWireSource source, PhysicalWireTarget target, Wire wire) throws Fabric3Exception {
+        if (servletHost == null) {
+            return;
+        }
         URI sourceUri = source.getUri();
         RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
@@ -121,6 +127,9 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
     }
 
     public void detach(RsWireSource source, PhysicalWireTarget target) {
+        if (servletHost == null) {
+            return;
+        }
         URI sourceUri = source.getUri();
         String mapping = creatingMappingUri(sourceUri);
         servletHost.unregisterMapping(mapping);

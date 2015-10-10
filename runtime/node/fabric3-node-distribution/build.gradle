@@ -2,8 +2,6 @@ apply plugin: 'java'
 
 // suppress warnings about JDK 1.7 boot classpath
 [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:-options']
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
 dependencies {
     compile project(':runtime:node:fabric3-node')

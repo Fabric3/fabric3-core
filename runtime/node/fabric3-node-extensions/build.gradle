@@ -17,6 +17,8 @@ dependencies {
     compile project(':extension:core:fabric3-async')
     compile project(':extension:core:fabric3-resource')
     compile project(':extension:core:fabric3-execution')
+    compile project(':extension:other:databinding:fabric3-databinding-json')
+
 
     compile group: 'com.lmax', name: 'disruptor', version: disruptorVersion
 
@@ -38,6 +40,7 @@ task distZip(type: Zip) {
     dependsOn(':extension:core:fabric3-async:jar')
     dependsOn(':extension:core:fabric3-resource:jar')
     dependsOn(':extension:core:fabric3-execution:jar')
+    dependsOn(':extension:other:databinding:fabric3-databinding-json:jar')
 
     destinationDir = file("$buildDir/libs")
     into('extensions') {

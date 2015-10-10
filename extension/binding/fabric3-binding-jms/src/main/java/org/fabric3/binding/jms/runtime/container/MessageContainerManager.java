@@ -39,7 +39,7 @@ public interface MessageContainerManager {
      * @param container the container
      * @throws Fabric3Exception if an error registering the container is encountered
      */
-    public void register(AdaptiveMessageContainer container) throws Fabric3Exception;
+    void register(AdaptiveMessageContainer container) throws Fabric3Exception;
 
     /**
      * Unregister a container.
@@ -47,6 +47,6 @@ public interface MessageContainerManager {
      * @param uri the container URI
      * @throws Fabric3Exception if an error un-registering the container is encountered
      */
-    public void unregister(URI uri) throws Fabric3Exception;
+    void unregister(URI uri) throws Fabric3Exception;
 
 }

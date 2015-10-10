@@ -26,6 +26,6 @@ task distZip(type: Zip) {
         from configurations.compile
     }
 
-    from { 'src/main' }
+    from { 'src/main/resources' }
 }
 

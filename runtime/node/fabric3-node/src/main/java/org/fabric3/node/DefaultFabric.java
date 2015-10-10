@@ -173,9 +173,9 @@ public class DefaultFabric implements Fabric {
             runtime = bootstrapService.createDefaultRuntime(runtimeConfig);
 
             boolean onlyCore = profiles.isEmpty() && profileLocations.isEmpty() && extensionLocations.isEmpty() && extensions.isEmpty();
-            List<ContributionSource> extensionSources = scanExtensions(onlyCore);
+            ScannedExtensions scannedExtensions = scanExtensions(onlyCore);
             if (!onlyCore) {
-                addConfiguredExtensions(extensionSources);
+                addConfiguredExtensions(scannedExtensions);
             }
 
             BootConfiguration configuration = new BootConfiguration();
@@ -183,7 +183,7 @@ public class DefaultFabric implements Fabric {
             configuration.setHostClassLoader(maskingHostLoader);
             configuration.setBootClassLoader(maskingBootLoader);
             configuration.setSystemConfig(systemConfig);
-            configuration.setExtensionContributions(extensionSources);
+            configuration.setExtensionContributions(scannedExtensions.sources);
             configuration.addRegistrations(registrations);
 
             // boot the runtime
@@ -254,15 +254,26 @@ public class DefaultFabric implements Fabric {
     /**
      * Adds configured profiles and extensions to the sources.
      *
-     * @param sources the sources
+     * @param scannedExtensions the scanned extensions
      * @throws IOException if there is an error adding to the sources
      */
-    private void addConfiguredExtensions(List<ContributionSource> sources) throws IOException {
+    private void addConfiguredExtensions(ScannedExtensions scannedExtensions) throws IOException {
         File repositoryDirectory = ArchiveUtils.getJarDirectory(DefaultFabric.class).getParentFile().getParentFile();
         for (String profile : profiles) {
+            boolean found = false;
+            String name = profile.startsWith("profile-") ? profile : "profile-" + profile;
+            for (File archive : scannedExtensions.profileArchives) {
+                if (archive.getName().startsWith(name)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                continue;
+            }
             File profileArchive = ArchiveUtils.getProfileArchive(profile, repositoryDirectory);
             List<File> expanded = ArchiveUtils.unpack(profileArchive, extensionsDirectory);
-            addSources(expanded, sources);
+            addSources(expanded, scannedExtensions.sources);
         }
 
         for (String extension : extensions) {
@@ -270,11 +281,11 @@ public class DefaultFabric implements Fabric {
             URI uri = URI.create(extensionArchive.getName());
             URL location = extensionArchive.toURI().toURL();
             ContributionSource source = new FileContributionSource(uri, location, -1, true);
-            sources.add(source);
+            scannedExtensions.sources.add(source);
         }
 
-        addContributionSources(profileLocations, sources);
-        addContributionSources(extensionLocations, sources);
+        addContributionSources(profileLocations, scannedExtensions.sources);
+        addContributionSources(extensionLocations, scannedExtensions.sources);
     }
 
     /**
@@ -350,9 +361,8 @@ public class DefaultFabric implements Fabric {
      *
      * @param onlyCore if true, only scan for core extensions; ignore all others as they will be explicitly configured
      * @return the sources
-     * @throws Fabric3Exception if there is a scan error
      */
-    private List<ContributionSource> scanExtensions(boolean onlyCore) throws Fabric3Exception {
+    private ScannedExtensions scanExtensions(boolean onlyCore) throws Fabric3Exception {
         File repositoryDirectory = ArchiveUtils.getJarDirectory(DefaultFabric.class);
         File f3Extensions = new File(repositoryDirectory, "f3.extensions.jar");
         try {
@@ -385,9 +395,19 @@ public class DefaultFabric implements Fabric {
 
             addSources(extensionsFiles, sources);
 
-            return sources;
+            return new ScannedExtensions(archives, sources);
         } catch (IOException e) {
             throw new Fabric3Exception("Error scanning extensions", e);
+        }
+    }
+
+    private class ScannedExtensions {
+        List<File> profileArchives;
+        List<ContributionSource> sources;
+
+        public ScannedExtensions(List<File> profileArchives, List<ContributionSource> sources) {
+            this.profileArchives = profileArchives;
+            this.sources = sources;
         }
     }
 
