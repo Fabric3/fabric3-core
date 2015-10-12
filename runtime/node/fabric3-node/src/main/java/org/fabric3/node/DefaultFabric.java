@@ -217,8 +217,8 @@ public class DefaultFabric implements Fabric {
     }
 
     public Fabric stop() throws FabricException {
-        if (state != State.RUNNING) {
-            throw new IllegalStateException("Not in running state: " + state);
+        if (state != State.RUNNING && state != State.STARTED) {
+            throw new IllegalStateException("Not in started or running state: " + state);
         }
         coordinator.shutdown();
         state = State.UNINITIALIZED;
@@ -235,6 +235,9 @@ public class DefaultFabric implements Fabric {
     }
 
     public <T> T createTransportDispatcher(Class<T> interfaze, Map<String, Object> properties) {
+        if (state != State.UNINITIALIZED) {
+            throw new IllegalStateException("Must be in the uninitialized state: " + state);
+        }
         if (Servlet.class.isAssignableFrom(interfaze)) {
             if (host == null) {
                 int httpPort = (Integer) properties.getOrDefault("http.port", 8080);
@@ -257,8 +260,8 @@ public class DefaultFabric implements Fabric {
     }
 
     public Domain getDomain() {
-        if (state != State.RUNNING) {
-            throw new IllegalStateException("Not in started state: " + state);
+        if (state != State.RUNNING && state != State.STARTED) {
+            throw new IllegalStateException("Not in started or running state: " + state);
         }
         if (domain == null) {
             domain = runtime.getComponent(Domain.class, Names.NODE_DOMAIN_URI);

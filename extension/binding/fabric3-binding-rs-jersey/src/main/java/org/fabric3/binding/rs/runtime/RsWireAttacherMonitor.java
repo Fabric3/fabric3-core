@@ -18,6 +18,8 @@
  */
 package org.fabric3.binding.rs.runtime;
 
+import java.net.URI;
+
 import org.fabric3.api.annotation.monitor.Info;
 
 /**
@@ -41,7 +43,7 @@ public interface RsWireAttacherMonitor {
     @Info("REST endpoint removed at {0}")
     void removedEndpoint(String address);
 
-    @Info("Servlet container not configured. REST endpoints will be disabled.")
-    void noServletContainer();
+    @Info("Servlet container not configured. REST context disabled: {0}")
+    void noServletContainer(URI uri);
 
 }

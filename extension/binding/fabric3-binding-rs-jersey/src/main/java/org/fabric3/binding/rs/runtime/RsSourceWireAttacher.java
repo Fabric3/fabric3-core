@@ -22,7 +22,9 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,6 +46,8 @@ import org.fabric3.spi.host.ServletHost;
 import org.fabric3.spi.introspection.java.AnnotationHelper;
 import org.fabric3.spi.model.physical.PhysicalOperation;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;
+import org.fabric3.spi.runtime.event.EventService;
+import org.fabric3.spi.runtime.event.TransportStart;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -64,18 +68,23 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
     private RsWireAttacherMonitor monitor;
     private Level logLevel = Level.WARNING;
 
-    public RsSourceWireAttacher(@Reference (required = false) ServletHost servletHost,
+    private boolean started;
+    private List<Runnable> registrations = new ArrayList<>();
+
+    public RsSourceWireAttacher(@Reference(required = false) ServletHost servletHost,
                                 @Reference RsContainerManager containerManager,
                                 @Reference ProviderRegistry providerRegistry,
                                 @Reference NameBindingFilterProvider provider,
+                                @Reference EventService eventService,
                                 @Monitor RsWireAttacherMonitor monitor) {
-        if (servletHost == null) {
-            monitor.noServletContainer();
-        }
         this.servletHost = servletHost;
         this.containerManager = containerManager;
         this.providerRegistry = providerRegistry;
         this.provider = provider;
+        eventService.subscribe(TransportStart.class, event -> {
+            started = true;
+            registrations.forEach(Runnable::run);
+        });
         this.monitor = monitor;
         setDebugLevel();
     }
@@ -87,32 +96,25 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
     }
 
     public void attach(RsWireSource source, PhysicalWireTarget target, Wire wire) throws Fabric3Exception {
-        if (servletHost == null) {
-            return;
-        }
         URI sourceUri = source.getUri();
-        RsContainer container = containerManager.get(sourceUri);
-        if (container == null) {
-            // each resource defined with the same binding URI will be deployed to the same container
-            container = new RsContainer(sourceUri.toString(), servletHost.getContextPath(), providerRegistry, provider);
-            containerManager.register(sourceUri, container);
-            String mapping = creatingMappingUri(sourceUri);
-            if (servletHost.isMappingRegistered(mapping)) {
-                // wire reprovisioned
-                servletHost.unregisterMapping(mapping);
-            }
-            servletHost.registerMapping(mapping, container);
-        }
-
-        provision(source, wire, container);
-        Path pathAnnotation = source.getRsClass().getAnnotation(Path.class);
-        String uri = sourceUri.toString();
-        if (pathAnnotation != null && !pathAnnotation.value().equals("/")) {
-            String endpointUri = concat(uri, pathAnnotation);
-            monitor.provisionedEndpoint(endpointUri);
+        if (started) {
+            provision(source, wire);
         } else {
-            monitor.provisionedEndpoint(uri);
+            registrations.add(() -> provision(source, wire));
         }
+    }
+
+    private RsContainer createContainer(URI sourceUri) {
+        // each resource defined with the same binding URI will be deployed to the same container
+        RsContainer container = new RsContainer(sourceUri.toString(), servletHost.getContextPath(), providerRegistry, provider);
+        containerManager.register(sourceUri, container);
+        String mapping = creatingMappingUri(sourceUri);
+        if (servletHost.isMappingRegistered(mapping)) {
+            // wire reprovisioned
+            servletHost.unregisterMapping(mapping);
+        }
+        servletHost.registerMapping(mapping, container);
+        return container;
     }
 
     private String concat(String uri, Path pathAnnotation) {
@@ -152,7 +154,14 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
         return servletMapping;
     }
 
-    private void provision(RsWireSource source, Wire wire, RsContainer container) {
+    private void provision(RsWireSource source, Wire wire) {
+        URI sourceUri = source.getUri();
+        if (servletHost == null) {
+            monitor.noServletContainer(sourceUri);
+            return;
+        }
+        RsContainer container = containerManager.getOrDefault(sourceUri, () -> createContainer(sourceUri));
+
         Map<String, InvocationChain> invocationChains = new HashMap<>();
         for (InvocationChain chain : wire.getInvocationChains()) {
             PhysicalOperation operation = chain.getPhysicalOperation();
@@ -168,6 +177,14 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
             Resource resource = createResource(handler);
             container.addResource(resource);
+            Path pathAnnotation = source.getRsClass().getAnnotation(Path.class);
+            String uri = sourceUri.toString();
+            if (pathAnnotation != null && !pathAnnotation.value().equals("/")) {
+                String endpointUri = concat(uri, pathAnnotation);
+                monitor.provisionedEndpoint(endpointUri);
+            } else {
+                monitor.provisionedEndpoint(uri);
+            }
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }

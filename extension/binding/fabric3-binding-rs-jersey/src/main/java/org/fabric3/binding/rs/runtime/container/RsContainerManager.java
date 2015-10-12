@@ -17,6 +17,7 @@
 package org.fabric3.binding.rs.runtime.container;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
 /**
  * Manages active {@link RsContainer}s.
@@ -44,6 +45,6 @@ public interface RsContainerManager {
      * @param name the container name
      * @return the container or null if not found
      */
-    RsContainer get(URI name);
+    RsContainer getOrDefault(URI name, Supplier<RsContainer> supplier);
 
 }

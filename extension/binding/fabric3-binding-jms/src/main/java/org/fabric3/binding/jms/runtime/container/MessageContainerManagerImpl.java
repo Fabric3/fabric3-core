@@ -30,6 +30,8 @@ import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.RuntimeStart;
 import org.fabric3.spi.runtime.event.RuntimeStop;
+import org.fabric3.spi.runtime.event.TransportStart;
+import org.fabric3.spi.runtime.event.TransportStop;
 import org.fabric3.spi.transport.Transport;
 import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.Destroy;
@@ -69,8 +71,8 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
 
     @Init
     public void init() {
-        eventService.subscribe(RuntimeStart.class, new StartEventListener());
-        eventService.subscribe(RuntimeStop.class, new StopEventListener());
+        eventService.subscribe(TransportStart.class, new StartEventListener());
+        eventService.subscribe(TransportStop.class, new StopEventListener());
     }
 
     @Destroy
@@ -147,9 +149,9 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         return "JMS/message containers/" + uri.getAuthority();
     }
 
-    private class StartEventListener implements Fabric3EventListener<RuntimeStart> {
+    private class StartEventListener implements Fabric3EventListener<TransportStart> {
 
-        public void onEvent(RuntimeStart event) {
+        public void onEvent(TransportStart event) {
             // start receiving messages after the runtime has started
             for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
                 try {
@@ -168,9 +170,9 @@ public class MessageContainerManagerImpl implements MessageContainerManager, Tra
         }
     }
 
-    private class StopEventListener implements Fabric3EventListener<RuntimeStop> {
+    private class StopEventListener implements Fabric3EventListener<TransportStop> {
 
-        public void onEvent(RuntimeStop event) {
+        public void onEvent(TransportStop event) {
             for (Map.Entry<URI, AdaptiveMessageContainer> entry : containers.entrySet()) {
                 entry.getValue().stop();
             }

@@ -100,6 +100,9 @@ public interface Fabric {
     /**
      * Creates and returns the dispatcher for a transport identified by the given interface.
      *
+     *
+     * NOTE: This method must be called before the runtime is started.
+     *
      * @param interfaze  the dispatcher interface
      * @param properties optional transport properties
      * @return the dispatcher or null if not found

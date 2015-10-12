@@ -19,6 +19,7 @@ package org.fabric3.binding.rs.runtime.container;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  *
@@ -34,7 +35,8 @@ public class RsContainerManagerImpl implements RsContainerManager {
         containers.remove(name);
     }
 
-    public RsContainer get(URI name) {
-        return containers.get(name);
+    public RsContainer getOrDefault(URI name, Supplier<RsContainer> supplier) {
+        RsContainer container = containers.get(name);
+        return container == null ? supplier.get() : container;
     }
 }
