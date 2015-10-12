@@ -41,17 +41,19 @@ public class FabricServletHost extends HttpServlet implements ServletHost {
     private int https;
     private URL baseUrl;
     private URL baseHttpsUrl;
+    private String contextPath;
 
     private transient ServletConfig config;
 
     private transient Map<String, Servlet> servlets = new ConcurrentHashMap<>();
     private AtomicBoolean initialized = new AtomicBoolean();
 
-    public FabricServletHost(int http, int https, URL baseUrl, URL baseHttpsUrl) {
+    public FabricServletHost(int http, int https, URL baseUrl, URL baseHttpsUrl, String contextPath) {
         this.http = http;
         this.https = https;
         this.baseUrl = baseUrl;
         this.baseHttpsUrl = baseHttpsUrl;
+        this.contextPath = contextPath;
     }
 
     public String getHostType() {
@@ -76,6 +78,10 @@ public class FabricServletHost extends HttpServlet implements ServletHost {
 
     public boolean isHttpsEnabled() {
         return https != -1;
+    }
+
+    public String getContextPath() {
+        return contextPath;
     }
 
     public void init(ServletConfig config) throws ServletException {

@@ -63,6 +63,7 @@ public final class RsContainer extends HttpServlet {
     private static final long serialVersionUID = 1954697059021782141L;
 
     private String path;
+    private String contextPath;
     private ProviderRegistry providerRegistry;
     private NameBindingFilterProvider provider;
 
@@ -70,8 +71,9 @@ public final class RsContainer extends HttpServlet {
     private ServletConfig servletConfig;
     private List<Resource> resources;
 
-    public RsContainer(String path, ProviderRegistry providerRegistry, NameBindingFilterProvider provider) {
+    public RsContainer(String path, String contextPath, ProviderRegistry providerRegistry, NameBindingFilterProvider provider) {
         this.path = path;
+        this.contextPath = contextPath;
         this.providerRegistry = providerRegistry;
         this.provider = provider;
         this.resources = new ArrayList<>();
@@ -187,7 +189,7 @@ public final class RsContainer extends HttpServlet {
         }
 
         public String getContextPath() {
-            return path;
+            return contextPath;
         }
 
         public String getQueryString() {
@@ -219,7 +221,7 @@ public final class RsContainer extends HttpServlet {
         }
 
         public String getServletPath() {
-            return "";
+            return path;
         }
 
         public HttpSession getSession(boolean create) {

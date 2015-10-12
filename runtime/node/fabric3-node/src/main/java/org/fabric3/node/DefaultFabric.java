@@ -222,12 +222,12 @@ public class DefaultFabric implements Fabric {
     public <T> T createTransportDispatcher(Class<T> interfaze, Map<String, Object> properties) {
         if (Servlet.class.isAssignableFrom(interfaze)) {
             if (host == null) {
-                int httpPort = (Integer) properties.get("http.port");
-                int httpsPort = (Integer) properties.get("https.port");
+                int httpPort = (Integer) properties.getOrDefault("http.port", 8080);
+                int httpsPort = (Integer) properties.getOrDefault("https.port", 4242);
                 URL httpUrl = (URL) properties.get("http.url");
                 URL httpsUrl = (URL) properties.get("https.url");
-
-                host = new FabricServletHost(httpPort, httpsPort, httpUrl, httpsUrl);
+                String contextPath = (String) properties.getOrDefault("http.context", "fabric3");
+                host = new FabricServletHost(httpPort, httpsPort, httpUrl, httpsUrl, contextPath);
                 registerSystemService(ServletHost.class, host);
             }
             return interfaze.cast(host);

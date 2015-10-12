@@ -96,4 +96,13 @@ public interface ServletHost {
      */
     boolean isMappingRegistered(String mapping);
 
+    /**
+     * Returns the servlet context path this host is registered under in the runtime.
+     *
+     * @return the path
+     */
+    default String getContextPath() {
+        return "";
+    }
+
 }

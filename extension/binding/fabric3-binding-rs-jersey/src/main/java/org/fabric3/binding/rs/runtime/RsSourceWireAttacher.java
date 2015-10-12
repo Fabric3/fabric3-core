@@ -94,7 +94,7 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
         RsContainer container = containerManager.get(sourceUri);
         if (container == null) {
             // each resource defined with the same binding URI will be deployed to the same container
-            container = new RsContainer(sourceUri.toString(), providerRegistry, provider);
+            container = new RsContainer(sourceUri.toString(), servletHost.getContextPath(), providerRegistry, provider);
             containerManager.register(sourceUri, container);
             String mapping = creatingMappingUri(sourceUri);
             if (servletHost.isMappingRegistered(mapping)) {
