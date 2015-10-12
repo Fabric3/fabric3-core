@@ -39,6 +39,8 @@ import org.fabric3.spi.runtime.event.RuntimeDestroyed;
 import org.fabric3.spi.runtime.event.RuntimeRecover;
 import org.fabric3.spi.runtime.event.RuntimeStart;
 import org.fabric3.spi.runtime.event.RuntimeStop;
+import org.fabric3.spi.runtime.event.TransportStart;
+import org.fabric3.spi.runtime.event.TransportStop;
 import static org.fabric3.api.host.Names.APPLICATION_DOMAIN_URI;
 import static org.fabric3.api.host.Names.RUNTIME_DOMAIN_SERVICE_URI;
 
@@ -62,7 +64,8 @@ public class DefaultCoordinator implements RuntimeCoordinator {
     public void start() throws Fabric3Exception {
         boot();
         load();
-        joinDomain();
+        startRuntime();
+        startTransports();
     }
 
     public void boot() throws Fabric3Exception {
@@ -88,7 +91,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         recover(eventService);
     }
 
-    public void joinDomain() {
+    public void startRuntime() {
         EventService eventService = runtime.getComponent(EventService.class);
 
         eventService.publish(new JoinDomain());
@@ -99,9 +102,16 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         state = RuntimeState.STARTED;
     }
 
+    public void startTransports() {
+        EventService eventService = runtime.getComponent(EventService.class);
+        eventService.publish(new TransportStart());
+        state = RuntimeState.RUNNING;
+    }
+
     public void shutdown() throws Fabric3Exception {
-        if (state == RuntimeState.STARTED) {
+        if (state == RuntimeState.RUNNING) {
             EventService eventService = runtime.getComponent(EventService.class);
+            eventService.publish(new TransportStop());
             eventService.publish(new RuntimeStop());
             RuntimeDestroyed destroyed = new RuntimeDestroyed(); // instantiate event before classloaders are disabled with the call to destroy()
             runtime.destroy();

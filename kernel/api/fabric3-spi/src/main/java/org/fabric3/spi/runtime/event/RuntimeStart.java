@@ -19,7 +19,7 @@
 package org.fabric3.spi.runtime.event;
 
 /**
- * Fired when the runtime has been initialized and is ready to receive requests
+ * Fired when the runtime has been initialized and components prepared.
  */
 public class RuntimeStart implements Fabric3Event {
 }

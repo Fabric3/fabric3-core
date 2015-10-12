@@ -27,9 +27,14 @@ public enum RuntimeState {
     UNINITIALIZED,
 
     /**
-     * The runtime is started and ready to receive requests.
+     * The runtime is started.
      */
     STARTED,
+
+    /**
+     * The runtime is ready to receive requests.
+     */
+    RUNNING,
 
     /**
      * The runtime has stopped processing requests and shutdown extensions.

@@ -66,6 +66,14 @@ public class RuntimeFabric implements Fabric {
         throw new UnsupportedOperationException();
     }
 
+    public Fabric startRuntime() throws FabricException {
+        throw new UnsupportedOperationException();
+    }
+
+    public Fabric startTransports() throws FabricException {
+        throw new UnsupportedOperationException();
+    }
+
     public Fabric stop() throws FabricException {
         throw new UnsupportedOperationException();
     }

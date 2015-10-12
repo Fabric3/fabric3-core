@@ -248,7 +248,8 @@ public class Fabric3WebLogicListener implements ServletContextListener {
             // If the deployment state is activated, start immediately. Otherwise, do so asynchronously.
             // Note that an MBean NotificationListener cannot be used as the WLS MBean does not emmit notifications.
             if (WLS_ACTIVATED_STATE == state) {
-                coordinator.joinDomain();
+                coordinator.startRuntime();
+                coordinator.startTransports();
                 monitor.started(runtimeMode.toString());
             } else {
                 Executors.newSingleThreadExecutor().submit(new Runnable() {
@@ -257,7 +258,8 @@ public class Fabric3WebLogicListener implements ServletContextListener {
                             try {
                                 int state = (Integer) mBeanServer.getAttribute(componentRuntime, "DeploymentState");
                                 if (WLS_ACTIVATED_STATE == state) {
-                                    coordinator.joinDomain();
+                                    coordinator.startRuntime();
+                                    coordinator.startTransports();
                                     monitor.started(runtimeMode.toString());
                                     return;
                                 }

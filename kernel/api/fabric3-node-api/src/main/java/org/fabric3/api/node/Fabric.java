@@ -74,6 +74,22 @@ public interface Fabric {
     Fabric start() throws FabricException;
 
     /**
+     * Starts the container runtime.
+     *
+     * @return the fabric
+     * @throws FabricException if there is an error starting the runtime.
+     */
+    Fabric startRuntime() throws FabricException;
+
+    /**
+     * Starts the remote transports to receive requests.
+     *
+     * @return the fabric
+     * @throws FabricException if there is an error starting the transports.
+     */
+    Fabric startTransports() throws FabricException;
+
+    /**
      * Stops the connection to the fabric.
      *
      * @return the fabric

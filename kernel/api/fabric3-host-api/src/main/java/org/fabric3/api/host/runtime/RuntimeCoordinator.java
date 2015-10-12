@@ -35,7 +35,7 @@ public interface RuntimeCoordinator {
 
     /**
      * Prepares the runtime, synchronizes it with the domain, and places it in a state to receive requests. Equivalent to calling {@link #boot()}, {@link
-     * #load()} and {@link #joinDomain()}.
+     * #load()}, {@link #startRuntime()}, and {@link #startTransports()}.
      *
      * @throws Fabric3Exception if an error occurs starting the runtime
      */
@@ -56,9 +56,14 @@ public interface RuntimeCoordinator {
     void load() throws Fabric3Exception;
 
     /**
-     * Performs domain synchronization, domain recovery and places the runtime in a state to receive requests.
+     * Performs domain synchronization, domain recovery and starts the runtime.
      */
-    void joinDomain();
+    void startRuntime();
+
+    /**
+     * Starts remote transports to receive requests and places the runtime in the running state.
+     */
+    void startTransports();
 
     /**
      * Shuts the runtime down, stopping it from receiving requests and detaching it from the domain. In-flight synchronous operations will be allowed to proceed

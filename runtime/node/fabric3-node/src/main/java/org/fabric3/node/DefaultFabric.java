@@ -69,7 +69,7 @@ public class DefaultFabric implements Fabric {
     private URL configUrl;
 
     private enum State {
-        UNINITIALIZED, RUNNING
+        UNINITIALIZED, STARTED, RUNNING
     }
 
     private File tempDirectory;
@@ -126,6 +126,12 @@ public class DefaultFabric implements Fabric {
     }
 
     public Fabric start() throws FabricException {
+        startRuntime();
+        startTransports();
+        return this;
+    }
+
+    public Fabric startRuntime() {
         if (state != State.UNINITIALIZED) {
             throw new IllegalStateException("In wrong state: " + state);
         }
@@ -191,14 +197,23 @@ public class DefaultFabric implements Fabric {
             coordinator.boot();
 
             coordinator.load();
-            coordinator.joinDomain();
+            coordinator.startRuntime();
 
-            state = State.RUNNING;
+            state = State.STARTED;
             return this;
         } catch (Exception e) {
             router.flush(System.out);
             throw new FabricException(e);
         }
+    }
+
+    public Fabric startTransports() {
+        if (state != State.STARTED) {
+            throw new IllegalStateException("In wrong state: " + state);
+        }
+        coordinator.startTransports();
+        state = State.RUNNING;
+        return this;
     }
 
     public Fabric stop() throws FabricException {
