@@ -110,6 +110,14 @@ public interface Fabric {
     <T> T createTransportDispatcher(Class<T> interfaze, Map<String, Object> properties);
 
     /**
+     * Returns the system service. This method is for use integrating Fabric3 with host containers.
+     *
+     * @param interfaze the service interface
+     * @return the service or null if not found
+     */
+    <T> T getSystemService(Class<T> interfaze);
+
+    /**
      * Registers an instance as a system component. This method must be called before {@link #start()}}.
      *
      * @param interfaze the service interface of the instance

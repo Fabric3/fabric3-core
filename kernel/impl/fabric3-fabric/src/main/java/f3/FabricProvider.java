@@ -102,6 +102,8 @@ import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionSourceAttacher;
 import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionTargetAttacher;
 import org.fabric3.fabric.runtime.event.EventServiceImpl;
 import org.fabric3.fabric.security.KeyStoreManagerImpl;
+import org.fabric3.fabric.service.BindingServiceIntrospector;
+import org.fabric3.fabric.service.ServiceIntrospectorImpl;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.fabric.transport.TransportService;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
@@ -148,6 +150,8 @@ public class FabricProvider {
                                            .build());
         compositeBuilder.component(newBuilder(NonManagedConnectionTargetAttacher.class).key("org.fabric3.fabric.node.nonmanaged.NonManagedConnectionTarget")
                                            .build());
+        compositeBuilder.component(newBuilder(ServiceIntrospectorImpl.class).build());
+        compositeBuilder.component(newBuilder(BindingServiceIntrospector.class).build());
     }
 
     private static void addBindingSubsystem(CompositeBuilder compositeBuilder) {

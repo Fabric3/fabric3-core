@@ -52,7 +52,6 @@ public class ProxyBeanFactory extends DefaultListableBeanFactory {
         return suppliers.remove(name);
     }
 
-    @Override
     public Object getBean(String name) throws BeansException {
         Supplier supplier = suppliers.get(name);
         if (supplier == null) {
@@ -67,7 +66,6 @@ public class ProxyBeanFactory extends DefaultListableBeanFactory {
 
 
     @SuppressWarnings({"unchecked"})
-    @Override
     public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
         Object o = getBean(name);
         if (o == null || requiredType == null) {
@@ -81,44 +79,36 @@ public class ProxyBeanFactory extends DefaultListableBeanFactory {
         }
     }
 
-    @Override
     public Object getBean(String name, Object... args) throws BeansException {
         // proxies never take arguments
         return getBean(name);
     }
 
-    @Override
     public BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException {
         return definitions.get(beanName);
     }
 
-    @Override
     public boolean containsBean(String name) {
         return suppliers.containsKey(name);
     }
 
-    @Override
     public boolean containsBeanDefinition(String beanName) {
         return suppliers.containsKey(beanName);
     }
 
-    @Override
     public int getBeanDefinitionCount() {
         return suppliers.size();
     }
 
-    @Override
     public String[] getBeanDefinitionNames() {
         return definitions.keySet().toArray(new String[definitions.size()]);
     }
 
-    @Override
     public boolean isSingleton(String name) throws NoSuchBeanDefinitionException {
         // proxies are never singletons
         return false;
     }
 
-    @Override
     public boolean isPrototype(String name) throws NoSuchBeanDefinitionException {
         // proxies are always stateless
         return true;

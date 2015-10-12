@@ -253,6 +253,10 @@ public class DefaultFabric implements Fabric {
         return null;
     }
 
+    public <T> T getSystemService(Class<T> interfaze) {
+        return runtime.getComponent(interfaze);
+    }
+
     public <T> Fabric registerSystemService(Class<T> interfaze, T instance) throws FabricException {
         ComponentRegistration registration = new ComponentRegistration(interfaze.getSimpleName(), interfaze, instance, false);
         registrations.add(registration);

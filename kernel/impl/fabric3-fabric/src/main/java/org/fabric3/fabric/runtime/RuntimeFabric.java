@@ -82,6 +82,10 @@ public class RuntimeFabric implements Fabric {
         throw new UnsupportedOperationException();
     }
 
+    public <T> T getSystemService(Class<T> interfaze) {
+        return runtime.getComponent(interfaze);
+    }
+
     public <T> Fabric registerSystemService(Class<T> interfaze, T instance) throws FabricException {
         throw new UnsupportedOperationException();
     }
