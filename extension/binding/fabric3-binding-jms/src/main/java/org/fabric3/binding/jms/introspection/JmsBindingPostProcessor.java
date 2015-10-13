@@ -16,7 +16,6 @@
  */
 package org.fabric3.binding.jms.introspection;
 
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.net.URI;
 
@@ -48,6 +47,10 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
         super(JMS.class);
     }
 
+    protected Binding processReference(JMS annotation, Reference reference, Class<?> implClass, IntrospectionContext context) {
+        return createDefinition(annotation, annotation.value(), implClass, context);
+    }
+
     protected Binding processService(JMS annotation,
                                      Service<ComponentType> service,
                                      InjectingComponentType componentType,
@@ -65,11 +68,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
         return createDefinition(annotation, annotation.callback(), implClass, context);
     }
 
-    protected Binding processReference(JMS annotation, Reference reference, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
-        return createDefinition(annotation, annotation.value(), implClass, context);
-    }
-
-    protected Binding processReferenceCallback(JMS annotation, Reference reference, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
+    protected Binding processReferenceCallback(JMS annotation, Reference reference, Class<?> implClass, IntrospectionContext context) {
         return createDefinition(annotation, annotation.callback(), implClass, context);
     }
 

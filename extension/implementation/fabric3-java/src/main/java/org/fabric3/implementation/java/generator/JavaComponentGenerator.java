@@ -58,7 +58,7 @@ public class JavaComponentGenerator implements ComponentGenerator<LogicalCompone
     public PhysicalComponent generate(LogicalComponent<JavaImplementation> component) {
         Object instance = component.getDefinition().getImplementation().getInstance();
         if (instance != null) {
-            // deploying an un managed instance
+            // deploying an unmanaged instance
             PhysicalJavaComponent physicalComponent = new PhysicalJavaComponent(instance);
             physicalComponent.setScope(Scope.COMPOSITE);
             return physicalComponent;

@@ -5,6 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 
 import junit.framework.TestCase;
 import org.fabric3.api.annotation.model.Binding;
+import org.fabric3.fabric.node.BindingServiceIntrospector;
 
 /**
  *

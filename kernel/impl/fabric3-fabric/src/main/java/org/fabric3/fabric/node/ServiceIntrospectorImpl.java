@@ -1,9 +1,9 @@
-package org.fabric3.fabric.service;
+package org.fabric3.fabric.node;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.fabric3.api.node.ServiceIntrospector;
+import org.fabric3.api.node.service.ServiceIntrospector;
 import org.fabric3.spi.introspection.service.ServiceIntrospectorExtension;
 import org.oasisopen.sca.annotation.Reference;
 

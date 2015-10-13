@@ -1,4 +1,4 @@
-package org.fabric3.api.node;
+package org.fabric3.api.node.service;
 
 /**
  * Introspects a class to determine if it exposes remote endpoints.

@@ -16,9 +16,6 @@
  */
 package org.fabric3.introspection.xml.template;
 
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.AnnotatedElement;
-
 import org.fabric3.api.annotation.model.BindingTemplate;
 import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.ComponentType;
@@ -46,7 +43,7 @@ public class BindingTemplatePostProcessor extends AbstractBindingPostProcessor<B
                                      InjectingComponentType componentType,
                                      Class<?> implClass,
                                      IntrospectionContext context) {
-        return resolve(annotation, implClass, implClass, context);
+        return resolve(annotation, implClass, context);
     }
 
     protected Binding processServiceCallback(BindingTemplate annotation,
@@ -57,26 +54,18 @@ public class BindingTemplatePostProcessor extends AbstractBindingPostProcessor<B
         return null; // not yet supported
     }
 
-    protected Binding processReference(BindingTemplate annotation,
-                                       Reference reference,
-                                       AccessibleObject object,
-                                       Class<?> implClass,
-                                       IntrospectionContext context) {
-        return resolve(annotation, object, implClass, context);
+    protected Binding processReference(BindingTemplate annotation, Reference reference, Class<?> implClass, IntrospectionContext context) {
+        return resolve(annotation, implClass, context);
     }
 
-    protected Binding processReferenceCallback(BindingTemplate annotation,
-                                               Reference reference,
-                                               AccessibleObject object,
-                                               Class<?> implClass,
-                                               IntrospectionContext context) {
+    protected Binding processReferenceCallback(BindingTemplate annotation, Reference reference, Class<?> implClass, IntrospectionContext context) {
         return null; // not yet supported
     }
 
-    private Binding resolve(BindingTemplate annotation, AnnotatedElement element, Class<?> implClazz, IntrospectionContext context) {
+    private Binding resolve(BindingTemplate annotation, Class<?> implClazz, IntrospectionContext context) {
         Binding binding = registry.resolve(Binding.class, annotation.value());
         if (binding == null) {
-            InvalidAnnotation error = new InvalidAnnotation("Binding template not found: " + annotation.value(), element, annotation, implClazz);
+            InvalidAnnotation error = new InvalidAnnotation("Binding template not found: " + annotation.value(), null, annotation, implClazz);
             context.addError(error);
         }
         return binding;

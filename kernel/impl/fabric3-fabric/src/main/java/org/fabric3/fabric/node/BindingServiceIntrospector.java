@@ -1,4 +1,4 @@
-package org.fabric3.fabric.service;
+package org.fabric3.fabric.node;
 
 import java.lang.annotation.Annotation;
 

@@ -26,7 +26,7 @@ import org.fabric3.api.model.type.java.InjectionSite;
 public class WebContextInjectionSite extends InjectionSite {
     private ContextType contextType;
 
-    public static enum ContextType {
+    public enum ContextType {
         SERVLET_CONTEXT,
         SESSION_CONTEXT
     }

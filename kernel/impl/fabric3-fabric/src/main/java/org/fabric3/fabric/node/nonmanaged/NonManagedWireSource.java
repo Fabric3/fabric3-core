@@ -16,6 +16,8 @@
  */
 package org.fabric3.fabric.node.nonmanaged;
 
+import java.net.URI;
+
 import org.fabric3.spi.model.physical.PhysicalWireSource;
 
 /**
@@ -25,8 +27,9 @@ public class NonManagedWireSource extends PhysicalWireSource {
     private Class<?> interfaze;
     private transient Object proxy;
 
-    public NonManagedWireSource(Class<?> interfaze) {
+    public NonManagedWireSource(URI uri, Class<?> interfaze) {
         this.interfaze = interfaze;
+        setUri(uri);
     }
 
     public Class<?> getInterface() {

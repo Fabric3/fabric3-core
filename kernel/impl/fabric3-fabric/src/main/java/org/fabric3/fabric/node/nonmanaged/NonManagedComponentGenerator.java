@@ -38,7 +38,7 @@ public class NonManagedComponentGenerator implements ComponentGenerator<LogicalC
     private int counter;
     public PhysicalWireSource generateSource(LogicalReference reference) {
         Class<?> interfaze = reference.getServiceContract().getInterfaceClass();
-        return new NonManagedWireSource(interfaze);
+        return new NonManagedWireSource(reference.getUri(), interfaze);
     }
 
     public PhysicalComponent generate(LogicalComponent<NonManagedImplementation> component) {

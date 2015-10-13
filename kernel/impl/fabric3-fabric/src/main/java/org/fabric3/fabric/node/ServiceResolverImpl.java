@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.HostNamespaces;
 import org.fabric3.api.host.Names;
+import org.fabric3.api.model.type.component.Binding;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.ComponentType;
 import org.fabric3.api.model.type.component.Composite;
@@ -37,6 +38,7 @@ import org.fabric3.fabric.domain.instantiator.wire.AutowireResolver;
 import org.fabric3.fabric.node.nonmanaged.NonManagedImplementation;
 import org.fabric3.fabric.node.nonmanaged.NonManagedWireSource;
 import org.fabric3.spi.classloader.ClassLoaderRegistry;
+import org.fabric3.spi.model.instance.LogicalBinding;
 import org.fabric3.spi.model.instance.LogicalComponent;
 import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 import org.fabric3.spi.model.instance.LogicalReference;
@@ -77,6 +79,23 @@ public class ServiceResolverImpl implements ServiceResolver {
         LogicalWire logicalWire = createWire(interfaze);
 
         PhysicalWire physicalWire = wireGenerator.generateWire(logicalWire);
+
+        NonManagedWireSource source = (NonManagedWireSource) physicalWire.getSource();
+        URI uri = ContributionResolver.getContribution(interfaze);
+        ClassLoader classLoader = classLoaderRegistry.getClassLoader(uri);
+        physicalWire.getTarget().setClassLoader(classLoader);
+        source.setClassLoader(classLoader);
+
+        connector.connect(physicalWire);
+        return interfaze.cast(source.getProxy());
+    }
+
+    public <T> T resolve(Class<T> interfaze, Binding binding, Class<?> implClass) throws Fabric3Exception {
+        LogicalReference logicalReference = createReference(interfaze);
+        LogicalBinding<?> logicalBinding = new LogicalBinding<>(binding, logicalReference);
+        logicalReference.addBinding(logicalBinding);
+
+        PhysicalWire physicalWire = wireGenerator.generateReference(logicalBinding);
 
         NonManagedWireSource source = (NonManagedWireSource) physicalWire.getSource();
         URI uri = ContributionResolver.getContribution(interfaze);

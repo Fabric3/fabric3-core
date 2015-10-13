@@ -46,14 +46,15 @@ public class GenerationHelperImpl implements GenerationHelper {
         // add injections for all the active constructor args
         Map<InjectionSite, Injectable> construction = managerDefinition.getConstruction();
         Constructor<?> constructor = componentType.getConstructor();
-        Set<Injectable> byConstruction = new HashSet<>(constructor.getParameterTypes().length);
-        for (int i = 0; i < constructor.getParameterTypes().length; i++) {
-            InjectionSite site = new ConstructorInjectionSite(constructor, i);
-            Injectable attribute = mappings.get(site);
-            construction.put(site, attribute);
-            byConstruction.add(attribute);
+        Set<Injectable> byConstruction = new HashSet<>();
+        if (constructor != null) {
+            for (int i = 0; i < constructor.getParameterTypes().length; i++) {
+                InjectionSite site = new ConstructorInjectionSite(constructor, i);
+                Injectable attribute = mappings.get(site);
+                construction.put(site, attribute);
+                byConstruction.add(attribute);
+            }
         }
-
         // add field/method injections
         Map<InjectionSite, Injectable> postConstruction = managerDefinition.getPostConstruction();
         Map<InjectionSite, Injectable> reinjection = managerDefinition.getReinjectables();

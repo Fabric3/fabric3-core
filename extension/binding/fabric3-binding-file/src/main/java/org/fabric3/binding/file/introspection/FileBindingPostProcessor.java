@@ -16,8 +16,6 @@
  */
 package org.fabric3.binding.file.introspection;
 
-import java.lang.reflect.AccessibleObject;
-
 import org.fabric3.api.binding.file.annotation.Strategy;
 import org.fabric3.api.binding.file.model.FileBinding;
 import org.fabric3.api.model.type.component.Binding;
@@ -40,6 +38,13 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<org.f
         super(org.fabric3.api.binding.file.annotation.FileBinding.class);
     }
 
+    protected Binding processReference(org.fabric3.api.binding.file.annotation.FileBinding annotation,
+                                       Reference reference,
+                                       Class<?> implClass,
+                                       IntrospectionContext context) {
+        return createBinding(annotation, implClass, context);
+    }
+
     protected Binding processService(org.fabric3.api.binding.file.annotation.FileBinding annotation,
                                      Service<ComponentType> service,
                                      InjectingComponentType componentType,
@@ -57,17 +62,8 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<org.f
         return null; // not supported
     }
 
-    protected Binding processReference(org.fabric3.api.binding.file.annotation.FileBinding annotation,
-                                       Reference reference,
-                                       AccessibleObject object,
-                                       Class<?> implClass,
-                                       IntrospectionContext context) {
-        return createBinding(annotation, implClass, context);
-    }
-
     protected Binding processReferenceCallback(org.fabric3.api.binding.file.annotation.FileBinding annotation,
                                                Reference reference,
-                                               AccessibleObject object,
                                                Class<?> implClass,
                                                IntrospectionContext context) {
         return null; // not supported

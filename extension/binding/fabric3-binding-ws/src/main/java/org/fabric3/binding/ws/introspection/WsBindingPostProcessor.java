@@ -16,7 +16,6 @@
  */
 package org.fabric3.binding.ws.introspection;
 
-import java.lang.reflect.AccessibleObject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -45,36 +44,28 @@ public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServ
         super(WebServiceBinding.class);
     }
 
+    protected Binding processReference(WebServiceBinding annotation, Reference reference, Class<?> implClass, IntrospectionContext context) {
+        return createDefinition(annotation, implClass, context);
+    }
+
     protected Binding processService(WebServiceBinding annotation,
-                                               Service<ComponentType> service,
-                                               InjectingComponentType componentType,
-                                               Class<?> implClass,
-                                               IntrospectionContext context) {
+                                     Service<ComponentType> service,
+                                     InjectingComponentType componentType,
+                                     Class<?> implClass,
+                                     IntrospectionContext context) {
         return createDefinition(annotation, implClass, context);
 
     }
 
     protected Binding processServiceCallback(WebServiceBinding annotation,
-                                                       Service<ComponentType> service,
-                                                       InjectingComponentType componentType,
-                                                       Class<?> implClass,
-                                                       IntrospectionContext context) {
+                                             Service<ComponentType> service,
+                                             InjectingComponentType componentType,
+                                             Class<?> implClass,
+                                             IntrospectionContext context) {
         return null; // not yet supported
     }
 
-    protected Binding processReference(WebServiceBinding annotation,
-                                                 Reference reference,
-                                                 AccessibleObject object,
-                                                 Class<?> implClass,
-                                                 IntrospectionContext context) {
-        return createDefinition(annotation, implClass, context);
-    }
-
-    protected Binding processReferenceCallback(WebServiceBinding annotation,
-                                                         Reference reference,
-                                                         AccessibleObject object,
-                                                         Class<?> implClass,
-                                                         IntrospectionContext context) {
+    protected Binding processReferenceCallback(WebServiceBinding annotation, Reference reference, Class<?> implClass, IntrospectionContext context) {
         return null; // not yet supported
     }
 

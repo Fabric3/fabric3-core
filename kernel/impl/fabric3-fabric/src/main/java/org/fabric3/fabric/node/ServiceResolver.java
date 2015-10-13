@@ -17,6 +17,7 @@
 package org.fabric3.fabric.node;
 
 import org.fabric3.api.host.Fabric3Exception;
+import org.fabric3.api.model.type.component.Binding;
 
 /**
  * Resolves a service and returns a wire proxy to it.
@@ -32,4 +33,5 @@ public interface ServiceResolver {
      */
     <T> T resolve(Class<T> interfaze) throws Fabric3Exception;
 
+    <T> T resolve(Class<T> interfaze, Binding binding, Class<?> implClass) throws Fabric3Exception;
 }

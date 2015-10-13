@@ -24,7 +24,6 @@ import org.fabric3.api.model.type.contract.ServiceContract;
  *
  */
 public class SpringReference extends Reference {
-    private static final long serialVersionUID = 984519855340684210L;
     private String defaultValue;
 
     public SpringReference(String name, ServiceContract serviceContract, String defaultValue) {

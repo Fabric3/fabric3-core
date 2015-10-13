@@ -80,13 +80,9 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
                                                       Class<?> implClass,
                                                       IntrospectionContext context);
 
-    protected abstract Binding processReference(A annotation, Reference reference, AccessibleObject object, Class<?> implClass, IntrospectionContext context);
+    protected abstract Binding processReference(A annotation, Reference reference, Class<?> implClass, IntrospectionContext context);
 
-    protected abstract Binding processReferenceCallback(A annotation,
-                                                        Reference reference,
-                                                        AccessibleObject object,
-                                                        Class<?> implClass,
-                                                        IntrospectionContext context);
+    protected abstract Binding processReferenceCallback(A annotation, Reference reference, Class<?> implClass, IntrospectionContext context);
 
     private void processService(InjectingComponentType componentType, Class<?> implClass, IntrospectionContext context) {
         A annotation = AnnotationHelper.findAnnotation(annotationType, implClass);
@@ -159,14 +155,14 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
                 for (Annotation annotation : annotations) {
                     if (annotationType.equals(annotation.annotationType())) {
                         A castAnnotation = annotationType.cast(annotation);
-                        Binding binding = processReference(castAnnotation, reference, constructor, implClass, context);
+                        Binding binding = processReference(castAnnotation, reference, implClass, context);
                         if (binding == null) {
                             continue;
                         }
                         reference.addBinding(binding);
                         ServiceContract contract = reference.getServiceContract();
                         if (contract.getCallbackContract() != null) {
-                            Binding callbackBinding = processReferenceCallback(castAnnotation, reference, constructor, implClass, context);
+                            Binding callbackBinding = processReferenceCallback(castAnnotation, reference, implClass, context);
                             if (callbackBinding != null) {
                                 reference.addCallbackBinding(callbackBinding);
                             }
@@ -192,14 +188,14 @@ public abstract class AbstractBindingPostProcessor<A extends Annotation> impleme
                 return;
             }
         }
-        Binding binding = processReference(annotation, reference, object, implClass, context);
+        Binding binding = processReference(annotation, reference, implClass, context);
         if (binding == null) {
             return;
         }
         reference.addBinding(binding);
         ServiceContract contract = reference.getServiceContract();
         if (contract.getCallbackContract() != null) {
-            Binding callbackBinding = processReferenceCallback(annotationType.cast(annotation), reference, object, implClass, context);
+            Binding callbackBinding = processReferenceCallback(annotationType.cast(annotation), reference, implClass, context);
             if (callbackBinding != null) {
                 reference.addCallbackBinding(callbackBinding);
             }

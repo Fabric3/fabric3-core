@@ -17,6 +17,7 @@
 package org.fabric3.fabric.node;
 
 import javax.xml.namespace.QName;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;

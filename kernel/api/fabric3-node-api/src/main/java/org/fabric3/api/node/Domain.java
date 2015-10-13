@@ -17,6 +17,8 @@
 package org.fabric3.api.node;
 
 import javax.xml.namespace.QName;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.net.URL;
 
 import org.fabric3.api.model.type.component.Channel;

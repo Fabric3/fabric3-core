@@ -92,6 +92,7 @@ import org.fabric3.fabric.host.PortAllocatorImpl;
 import org.fabric3.fabric.model.physical.ChannelSource;
 import org.fabric3.fabric.model.physical.ChannelTarget;
 import org.fabric3.fabric.node.ChannelResolverImpl;
+import org.fabric3.fabric.node.InjectorFactoryImpl;
 import org.fabric3.fabric.node.IntrospectorImpl;
 import org.fabric3.fabric.node.NodeDomain;
 import org.fabric3.fabric.node.ProvisionerImpl;
@@ -102,8 +103,8 @@ import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionSourceAttacher;
 import org.fabric3.fabric.node.nonmanaged.NonManagedConnectionTargetAttacher;
 import org.fabric3.fabric.runtime.event.EventServiceImpl;
 import org.fabric3.fabric.security.KeyStoreManagerImpl;
-import org.fabric3.fabric.service.BindingServiceIntrospector;
-import org.fabric3.fabric.service.ServiceIntrospectorImpl;
+import org.fabric3.fabric.node.BindingServiceIntrospector;
+import org.fabric3.fabric.node.ServiceIntrospectorImpl;
 import org.fabric3.fabric.synthesizer.SingletonComponentSynthesizer;
 import org.fabric3.fabric.transport.TransportService;
 import org.fabric3.fabric.xml.DocumentLoaderImpl;
@@ -152,6 +153,7 @@ public class FabricProvider {
                                            .build());
         compositeBuilder.component(newBuilder(ServiceIntrospectorImpl.class).build());
         compositeBuilder.component(newBuilder(BindingServiceIntrospector.class).build());
+        compositeBuilder.component(newBuilder(InjectorFactoryImpl.class).build());
     }
 
     private static void addBindingSubsystem(CompositeBuilder compositeBuilder) {
