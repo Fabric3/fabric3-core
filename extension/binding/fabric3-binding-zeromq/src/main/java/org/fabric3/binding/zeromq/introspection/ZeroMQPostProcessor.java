@@ -16,8 +16,6 @@
  */
 package org.fabric3.binding.zeromq.introspection;
 
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.AnnotatedElement;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -49,6 +47,18 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         super(ZeroMQ.class);
     }
 
+    protected Binding processReference(ZeroMQ annotation, Reference reference, Class<?> implClass, IntrospectionContext context) {
+        ZeroMQMetadata metadata = new ZeroMQMetadata();
+        String bindingName = "ZMQ" + reference.getName();
+        ZeroMQBinding binding = new ZeroMQBinding(bindingName, metadata);
+
+        parseTarget(annotation, binding, implClass, context);
+        parseAddresses(annotation, metadata, implClass, context);
+
+        processMetadata(annotation, metadata);
+        return binding;
+    }
+
     protected Binding processService(ZeroMQ annotation,
                                      Service<ComponentType> boundService,
                                      InjectingComponentType componentType,
@@ -64,7 +74,7 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
             SocketAddressDefinition address = new SocketAddressDefinition("localhost", port);
             metadata.setSocketAddresses(Collections.singletonList(address));
         } else {
-            parseAddresses(annotation, metadata, implClass, implClass, context);
+            parseAddresses(annotation, metadata, implClass, context);
         }
         processMetadata(annotation, metadata);
         return binding;
@@ -78,23 +88,7 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         return null; // not needed
     }
 
-    protected Binding processReference(ZeroMQ annotation, Reference reference, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
-        ZeroMQMetadata metadata = new ZeroMQMetadata();
-        String bindingName = "ZMQ" + reference.getName();
-        ZeroMQBinding binding = new ZeroMQBinding(bindingName, metadata);
-
-        parseTarget(annotation, binding, object, implClass, context);
-        parseAddresses(annotation, metadata, object, implClass, context);
-
-        processMetadata(annotation, metadata);
-        return binding;
-    }
-
-    protected Binding processReferenceCallback(ZeroMQ annotation,
-                                               Reference reference,
-                                               AccessibleObject object,
-                                               Class<?> implClass,
-                                               IntrospectionContext context) {
+    protected Binding processReferenceCallback(ZeroMQ annotation, Reference reference, Class<?> implClass, IntrospectionContext context) {
         return null; // not needed
     }
 
@@ -108,7 +102,7 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         metadata.setWireFormat(annotation.wireFormat());
     }
 
-    private void parseAddresses(ZeroMQ annotation, ZeroMQMetadata metadata, AnnotatedElement element, Class<?> implClass, IntrospectionContext context) {
+    private void parseAddresses(ZeroMQ annotation, ZeroMQMetadata metadata, Class<?> implClass, IntrospectionContext context) {
         String addresses = annotation.addresses();
         if (addresses.length() == 0) {
             return;
@@ -118,27 +112,27 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
         for (String entry : addressStrings) {
             String[] tokens = entry.split(":");
             if (tokens.length != 2) {
-                context.addError(new InvalidAnnotation("Invalid address specified on ZeroMQ binding: " + entry, element, annotation, implClass));
+                context.addError(new InvalidAnnotation("Invalid address specified on ZeroMQ binding: " + entry, null, annotation, implClass));
             } else {
                 try {
                     String host = tokens[0];
                     int port = Integer.parseInt(tokens[1]);
                     addressDefinitions.add(new SocketAddressDefinition(host, port));
                 } catch (NumberFormatException e) {
-                    context.addError(new InvalidAnnotation("Invalid port specified on ZeroMQ binding: " + e.getMessage(), element, annotation, implClass));
+                    context.addError(new InvalidAnnotation("Invalid port specified on ZeroMQ binding: " + e.getMessage(), null, annotation, implClass));
                 }
             }
         }
         metadata.setSocketAddresses(addressDefinitions);
     }
 
-    private void parseTarget(ZeroMQ annotation, ZeroMQBinding binding, AccessibleObject object, Class<?> implClass, IntrospectionContext context) {
+    private void parseTarget(ZeroMQ annotation, ZeroMQBinding binding, Class<?> implClass, IntrospectionContext context) {
         String target = annotation.target();
         try {
             URI targetUri = new URI(target);
             binding.setTargetUri(targetUri);
         } catch (URISyntaxException e) {
-            InvalidAnnotation error = new InvalidAnnotation("Invalid target URI specified on ZeroMQ annotation: " + target, object, annotation, implClass, e);
+            InvalidAnnotation error = new InvalidAnnotation("Invalid target URI specified on ZeroMQ annotation: " + target, null, annotation, implClass, e);
             context.addError(error);
         }
     }

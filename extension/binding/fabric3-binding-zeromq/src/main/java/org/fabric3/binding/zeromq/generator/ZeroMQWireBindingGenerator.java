@@ -72,10 +72,14 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
         if (LogicalState.MARKED == binding.getState()) {
             targetUri = binding.getMetadata(TARGET_URI, URI.class);
         } else {
-            targetUri = parseTargetUri(binding);
+            targetUri = binding.getDefinition().getTargetUri();// parseTargetUri(binding);
             if (targetUri != null) {
-                binding.addMetadata(TARGET_URI, targetUri);
+                targetUri = URI.create(binding.getParent().getParent().getParent().getUri() + "/" + targetUri);
+            } else {
+                // create a synthetic name
+                targetUri = URI.create("f3synthetic://" + binding.getParent().getUri() + "/" + binding.getDefinition().getName());
             }
+            binding.addMetadata(TARGET_URI, targetUri);
         }
         return generateTarget(contract, targetUri, metadata);
     }
@@ -87,67 +91,6 @@ public class ZeroMQWireBindingGenerator implements WireBindingGenerator<ZeroMQBi
             return new ZeroMQWireTarget(targetUri, callbackUri, metadata);
         }
         return new ZeroMQWireTarget(targetUri, metadata);
-    }
-
-    /**
-     * Parses the target URI. May return null if the target is not set and addresses are explicitly configured.
-     *
-     * @param binding the binding
-     * @return the URI or null
-     * @ if there is a parsing error
-     */
-    private URI parseTargetUri(LogicalBinding<ZeroMQBinding> binding) {
-        URI bindingTargetUri = binding.getDefinition().getTargetUri();
-        if (bindingTargetUri == null) {
-            // create a synthetic name
-            return URI.create("f3synthetic://" + binding.getParent().getUri() + "/" + binding.getDefinition().getName());
-        }
-        LogicalCompositeComponent composite = binding.getParent().getParent().getParent();
-        URI parent = composite.getUri();
-
-        String bindingTarget = bindingTargetUri.toString();
-
-        URI targetUri;
-        if (bindingTarget.contains("/")) {
-            String[] tokens = bindingTarget.split("/");
-            if (tokens.length != 2) {
-                throw new Fabric3Exception("Invalid target specified on binding: " + bindingTarget);
-            }
-            targetUri = URI.create(parent.toString() + "/" + tokens[0]);
-            LogicalComponent<?> component = composite.getComponent(targetUri);
-            if (component == null) {
-                throw new Fabric3Exception("Target component not found: " + targetUri);
-            }
-            LogicalService service = component.getService(tokens[1]);
-            if (service == null) {
-                throw new Fabric3Exception("Target service not found on component " + targetUri + ": " + tokens[1]);
-            }
-            // get the leaf service as the target may be a promotion
-            targetUri = service.getUri();
-        } else {
-            targetUri = URI.create(parent.toString() + "/" + bindingTarget);
-            if (targetUri.getFragment() == null) {
-                LogicalComponent<?> component = composite.getComponent(targetUri);
-                if (component == null) {
-                    throw new Fabric3Exception("Target component not found: " + targetUri);
-                }
-                if (component.getServices().size() != 1) {
-                    throw new Fabric3Exception("Target component must have exactly one service if the service is not specified in the target URI");
-                }
-                Collection<LogicalService> services = component.getServices();
-                LogicalService service = services.iterator().next();
-                // get the leaf service as the target may be a promotion
-                targetUri = service.getUri();
-            } else {
-                URI defragmented = UriHelper.getDefragmentedName(targetUri);
-                LogicalComponent component = composite.getComponent(defragmented);
-                if (component == null) {
-                    throw new Fabric3Exception("Target component not found: " + targetUri);
-                }
-
-            }
-        }
-        return targetUri;
     }
 
     private void validateServiceContract(ServiceContract contract) {

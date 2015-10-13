@@ -42,7 +42,7 @@ public interface ZeroMQWireBroker {
      * @param loader     the classloader to load invocation parameters with
      * @throws Fabric3Exception if a connection error occurs
      */
-    public void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws Fabric3Exception;
+    void connectToSender(String id, URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws Fabric3Exception;
 
     /**
      * Releases a previous connection to a sender.
@@ -51,7 +51,7 @@ public interface ZeroMQWireBroker {
      * @param uri the target service URI
      * @throws Fabric3Exception if a connection error occurs
      */
-    public void releaseSender(String id, URI uri) throws Fabric3Exception;
+    void releaseSender(String id, URI uri) throws Fabric3Exception;
 
     /**
      * Connects to a receiver that dispatches invocation requests from an ZeroMQ XREP socket. The Invocation chain order is used to match an
@@ -63,7 +63,7 @@ public interface ZeroMQWireBroker {
      * @param loader     the classloader to load invocation parameters with
      * @throws Fabric3Exception if a connection error occurs
      */
-    public void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws Fabric3Exception;
+    void connectToReceiver(URI uri, List<InvocationChain> chains, ZeroMQMetadata metadata, ClassLoader loader) throws Fabric3Exception;
 
     /**
      * Releases previous connection to a receiver.

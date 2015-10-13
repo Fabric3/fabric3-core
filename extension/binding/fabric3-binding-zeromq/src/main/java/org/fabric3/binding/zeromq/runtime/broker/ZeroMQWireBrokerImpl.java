@@ -68,6 +68,7 @@ import org.fabric3.spi.model.type.java.JavaType;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.Fabric3EventListener;
 import org.fabric3.spi.runtime.event.RuntimeStop;
+import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Property;
 import org.oasisopen.sca.annotation.Reference;
@@ -201,7 +202,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
         if (receivers.containsKey(uri.toString())) {
             throw new Fabric3Exception("Receiver already defined for " + uri);
         }
-        String endpointId = uri.toString();
+        String endpointId = UriHelper.getDefragmentedNameAsString(uri);
 
         SocketAddress address;
 
@@ -251,7 +252,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
     }
 
     public void releaseReceiver(URI uri) throws Fabric3Exception {
-        Receiver receiver = receivers.remove(uri.toString());
+        Receiver receiver = receivers.remove(UriHelper.getDefragmentedNameAsString(uri));
         if (receiver == null) {
             throw new Fabric3Exception("Receiver not found for " + uri);
         }
@@ -419,7 +420,7 @@ public class ZeroMQWireBrokerImpl implements ZeroMQWireBroker, DynamicOneWaySend
             // callback ids are of the form zmq://<service>
             return uri.getAuthority();
         }
-        return uri.getPath().substring(1) + "/" + uri.getFragment();
+        return uri.getPath().substring(1);
     }
 
     private class SenderHolder {
