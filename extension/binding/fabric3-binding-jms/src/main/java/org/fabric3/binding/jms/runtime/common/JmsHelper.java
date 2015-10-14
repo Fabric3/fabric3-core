@@ -20,7 +20,6 @@
 package org.fabric3.binding.jms.runtime.common;
 
 import javax.jms.Connection;
-import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 
@@ -42,7 +41,8 @@ public class JmsHelper {
             if (connection != null) {
                 connection.close();
             }
-        } catch (JMSException ignore) {
+        } catch (Exception ignore) {
+            // ignore all exceptions
         }
     }
 
@@ -56,7 +56,8 @@ public class JmsHelper {
             if (session != null) {
                 session.close();
             }
-        } catch (JMSException ignore) {
+        } catch (Exception ignore) {
+            // ignore all exceptions
         }
     }
 
@@ -70,7 +71,8 @@ public class JmsHelper {
             if (consumer != null) {
                 consumer.close();
             }
-        } catch (JMSException ignore) {
+        } catch (Exception ignore) {
+            // ignore all exceptions
         }
     }
 
