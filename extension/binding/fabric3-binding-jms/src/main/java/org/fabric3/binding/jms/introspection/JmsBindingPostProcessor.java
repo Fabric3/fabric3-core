@@ -73,6 +73,9 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
     }
 
     private JmsBinding createDefinition(JMS annotation, JMSConfiguration configuration, Class<?> implClass, IntrospectionContext context) {
+        if(!isActiveForEnvironment(annotation.environments())) {
+            return null;
+        }
         String name = annotation.name();
         if (name.isEmpty()) {
             name = "JMSBinding";
@@ -95,7 +98,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
 
     private void parseConfiguration(JMSConfiguration configuration, JmsBindingMetadata metadata, Class<?> implClass, IntrospectionContext context) {
         ConnectionFactoryDefinition factory = new ConnectionFactoryDefinition();
-        factory.setName(getNullibleValue(configuration.connectionFactory()));
+        factory.setName(getNullableValue(configuration.connectionFactory()));
         metadata.setConnectionFactory(factory);
 
         Destination destination = new Destination();
@@ -103,7 +106,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
         metadata.setDestination(destination);
 
         metadata.setCacheLevel(configuration.cacheLevel());
-        metadata.setSubscriptionId(getNullibleValue(configuration.subscriptionId()));
+        metadata.setSubscriptionId(getNullableValue(configuration.subscriptionId()));
         metadata.setCorrelationScheme(configuration.correlation());
         metadata.setDurable(configuration.durable());
         metadata.setIdleLimit(configuration.idleLimit());

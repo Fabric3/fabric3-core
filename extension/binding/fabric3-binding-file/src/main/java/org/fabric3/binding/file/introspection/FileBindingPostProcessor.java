@@ -70,6 +70,9 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<org.f
     }
 
     private FileBinding createBinding(org.fabric3.api.binding.file.annotation.FileBinding annotation, Class<?> implClass, IntrospectionContext context) {
+        if(!isActiveForEnvironment(annotation.environments())) {
+            return null;
+        }
         String name = annotation.name();
         if (name.isEmpty()) {
             name = "FileBinding";
@@ -80,14 +83,14 @@ public class FileBindingPostProcessor extends AbstractBindingPostProcessor<org.f
             context.addError(error);
         }
         Strategy strategy = annotation.strategy();
-        String archiveLocation = getNullibleValue(annotation.archiveLocation());
+        String archiveLocation = getNullableValue(annotation.archiveLocation());
         if (strategy == Strategy.ARCHIVE && archiveLocation == null) {
             InvalidAnnotation error = new InvalidAnnotation("File binding annotation must specify an archive location", implClass, annotation, implClass);
             context.addError(error);
         }
-        String errorLocation = getNullibleValue(annotation.errorLocation());
-        String adapterUri = getNullibleValue(annotation.adaptor());
-        String pattern = getNullibleValue(annotation.pattern());
+        String errorLocation = getNullableValue(annotation.errorLocation());
+        String adapterUri = getNullableValue(annotation.adaptor());
+        String pattern = getNullableValue(annotation.pattern());
         long delay = annotation.delay();
         if (delay < -1) {
             InvalidAnnotation error = new InvalidAnnotation("Invalid delay value specified on file binding", implClass, annotation, implClass);

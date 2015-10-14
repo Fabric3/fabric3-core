@@ -75,8 +75,8 @@ public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServ
             name = "WSBinding";
         }
         URI uri = parseUri(annotation, implClass, context);
-        String wsdlLocation = getNullibleValue(annotation.wsdlLocation());
-        String wsdlElement = getNullibleValue(annotation.wsdlElement());
+        String wsdlLocation = getNullableValue(annotation.wsdlLocation());
+        String wsdlElement = getNullableValue(annotation.wsdlElement());
         int retries = annotation.retries();
 
         WsBinding binding = new WsBinding(name, uri, wsdlLocation, wsdlElement, retries);
@@ -98,7 +98,7 @@ public class WsBindingPostProcessor extends AbstractBindingPostProcessor<WebServ
     }
 
     private URI parseUri(WebServiceBinding annotation, Class<?> implClass, IntrospectionContext context) {
-        String uriString = getNullibleValue(annotation.uri());
+        String uriString = getNullableValue(annotation.uri());
         try {
             return new URI(uriString);
         } catch (URISyntaxException e) {

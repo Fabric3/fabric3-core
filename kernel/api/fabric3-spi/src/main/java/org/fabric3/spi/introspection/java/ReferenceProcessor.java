@@ -28,16 +28,16 @@ import org.fabric3.spi.introspection.IntrospectionContext;
  */
 public interface ReferenceProcessor {
 
-    public void addDefinition(Field field, String name, boolean required, Class<?> clazz, InjectingComponentType componentType, IntrospectionContext context);
+    void addDefinition(Field field, String name, boolean required, Class<?> clazz, InjectingComponentType componentType, IntrospectionContext context);
 
-    public void addDefinition(Method method, String name, boolean required, Class<?> clazz, InjectingComponentType componentType, IntrospectionContext context);
+    void addDefinition(Method method, String name, boolean required, Class<?> clazz, InjectingComponentType componentType, IntrospectionContext context);
 
-    public void addDefinition(Constructor constructor,
-                              String name,
-                              int index,
-                              boolean required,
-                              Class<?> clazz,
-                              InjectingComponentType componentType,
-                              IntrospectionContext context);
+    void addDefinition(Constructor constructor,
+                       String name,
+                       int index,
+                       boolean required,
+                       Class<?> clazz,
+                       InjectingComponentType componentType,
+                       IntrospectionContext context);
 
 }

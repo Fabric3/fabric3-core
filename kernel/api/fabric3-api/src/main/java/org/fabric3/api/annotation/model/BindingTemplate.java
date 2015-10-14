@@ -38,13 +38,13 @@ public @interface BindingTemplate {
      *
      * @return the template name
      */
-    public String value();
+    String value();
 
     /**
      * Specifies the service interface to bind.
      *
      * @return the service interface to bind
      */
-    public Class<?> service() default Void.class;
+    Class<?> service() default Void.class;
 
 }

@@ -16,6 +16,7 @@
  */
 package org.fabric3.api.binding.zeromq.annotation;
 
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -32,6 +33,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({TYPE, FIELD, METHOD, PARAMETER})
 @Retention(RUNTIME)
 @Binding("{urn:fabric3.org}binding.zeromq")
+@Repeatable(ZeroMQBindings.class)
 public @interface ZeroMQ {
 
     /**
@@ -39,76 +41,83 @@ public @interface ZeroMQ {
      *
      * @return the service interface to bind
      */
-    public Class<?> service() default Void.class;
+    Class<?> service() default Void.class;
 
     /**
      * Optionally specifies the URI of the target service if it is provided by a component hosted in the current doman.
      *
      * @return the target URI
      */
-    public String target() default "";
+    String target() default "";
 
     /**
      * Optionally specifies a space-delimited list of [host:port] pairs for target services.
      *
      * @return a space-delimited list of [host:port] pairs
      */
-    public String addresses() default "";
+    String addresses() default "";
 
     /**
      * Optionally specifies a port for the service endpoint.
      *
      * @return the port
      */
-    public int port() default -1;
+    int port() default -1;
 
     /**
      * Specifies the socket timeout in microseconds.
      *
      * @return the socket timeout in microseconds
      */
-    public long timeout() default 10;
+    long timeout() default 10;
 
     /**
      * Specifies the high water mark.
      *
      * @return the high water mark
      */
-    public long highWater() default -1;
+    long highWater() default -1;
 
     /**
      * Specifies the multicast rate.
      *
      * @return the multicast rate
      */
-    public long multicastRate() default -1;
+    long multicastRate() default -1;
 
     /**
      * Specifies the multicast recovery rate.
      *
      * @return the multicast recovery rate
      */
-    public long multicastRecovery() default -1;
+    long multicastRecovery() default -1;
 
     /**
      * Specifies the send buffer size.
      *
      * @return the send buffer size
      */
-    public long sendBuffer() default -1;
+    long sendBuffer() default -1;
 
     /**
      * Specifies the receive buffer size.
      *
      * @return the receive buffer size
      */
-    public long receiveBuffer() default -1;
+    long receiveBuffer() default -1;
 
     /**
      * Specifies the wire format for message content.
      *
      * @return the wire format for message content
      */
-    public String wireFormat() default "";
+    String wireFormat() default "";
+
+    /**
+     * Specifies the runtime environments this annotation is activated in. If blank, the annotation is active in all environments.
+     *
+     * @return the environments this annotation is activated in
+     */
+    String[] environments() default {};
 
 }

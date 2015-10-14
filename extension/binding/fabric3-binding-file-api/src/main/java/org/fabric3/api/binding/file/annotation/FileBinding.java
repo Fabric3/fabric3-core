@@ -16,6 +16,7 @@
  */
 package org.fabric3.api.binding.file.annotation;
 
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -32,6 +33,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({TYPE, FIELD, METHOD, PARAMETER})
 @Retention(RUNTIME)
 @Binding("{urn:fabric3.org}binding.file")
+@Repeatable(FileBindings.class)
 public @interface FileBinding {
 
     /**
@@ -39,62 +41,69 @@ public @interface FileBinding {
      *
      * @return the service interface to bind
      */
-    public Class<?> service() default Void.class;
+    Class<?> service() default Void.class;
 
     /**
      * Specifies the directory to scan for incoming files relative to the runtime data directory.
      *
      * @return the directory to scan for incoming files
      */
-    public String location();
+    String location();
 
     /**
      * Specifies the archive handling strategy.
      *
      * @return the archive handling strategy
      */
-    public Strategy strategy() default Strategy.DELETE;
+    Strategy strategy() default Strategy.DELETE;
 
     /**
      * Specifies the archive directory when the {@link Strategy#ARCHIVE} is used.
      *
      * @return the archive directory
      */
-    public String archiveLocation() default "";
+    String archiveLocation() default "";
 
     /**
      * Specifies the location where files than cannot be processed are sent.
      *
      * @return the location where files than cannot be processed are sent
      */
-    public String errorLocation() default "";
+    String errorLocation() default "";
 
     /**
      * Specifies a file name regex filter pattern.
      *
      * @return the pattern
      */
-    public String pattern() default "";
+    String pattern() default "";
 
     /**
      * Specifies an adapter URI.
      *
      * @return the adapter URI
      */
-    public String adaptor() default "";
+    String adaptor() default "";
 
     /**
      * Specifies the initial delay in milliseconds to wait before processing files.
      *
      * @return the initial delay
      */
-    public long delay() default -1;
+    long delay() default -1;
 
     /**
      * Specifies the binding name.
      *
      * @return the binding name
      */
-    public String name() default "";
+    String name() default "";
+
+    /**
+     * Specifies the runtime environments this annotation is activated in. If blank, the annotation is active in all environments.
+     *
+     * @return the environments this annotation is activated in
+     */
+    String[] environments() default {};
 
 }

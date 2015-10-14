@@ -48,6 +48,10 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
     }
 
     protected Binding processReference(ZeroMQ annotation, Reference reference, Class<?> implClass, IntrospectionContext context) {
+        if(!isActiveForEnvironment(annotation.environments())) {
+            return null;
+        }
+
         ZeroMQMetadata metadata = new ZeroMQMetadata();
         String bindingName = "ZMQ" + reference.getName();
         ZeroMQBinding binding = new ZeroMQBinding(bindingName, metadata);
@@ -64,6 +68,10 @@ public class ZeroMQPostProcessor extends AbstractBindingPostProcessor<ZeroMQ> {
                                      InjectingComponentType componentType,
                                      Class<?> implClass,
                                      IntrospectionContext context) {
+        if(!isActiveForEnvironment(annotation.environments())) {
+            return null;
+        }
+
         Class<?> serviceInterface = ((JavaServiceContract) boundService.getServiceContract()).getInterfaceClass();
 
         ZeroMQMetadata metadata = new ZeroMQMetadata();

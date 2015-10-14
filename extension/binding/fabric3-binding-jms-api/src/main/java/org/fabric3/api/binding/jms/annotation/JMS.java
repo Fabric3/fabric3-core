@@ -16,6 +16,7 @@
  */
 package org.fabric3.api.binding.jms.annotation;
 
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -32,34 +33,42 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({TYPE, FIELD, METHOD, PARAMETER})
 @Retention(RUNTIME)
 @Binding("{http://docs.oasis-open.org/ns/opencsa/sca/200912}binding.jms")
+@Repeatable(JMSAnnotations.class)
 public @interface JMS {
     /**
      * Specifies the service interface to bind.
      *
      * @return the service interface to bind
      */
-    public Class<?> service() default Void.class;
+    Class<?> service() default Void.class;
 
     /**
      * Specifies the forward binding configuration.
      *
      * @return the forward binding configuration
      */
-    public JMSConfiguration value();
+    JMSConfiguration value();
 
     /**
      * Specifies the callback binding configuration for bidirectional services.
      *
      * @return the callback binding configuration
      */
-    public JMSConfiguration callback() default @JMSConfiguration(destination = "");
+    JMSConfiguration callback() default @JMSConfiguration(destination = "");
 
     /**
      * Specifies the binding name.
      *
      * @return the binding name
      */
-    public String name() default "";
+    String name() default "";
+
+    /**
+     * Specifies the runtime environments this annotation is activated in. If blank, the annotation is active in all environments.
+     *
+     * @return the environments this annotation is activated in
+     */
+    String[] environments() default {};
 
 }
 

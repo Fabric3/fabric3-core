@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import org.fabric3.api.annotation.model.Binding;
 import org.fabric3.api.model.type.java.InjectingComponentType;
 import org.fabric3.spi.introspection.IntrospectionContext;
+import org.fabric3.spi.introspection.java.IntrospectionHelper;
 import org.fabric3.spi.introspection.java.ReferenceProcessor;
 import org.fabric3.spi.introspection.java.annotation.AbstractAnnotationProcessor;
 import org.oasisopen.sca.annotation.Reference;
@@ -30,14 +31,21 @@ import org.oasisopen.sca.annotation.Reference;
  */
 public class ImplicitBindingReferenceProcessor extends AbstractAnnotationProcessor<Binding> {
     private ReferenceProcessor referenceProcessor;
+    private IntrospectionHelper helper;
 
-    public ImplicitBindingReferenceProcessor(@Reference ReferenceProcessor referenceProcessor) {
+    public ImplicitBindingReferenceProcessor(@Reference ReferenceProcessor referenceProcessor, @Reference IntrospectionHelper helper) {
         super(Binding.class);
         this.referenceProcessor = referenceProcessor;
+        this.helper = helper;
     }
 
     public void visitField(Binding annotation, Field field, Class<?> implClass, InjectingComponentType componentType, IntrospectionContext context) {
         if (field.isAnnotationPresent(Reference.class)) {
+            return;
+        }
+        String name = helper.getSiteName(field, "");
+        if (componentType.getReferences().containsKey(name)) {
+            // reference already introspected, e.g. repeatable annotations
             return;
         }
         referenceProcessor.addDefinition(field, "", true, implClass, componentType, context);
