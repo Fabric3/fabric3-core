@@ -111,7 +111,7 @@ public class ServiceResolverImpl implements ServiceResolver {
 
         LogicalReference logicalReference = createReference(interfaze);
 
-        LogicalCompositeComponent domainComponent = lcm.getRootComponent();
+        LogicalCompositeComponent domainComponent = lcm.getDomainComposite();
 
         List<LogicalService> services = autowireResolver.resolve(logicalReference, domainComponent);
         if (services.isEmpty()) {
@@ -123,7 +123,7 @@ public class ServiceResolverImpl implements ServiceResolver {
     }
 
     private LogicalReference createReference(Class<?> interfaze) {
-        LogicalCompositeComponent domainComponent = lcm.getRootComponent();
+        LogicalCompositeComponent domainComponent = lcm.getDomainComposite();
 
         int id = idCounter.getAndIncrement();
         String name = "Synthetic" + id;

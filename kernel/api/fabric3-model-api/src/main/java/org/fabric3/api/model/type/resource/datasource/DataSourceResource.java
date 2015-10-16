@@ -24,7 +24,6 @@ import org.fabric3.api.model.type.component.Resource;
  * A set of datasource definitions.
  */
 public class DataSourceResource extends Resource {
-    private static final long serialVersionUID = -2844435223504878965L;
     private List<DataSourceConfiguration> configurations;
 
     /**

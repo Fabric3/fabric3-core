@@ -16,21 +16,24 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.resource.resolver;
+package org.fabric3.resource.model;
 
-import junit.framework.TestCase;
+import org.fabric3.api.model.type.component.ResourceReference;
+import org.fabric3.api.model.type.contract.ServiceContract;
 
 /**
- *
+ * A resource sourced from the application or runtime domain.
  */
-public class SystemSourcedResourceResolverTestCase extends TestCase {
+public class SourcedResourceReference extends ResourceReference {
+    private String mappedName;
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    public SourcedResourceReference(String name, boolean optional, String mappedName, ServiceContract serviceContract) {
+        super(name, serviceContract, optional);
+        this.mappedName = mappedName;
     }
 
-    public void testResolve() {
-        // TODO to implement
+    public String getMappedName() {
+        return this.mappedName;
     }
 
 }

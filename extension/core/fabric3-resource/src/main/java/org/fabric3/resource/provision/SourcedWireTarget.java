@@ -16,24 +16,16 @@
  * Portions originally based on Apache Tuscany 2007
  * licensed under the Apache 2.0 license.
  */
-package org.fabric3.resource.model;
+package org.fabric3.resource.provision;
 
-import org.fabric3.api.model.type.component.ResourceReference;
-import org.fabric3.api.model.type.contract.ServiceContract;
+import org.fabric3.spi.model.physical.PhysicalWireTarget;
 
 /**
- * A resource sourced from the runtime domain.
+ * Defines the system service to inject on a resource.
  */
-public class SystemSourcedResourceReference extends ResourceReference {
-    private String mappedName;
+public class SourcedWireTarget extends PhysicalWireTarget {
 
-    public SystemSourcedResourceReference(String name, boolean optional, String mappedName, ServiceContract serviceContract) {
-        super(name, serviceContract, optional);
-        this.mappedName = mappedName;
+    public SourcedWireTarget() {
+        setOptimizable(true);
     }
-
-    public String getMappedName() {
-        return this.mappedName;
-    }
-
 }

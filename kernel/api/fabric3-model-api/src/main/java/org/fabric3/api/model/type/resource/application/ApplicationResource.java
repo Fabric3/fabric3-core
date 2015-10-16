@@ -14,42 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fabric3.api.model.type.resource.timer;
+package org.fabric3.api.model.type.resource.application;
+
+import java.util.function.Supplier;
 
 import org.fabric3.api.model.type.component.Resource;
 
 /**
- * A configured timer pool.
+ * Defines a resource provided by a user application.
  */
-public class TimerPoolResource extends Resource {
+public class ApplicationResource extends Resource {
     private String name;
-    private int coreSize = 2;
+    private Supplier<?> supplier;
 
     /**
      * Constructor.
      *
-     * @param name     the timer pool name
-     * @param coreSize the core pool size
+     * @param name     the resource name, used to resolve it
+     * @param supplier the resource factory. The supplier may be invoked multiple times, returning the same instance if the resource should not be recreated on
+     *                 each invocation.
      */
-    public TimerPoolResource(String name, int coreSize) {
+    public ApplicationResource(String name, Supplier<?> supplier) {
         this.name = name;
-        this.coreSize = coreSize;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param name the timer pool name
-     */
-    public TimerPoolResource(String name) {
-        this.name = name;
+        this.supplier = supplier;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getCoreSize() {
-        return coreSize;
+    public Supplier<?> getSupplier() {
+        return supplier;
     }
 }

@@ -168,7 +168,7 @@ public class ChannelResolverImpl implements ChannelResolver {
 
     private <T> LogicalConsumer createConsumer(Class<T> type, URI channelUri) {
         JavaServiceContract contract = introspector.introspect(type);
-        LogicalCompositeComponent domain = lcm.getRootComponent();
+        LogicalCompositeComponent domain = lcm.getDomainComposite();
         String root = domain.getUri().toString();
 
         LogicalComponent<NonManagedImplementation> logicalComponent = createComponent(Object.class, domain, root);
@@ -184,7 +184,7 @@ public class ChannelResolverImpl implements ChannelResolver {
     }
 
     private LogicalChannel getChannel(String name) throws Fabric3Exception {
-        LogicalCompositeComponent domainComponent = lcm.getRootComponent();
+        LogicalCompositeComponent domainComponent = lcm.getDomainComposite();
         String domainRoot = domainComponent.getUri().toString();
         URI channelUri = URI.create(domainRoot + "/" + name);
         LogicalChannel logicalChannel = domainComponent.getChannel(channelUri);
@@ -197,7 +197,7 @@ public class ChannelResolverImpl implements ChannelResolver {
     private <T> LogicalProducer createProducer(Class<T> interfaze, URI channelUri) throws Fabric3Exception {
         JavaServiceContract contract = introspector.introspect(interfaze);
 
-        LogicalCompositeComponent domain = lcm.getRootComponent();
+        LogicalCompositeComponent domain = lcm.getDomainComposite();
         String root = domain.getUri().toString();
 
         LogicalComponent<NonManagedImplementation> logicalComponent = createComponent(interfaze, domain, root);

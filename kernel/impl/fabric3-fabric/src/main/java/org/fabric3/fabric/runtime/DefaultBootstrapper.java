@@ -130,7 +130,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         lcm = runtimeServices.getLogicalComponentManager();
         componentManager = runtimeServices.getComponentManager();
         channelManager = runtimeServices.getChannelManager();
-        domain = lcm.getRootComponent();
+        domain = lcm.getDomainComposite();
         classLoaderRegistry = runtimeServices.getClassLoaderRegistry();
         metaDataStore = runtimeServices.getMetaDataStore();
         scopeRegistry = runtimeServices.getScopeRegistry();

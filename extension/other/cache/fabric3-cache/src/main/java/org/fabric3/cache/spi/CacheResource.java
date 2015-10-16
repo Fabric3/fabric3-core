@@ -22,7 +22,6 @@ import org.fabric3.api.model.type.component.Resource;
  * Defines a cache. Providers subclass to provide specific cache configuration.
  */
 public abstract class CacheResource extends Resource {
-    private static final long serialVersionUID = -6743311265670833364L;
     private String cacheName;
 
     public void setCacheName(String name) {

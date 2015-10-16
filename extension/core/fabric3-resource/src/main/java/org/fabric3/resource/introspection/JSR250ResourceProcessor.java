@@ -28,7 +28,7 @@ import java.util.Map;
 import org.fabric3.api.model.type.component.ResourceReference;
 import org.fabric3.api.model.type.contract.ServiceContract;
 import org.fabric3.api.model.type.java.InjectingComponentType;
-import org.fabric3.resource.model.SystemSourcedResourceReference;
+import org.fabric3.resource.model.SourcedResourceReference;
 import org.fabric3.resource.spi.JSR250ResourceTypeHandler;
 import org.fabric3.spi.introspection.IntrospectionContext;
 import org.fabric3.spi.introspection.TypeMapping;
@@ -108,13 +108,13 @@ public class JSR250ResourceProcessor extends AbstractAnnotationProcessor<Resourc
         componentType.add(definition, site);
     }
 
-    private SystemSourcedResourceReference createResource(String name,
-                                                          Class<?> type,
-                                                          boolean optional,
-                                                          String mappedName,
-                                                          InjectingComponentType componentType,
-                                                          IntrospectionContext context) {
+    private SourcedResourceReference createResource(String name,
+                                                    Class<?> type,
+                                                    boolean optional,
+                                                    String mappedName,
+                                                    InjectingComponentType componentType,
+                                                    IntrospectionContext context) {
         ServiceContract serviceContract = contractProcessor.introspect(type, context, componentType);
-        return new SystemSourcedResourceReference(name, optional, mappedName, serviceContract);
+        return new SourcedResourceReference(name, optional, mappedName, serviceContract);
     }
 }

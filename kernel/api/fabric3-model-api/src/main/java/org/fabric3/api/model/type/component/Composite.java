@@ -56,10 +56,6 @@ public class Composite extends ComponentType {
 
     private List<Namespace> namespaces;
 
-    // determines if this composite is a pointer. Pointers are references to composites that do not yet exist or have been deleted such
-    // as from an include or implementation.composite. Used primarily in tooling environments.
-    private boolean pointer;
-
     /**
      * Constructor.
      *
@@ -72,13 +68,11 @@ public class Composite extends ComponentType {
     /**
      * Constructor.
      *
-     * @param name    the qualified name of this composite
-     * @param pointer true if this composite is a pointer
-     * @param uri     the contribution URI
+     * @param name the qualified name of this composite
+     * @param uri  the contribution URI
      */
-    public Composite(QName name, boolean pointer, URI uri) {
+    public Composite(QName name, URI uri) {
         this.name = name;
-        this.pointer = pointer;
         this.contributionUri = uri;
     }
 
@@ -161,15 +155,6 @@ public class Composite extends ComponentType {
      */
     public void setEnvironments(List<String> environments) {
         this.environments = environments;
-    }
-
-    /**
-     * Returns true if this composite is a pointer.
-     *
-     * @return true if this composite is a pointer
-     */
-    public boolean isPointer() {
-        return pointer;
     }
 
     /**

@@ -22,34 +22,41 @@ import java.net.URI;
 import java.util.function.Supplier;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.resource.provision.SystemSourcedWireTarget;
+import org.fabric3.api.host.Names;
+import org.fabric3.resource.provision.SourcedWireTarget;
 import org.fabric3.spi.container.builder.TargetWireAttacher;
 import org.fabric3.spi.container.component.AtomicComponent;
 import org.fabric3.spi.container.component.ComponentManager;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireSource;
-import org.fabric3.spi.util.UriHelper;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Attaches to a service in the runtime domain.
  */
-public class SystemSourcedResourceWireAttacher implements TargetWireAttacher<SystemSourcedWireTarget> {
-    private final ComponentManager manager;
+public class SourcedResourceWireAttacher implements TargetWireAttacher<SourcedWireTarget> {
+    private ApplicationResourceRegistry resourceRegistry;
+    private ComponentManager manager;
 
-    public SystemSourcedResourceWireAttacher(@Reference ComponentManager manager) {
+    public SourcedResourceWireAttacher(@Reference ApplicationResourceRegistry resourceRegistry, @Reference ComponentManager manager) {
+        this.resourceRegistry = resourceRegistry;
         this.manager = manager;
     }
 
-    public void attach(PhysicalWireSource source, SystemSourcedWireTarget target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSource source, SourcedWireTarget target, Wire wire) throws Fabric3Exception {
         throw new AssertionError();
     }
 
-    public Supplier<?> createSupplier(SystemSourcedWireTarget target) throws Fabric3Exception {
-        URI targetId = UriHelper.getDefragmentedName(target.getUri());
-        AtomicComponent targetComponent = (AtomicComponent) manager.getComponent(targetId);
+    public Supplier<?> createSupplier(SourcedWireTarget target) throws Fabric3Exception {
+        String name = target.getUri().toString();
+        Supplier supplier = resourceRegistry.getResourceFactory(name);
+        if (supplier != null) {
+            return supplier;
+        }
+        URI systemId = URI.create(Names.RUNTIME_NAME + "/" + name);
+        AtomicComponent targetComponent = (AtomicComponent) manager.getComponent(systemId);
         if (targetComponent == null) {
-            throw new Fabric3Exception("Resource not found: " + targetId);
+            throw new Fabric3Exception("Resource not found: " + systemId);
         }
         return targetComponent.createSupplier();
     }

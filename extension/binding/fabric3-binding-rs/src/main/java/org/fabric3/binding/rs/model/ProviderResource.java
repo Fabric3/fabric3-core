@@ -24,7 +24,6 @@ import org.fabric3.api.model.type.component.Resource;
  *
  */
 public class ProviderResource extends Resource {
-
     private String providerName;
     private Class<? extends Annotation> bindingAnnotation;
     private Class<?> providerClass;

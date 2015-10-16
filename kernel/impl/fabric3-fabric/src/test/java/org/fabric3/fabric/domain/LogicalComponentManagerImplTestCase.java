@@ -70,7 +70,7 @@ public class LogicalComponentManagerImplTestCase extends TestCase {
         lcm.setMonitor(monitor);
         lcm.init();
 
-        LogicalCompositeComponent domain = lcm.getRootComponent();
+        LogicalCompositeComponent domain = lcm.getDomainComposite();
         URI uri = URI.create(Names.RUNTIME_NAME + "/component");
         LogicalComponent component = new LogicalComponent(uri, null, domain);
         domain.addComponent(component);

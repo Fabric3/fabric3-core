@@ -104,23 +104,21 @@ public abstract class AbstractDomain implements Domain {
         if (deployables.isEmpty()) {
             return;
         }
-        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
+        LogicalCompositeComponent domain = logicalComponentManager.getDomainComposite();
         collector.markForCollection(uri, domain);
         Deployment deployment = generator.generate(domain);
         collector.collect(domain);
         deployer.deploy(deployment);
-        logicalComponentManager.replaceRootComponent(domain);
         contribution.undeploy();
     }
 
     public synchronized void undeploy(Composite composite) throws Fabric3Exception {
-        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
+        LogicalCompositeComponent domain = logicalComponentManager.getDomainComposite();
         URI contributionUri = composite.getContributionUri();
         collector.markForCollection(contributionUri, domain);
         Deployment deployment = generator.generate(domain);
         collector.collect(domain);
         deployer.deploy(deployment);
-        logicalComponentManager.replaceRootComponent(domain);
         Contribution contribution = metadataStore.find(contributionUri);
         contribution.undeploy();
     }
@@ -149,7 +147,7 @@ public abstract class AbstractDomain implements Domain {
      * @throws Fabric3Exception if an error occurs during instantiation or deployment
      */
     private void instantiateAndDeploy(List<Composite> deployables, Set<Contribution> contributions, boolean recover) throws Fabric3Exception {
-        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
+        LogicalCompositeComponent domain = logicalComponentManager.getDomainComposite();
 
         for (Contribution contribution : contributions) {
             if (ContributionState.STORED == contribution.getState()) {
@@ -168,7 +166,6 @@ public abstract class AbstractDomain implements Domain {
             collector.markAsProvisioned(domain);
         }
 
-        logicalComponentManager.replaceRootComponent(domain);
         contributions.forEach(Contribution::deploy);
     }
 
@@ -179,7 +176,7 @@ public abstract class AbstractDomain implements Domain {
      * @throws Fabric3Exception if a deployment error occurs
      */
     private void instantiateAndDeploy(Composite composite) throws Fabric3Exception {
-        LogicalCompositeComponent domain = logicalComponentManager.getRootComponent();
+        LogicalCompositeComponent domain = logicalComponentManager.getDomainComposite();
 
         QName name = composite.getName();
         QNameSymbol symbol = new QNameSymbol(name);
@@ -197,7 +194,6 @@ public abstract class AbstractDomain implements Domain {
             throw new AssemblyException(context.getErrors());
         }
         deploy(domain);
-        logicalComponentManager.replaceRootComponent(domain);
         contribution.deploy();
     }
 

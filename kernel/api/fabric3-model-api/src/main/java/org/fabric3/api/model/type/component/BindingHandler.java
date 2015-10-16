@@ -25,8 +25,6 @@ import java.net.URI;
  * A binding interceptor.
  */
 public class BindingHandler extends Resource {
-    private static final long serialVersionUID = -2097314069798596206L;
-
     private URI target;
 
     /**

@@ -141,7 +141,7 @@ public class ImplementationCompositeLoader extends AbstractExtensibleTypeLoader<
                 context.addError(failure);
                 // add pointer
                 URI uri = context.getContributionUri();
-                Composite pointer = new Composite(name, true, uri);
+                Composite pointer = new Composite(name, uri);
                 impl.setComponentType(pointer);
                 return impl;
             }

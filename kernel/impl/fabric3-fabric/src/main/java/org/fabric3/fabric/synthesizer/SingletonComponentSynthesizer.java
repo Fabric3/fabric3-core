@@ -99,7 +99,7 @@ public class SingletonComponentSynthesizer implements ComponentSynthesizer {
 
     private <S, I extends S> LogicalComponent<?> createLogicalComponent(String name, Class<S> type, I instance, boolean introspect)
             throws InvalidServiceContractException, AssemblyException {
-        LogicalCompositeComponent domain = lcm.getRootComponent();
+        LogicalCompositeComponent domain = lcm.getDomainComposite();
         Component<Implementation<?>> definition = createDefinition(name, type, instance, introspect);
         InstantiationContext context = new InstantiationContext();
         LogicalComponent<?> logical = instantiator.instantiate(definition, domain, context);

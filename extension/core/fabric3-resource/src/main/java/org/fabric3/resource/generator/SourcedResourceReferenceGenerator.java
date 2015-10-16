@@ -20,10 +20,8 @@ package org.fabric3.resource.generator;
 
 import java.net.URI;
 
-import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.api.host.Names;
-import org.fabric3.resource.model.SystemSourcedResourceReference;
-import org.fabric3.resource.provision.SystemSourcedWireTarget;
+import org.fabric3.resource.model.SourcedResourceReference;
+import org.fabric3.resource.provision.SourcedWireTarget;
 import org.fabric3.spi.domain.generator.ResourceReferenceGenerator;
 import org.fabric3.spi.model.instance.LogicalResourceReference;
 import org.oasisopen.sca.annotation.EagerInit;
@@ -32,13 +30,13 @@ import org.oasisopen.sca.annotation.EagerInit;
  *
  */
 @EagerInit
-public class SystemSourcedResourceReferenceGenerator implements ResourceReferenceGenerator<SystemSourcedResourceReference> {
+public class SourcedResourceReferenceGenerator implements ResourceReferenceGenerator<SourcedResourceReference> {
 
-    public SystemSourcedWireTarget generateWireTarget(LogicalResourceReference<SystemSourcedResourceReference> resourceReference) throws Fabric3Exception {
-        SystemSourcedResourceReference definition = resourceReference.getDefinition();
+    public SourcedWireTarget generateWireTarget(LogicalResourceReference<SourcedResourceReference> resourceReference) {
+        SourcedResourceReference definition = resourceReference.getDefinition();
         String mappedName = definition.getMappedName();
-        URI targetUri = URI.create(Names.RUNTIME_NAME + "/" + mappedName);
-        SystemSourcedWireTarget target = new SystemSourcedWireTarget();
+        URI targetUri = URI.create(mappedName);
+        SourcedWireTarget target = new SourcedWireTarget();
         target.setUri(targetUri);
         return target;
     }

@@ -94,7 +94,7 @@ public class IncludeLoader extends AbstractExtensibleTypeLoader<Include> {
                 context.addError(failure);
                 // add pointer
                 URI uri = context.getContributionUri();
-                Composite pointer = new Composite(name, true, uri);
+                Composite pointer = new Composite(name, uri);
                 include.setIncluded(pointer);
                 return include;
             }

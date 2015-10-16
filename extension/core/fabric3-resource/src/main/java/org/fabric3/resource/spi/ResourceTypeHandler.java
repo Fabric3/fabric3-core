@@ -31,16 +31,12 @@ public interface ResourceTypeHandler {
     /**
      * Creates a {@link ResourceReference} for a given type.
      *
-     * @param resourceName  the name of the resource injection site
+     * @param name  the name of the resource injection site
      * @param annotation    the resource annotation
      * @param member        the Field, Constructor, or Method where the resource is injected
-     * @param componentType the component type being introspected
+     * @param type the component type being introspected
      * @param context       the current introspection context  @return the ResourceDefinition
      * @return the resource definition
      */
-    ResourceReference createResourceReference(String resourceName,
-                                                        Resource annotation,
-                                                        Member member,
-                                                        InjectingComponentType componentType,
-                                                        IntrospectionContext context);
+    ResourceReference createResourceReference(String name, Resource annotation, Member member, InjectingComponentType type, IntrospectionContext context);
 }

@@ -26,8 +26,6 @@ import org.fabric3.cache.spi.CacheResource;
  * A set of cache configurations defined in a composite.
  */
 public class CacheSetResource extends Resource {
-    private static final long serialVersionUID = 319475664996240639L;
-
     private List<CacheResource> configurations = new ArrayList<>();
 
     public void addDefinition(CacheResource configuration) {

@@ -108,12 +108,8 @@ public class LogicalComponentManagerImpl implements LogicalComponentManager {
         return currentComponent;
     }
 
-    public LogicalCompositeComponent getRootComponent() {
+    public LogicalCompositeComponent getDomainComposite() {
         return domain;
-    }
-
-    public void replaceRootComponent(LogicalCompositeComponent component) {
-        domain = component;
     }
 
     private void initializeDomainComposite() {

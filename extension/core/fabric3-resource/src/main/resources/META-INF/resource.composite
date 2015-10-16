@@ -13,12 +13,20 @@
         <f3:implementation.system class="org.fabric3.resource.introspection.JSR250ResourceProcessor"/>
     </component>
 
-    <component name="SystemSourcedResourceWireGenerator" f3:key="org.fabric3.resource.model.SystemSourcedResourceReference">
-        <f3:implementation.system class="org.fabric3.resource.generator.SystemSourcedResourceReferenceGenerator"/>
+    <component name="SystemSourcedResourceWireGenerator" f3:key="org.fabric3.resource.model.SourcedResourceReference">
+        <f3:implementation.system class="org.fabric3.resource.generator.SourcedResourceReferenceGenerator"/>
     </component>
 
-    <component name="SystemSourcedResourceWireAttacher" f3:key="org.fabric3.resource.provision.SystemSourcedWireTarget">
-        <f3:implementation.system class="org.fabric3.resource.runtime.SystemSourcedResourceWireAttacher"/>
+    <component name="SourcedResourceWireAttacher" f3:key="org.fabric3.resource.provision.SourcedWireTarget">
+        <f3:implementation.system class="org.fabric3.resource.runtime.SourcedResourceWireAttacher"/>
+    </component>
+
+    <component name="ApplicationResourceGenerator" f3:key="org.fabric3.api.model.type.resource.application.ApplicationResource">
+        <f3:implementation.system class="org.fabric3.resource.generator.ApplicationResourceGenerator"/>
+    </component>
+
+    <component name="ApplicationResourceBuilder" f3:key="org.fabric3.resource.provision.PhysicalApplicationResource">
+        <f3:implementation.system class="org.fabric3.resource.runtime.ApplicationResourceBuilder"/>
     </component>
 
 

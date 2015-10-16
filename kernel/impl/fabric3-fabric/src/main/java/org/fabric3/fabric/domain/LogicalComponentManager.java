@@ -29,18 +29,11 @@ import org.fabric3.spi.model.instance.LogicalCompositeComponent;
 public interface LogicalComponentManager {
 
     /**
-     * Returns the root component in the domain.
+     * Returns the domain composite.
      *
-     * @return the root component in the domain.
+     * @return the domain composite
      */
-    LogicalCompositeComponent getRootComponent();
-
-    /**
-     * Replaces the root component in the domain. This is used during deployment to update the domain with a modified copy of the logical model.
-     *
-     * @param component the replacement
-     */
-    void replaceRootComponent(LogicalCompositeComponent component);
+    LogicalCompositeComponent getDomainComposite();
 
     /**
      * Returns the component uniquely identified by an id.

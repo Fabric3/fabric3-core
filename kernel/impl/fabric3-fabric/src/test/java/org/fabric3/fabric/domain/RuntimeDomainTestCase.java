@@ -74,7 +74,7 @@ public class RuntimeDomainTestCase extends TestCase {
         domain.include(Collections.singletonList(CONTRIBUTION_URI));
 
         // verify the component contained in the composite was added to the logical model
-        assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        assertNotNull(lcm.getDomainComposite().getComponent(COMPONENT_URI));
         control.verify();
     }
 
@@ -90,11 +90,11 @@ public class RuntimeDomainTestCase extends TestCase {
 
         domain.include(composite);
 
-        assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        assertNotNull(lcm.getDomainComposite().getComponent(COMPONENT_URI));
 
         domain.undeploy(composite.getContributionUri());
         // verify the component contained in the composite was added to the logical model
-        assertNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        assertNull(lcm.getDomainComposite().getComponent(COMPONENT_URI));
         control.verify();
     }
 
@@ -110,11 +110,11 @@ public class RuntimeDomainTestCase extends TestCase {
 
         domain.include(composite);
 
-        assertNotNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        assertNotNull(lcm.getDomainComposite().getComponent(COMPONENT_URI));
 
         domain.undeploy(composite);
         // verify the component contained in the composite was added to the logical model
-        assertNull(lcm.getRootComponent().getComponent(COMPONENT_URI));
+        assertNull(lcm.getDomainComposite().getComponent(COMPONENT_URI));
         control.verify();
     }
 

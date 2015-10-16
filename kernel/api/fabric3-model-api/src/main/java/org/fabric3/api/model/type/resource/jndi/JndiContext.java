@@ -25,8 +25,6 @@ import org.fabric3.api.model.type.component.Resource;
  * Configuration used to create JNDI contexts on a runtime.
  */
 public class JndiContext extends Resource {
-    private static final long serialVersionUID = 897102744778070486L;
-
     private Map<String, Properties> contexts;
 
     public JndiContext(Map<String, Properties> contexts) {

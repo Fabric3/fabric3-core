@@ -13,19 +13,30 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Portions originally based on Apache Tuscany 2007
- * licensed under the Apache 2.0 license.
  */
 package org.fabric3.resource.provision;
 
-import org.fabric3.spi.model.physical.PhysicalWireTarget;
+import java.util.function.Supplier;
+
+import org.fabric3.spi.model.physical.PhysicalResource;
 
 /**
- * Defines the system service to inject on a resource.
+ *
  */
-public class SystemSourcedWireTarget extends PhysicalWireTarget {
+public class PhysicalApplicationResource extends PhysicalResource {
+    private String name;
+    private Supplier<?> supplier;
 
-    public SystemSourcedWireTarget() {
-        setOptimizable(true);
+    public PhysicalApplicationResource(String name, Supplier<?> supplier) {
+        this.name = name;
+        this.supplier = supplier;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Supplier<?> getSupplier() {
+        return supplier;
     }
 }
