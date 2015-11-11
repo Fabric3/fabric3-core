@@ -36,12 +36,16 @@ import org.oasisopen.sca.annotation.EagerInit;
  */
 @EagerInit
 public class JUnitWireBindingGenerator implements WireBindingGenerator<JUnitBinding> {
+    private static final String MANAGED_TRANSACTION = "managedTransaction";
 
     public JUnitWireSource generateSource(LogicalBinding<JUnitBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {
         Component<?> definition = binding.getParent().getParent().getDefinition();
         String testName = definition.getImplementation().getImplementationName();
         ContextConfiguration configuration = binding.getDefinition().getConfiguration();
-        return new JUnitWireSource(testName, configuration);
+
+        boolean transactional = binding.getParent().getParent().getDefinition().getComponentType().getPolicies().contains(MANAGED_TRANSACTION);
+
+        return new JUnitWireSource(testName, transactional, configuration);
     }
 
     public PhysicalWireTarget generateTarget(LogicalBinding<JUnitBinding> binding, ServiceContract contract, List<LogicalOperation> operations) {

@@ -25,6 +25,7 @@ import org.fabric3.implementation.pojo.builder.PojoSourceWireAttacher;
 import org.fabric3.spi.container.builder.SourceWireAttacher;
 import org.fabric3.spi.container.wire.Interceptor;
 import org.fabric3.spi.container.wire.InvocationChain;
+import org.fabric3.spi.container.wire.TransactionDecorator;
 import org.fabric3.spi.container.wire.Wire;
 import org.fabric3.spi.model.physical.PhysicalWireTarget;
 import org.fabric3.spi.security.AuthenticationService;
@@ -40,6 +41,9 @@ import org.oasisopen.sca.annotation.Reference;
 public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements SourceWireAttacher<JUnitWireSource> {
     private TestWireHolder holder;
     private AuthenticationService authenticationService;
+
+    @Reference(required = false)
+    protected TransactionDecorator transactionDecorator;
 
     public JunitSourceWireAttacher(@Reference TransformerRegistry transformerRegistry, @Reference TestWireHolder holder) {
         super(transformerRegistry);
@@ -65,7 +69,18 @@ public class JunitSourceWireAttacher extends PojoSourceWireAttacher implements S
                 String password = configuration.getPassword();
                 AuthenticatingInterceptor interceptor = new AuthenticatingInterceptor(username, password, authenticationService, next);
                 chain.addInterceptor(0, interceptor);
+
             }
+        }
+        if (source.isTransactional()) {
+            if (transactionDecorator == null) {
+                throw new Fabric3Exception(
+                        "Component " + source.getUri() + " is transactional but the runtime is not configured with the transaction extension");
+            }
+            for (InvocationChain chain : wire.getInvocationChains()) {
+                transactionDecorator.transactional(chain);
+            }
+
         }
         holder.add(testName, wire);
     }

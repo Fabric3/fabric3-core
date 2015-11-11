@@ -13,4 +13,8 @@
         <f3:implementation.system class="org.fabric3.tx.TxInterceptorGenerator"/>
     </component>
 
+    <component name="JtaTransactionDecorator">
+        <f3:implementation.system class="org.fabric3.tx.JtaTransactionDecorator"/>
+    </component>
+
 </composite>

@@ -26,16 +26,19 @@ import org.fabric3.spi.model.physical.PhysicalWireSource;
  */
 public class JUnitWireSource extends PhysicalWireSource {
     private String testName;
+    private boolean transactional;
     private ContextConfiguration configuration;
 
     /**
      * Constructor.
      *
      * @param testName      the test name to execute
+     * @param transactional true if the test should be invoked withing a transaction
      * @param configuration the context configuration or null if a context is not configured
      */
-    public JUnitWireSource(String testName, ContextConfiguration configuration) {
+    public JUnitWireSource(String testName, boolean transactional, ContextConfiguration configuration) {
         this.testName = testName;
+        this.transactional = transactional;
         this.configuration = configuration;
     }
 
@@ -46,6 +49,15 @@ public class JUnitWireSource extends PhysicalWireSource {
      */
     public String getTestName() {
         return testName;
+    }
+
+    /**
+     * Returns true if the test should be invoked withing a transaction.
+     *
+     * @return true if the test should be invoked withing a transaction
+     */
+    public boolean isTransactional() {
+        return transactional;
     }
 
     /**
