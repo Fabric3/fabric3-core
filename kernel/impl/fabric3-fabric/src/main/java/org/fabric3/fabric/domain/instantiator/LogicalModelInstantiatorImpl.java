@@ -108,18 +108,27 @@ public class LogicalModelInstantiatorImpl implements LogicalModelInstantiator {
 
     private void includeProperties(Composite composite, LogicalCompositeComponent domain, InstantiationContext context) {
         for (Property property : composite.getProperties().values()) {
-            String name = property.getName();
-            if (domain.getAllProperties().containsKey(name)) {
-                DuplicateProperty error = new DuplicateProperty(name, domain);
-                context.addError(error);
-            } else {
-                Document value = property.getDefaultValue();
-                boolean many = property.isMany();
-                QName type = property.getType();
-
-                LogicalProperty logicalProperty = LogicalProperty.Builder.newBuilder(name, domain).xmlValue(value).many(many).type(type).build();
-                domain.setProperties(logicalProperty);
+            includeProperty(property, domain, context);
+        }
+        for (Include include : composite.getIncludes().values()) {
+            for (Property property : include.getIncluded().getProperties().values()) {
+             includeProperty(property, domain,context);
             }
+        }
+    }
+
+    private void includeProperty(Property property, LogicalCompositeComponent domain, InstantiationContext context) {
+        String name = property.getName();
+        if (domain.getAllProperties().containsKey(name)) {
+            DuplicateProperty error = new DuplicateProperty(name, domain);
+            context.addError(error);
+        } else {
+            Document value = property.getDefaultValue();
+            boolean many = property.isMany();
+            QName type = property.getType();
+
+            LogicalProperty logicalProperty = LogicalProperty.Builder.newBuilder(name, domain).xmlValue(value).many(many).type(type).build();
+            domain.setProperties(logicalProperty);
         }
     }
 
