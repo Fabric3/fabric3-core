@@ -250,7 +250,7 @@ public class BootstrapAssemblyFactory {
                                                                         serviceInvokerFactory,
                                                                         consumerInvokerFactory);
 
-        ImplementationManagerFactoryBuilderImpl factoryBuilder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory);
+        ImplementationManagerFactoryBuilderImpl factoryBuilder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory, classLoaderRegistry);
         SystemComponentBuilder builder = new SystemComponentBuilder(scopeRegistry,
                                                                     factoryBuilder,
                                                                     classLoaderRegistry,

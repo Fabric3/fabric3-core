@@ -74,6 +74,7 @@ public class JavaGenerationHelperImpl implements JavaGenerationHelper {
         managerDefinition.setInitMethod(type.getInitMethod());
         managerDefinition.setDestroyMethod(type.getDestroyMethod());
         managerDefinition.setImplementationClass(implementation.getImplementationClass());
+        managerDefinition.setClassLoaderUri(component.getDefinition().getContributionUri());
         helper.processInjectionSites(type, managerDefinition);
 
         // create the physical component definition

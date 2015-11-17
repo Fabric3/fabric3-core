@@ -22,6 +22,7 @@ package org.fabric3.implementation.pojo.manager;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -32,6 +33,7 @@ import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.fabric3.spi.model.type.java.FieldInjectionSite;
 import org.fabric3.spi.model.type.java.MethodInjectionSite;
@@ -91,9 +93,12 @@ public class ImplementationManagerFactoryBuilderImplTestCase extends TestCase {
         ReflectionFactory reflectionFactory = EasyMock.createNiceMock(ReflectionFactory.class);
         LifecycleInvoker invoker = EasyMock.createMock(LifecycleInvoker.class);
         EasyMock.expect(reflectionFactory.createLifecycleInvoker(EasyMock.isA(Method.class))).andReturn(invoker);
-        EasyMock.replay(reflectionFactory);
 
-        builder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory);
+        ClassLoaderRegistry classLoaderRegistry = EasyMock.createMock(ClassLoaderRegistry.class);
+        EasyMock.expect(classLoaderRegistry.getClassLoader(EasyMock.anyObject())).andReturn(getClass().getClassLoader()).anyTimes();
+        EasyMock.replay(reflectionFactory, classLoaderRegistry);
+
+        builder = new ImplementationManagerFactoryBuilderImpl(reflectionFactory, classLoaderRegistry);
         Constructor<Foo> constructor = Foo.class.getConstructor(String.class, Long.class);
 
         definition = new ImplementationManagerDefinition();

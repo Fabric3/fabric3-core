@@ -31,6 +31,7 @@ import org.fabric3.api.model.type.java.InjectionSite;
 import org.fabric3.implementation.pojo.provision.ImplementationManagerDefinition;
 import org.fabric3.implementation.pojo.spi.reflection.LifecycleInvoker;
 import org.fabric3.implementation.pojo.spi.reflection.ReflectionFactory;
+import org.fabric3.spi.classloader.ClassLoaderRegistry;
 import org.fabric3.spi.model.type.java.ConstructorInjectionSite;
 import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
@@ -41,9 +42,11 @@ import org.oasisopen.sca.annotation.Reference;
 @EagerInit
 public class ImplementationManagerFactoryBuilderImpl implements ImplementationManagerFactoryBuilder {
     private ReflectionFactory reflectionFactory;
+    private ClassLoaderRegistry classLoaderRegistry;
 
-    public ImplementationManagerFactoryBuilderImpl(@Reference ReflectionFactory reflectionFactory) {
+    public ImplementationManagerFactoryBuilderImpl(@Reference ReflectionFactory reflectionFactory, @Reference ClassLoaderRegistry classLoaderRegistry) {
         this.reflectionFactory = reflectionFactory;
+        this.classLoaderRegistry = classLoaderRegistry;
     }
 
     public ImplementationManagerFactoryImpl build(ImplementationManagerDefinition definition) throws Fabric3Exception {
@@ -70,14 +73,14 @@ public class ImplementationManagerFactoryBuilderImpl implements ImplementationMa
         Map<InjectionSite, Injectable> postConstruction = definition.getPostConstruction();
         List<Injectable> construction = Arrays.asList(cdiSources);
         boolean reinjectable = definition.isReinjectable();
-
+        ClassLoader cl = classLoaderRegistry.getClassLoader(definition.getClassLoaderUri());
         return new ImplementationManagerFactoryImpl(ctr,
                                                     construction,
                                                     postConstruction,
                                                     initInvoker,
                                                     destroyInvoker,
                                                     reinjectable,
-                                                    definition.getImplementationClass().getClassLoader(),
+                                                    cl,
                                                     reflectionFactory);
     }
 

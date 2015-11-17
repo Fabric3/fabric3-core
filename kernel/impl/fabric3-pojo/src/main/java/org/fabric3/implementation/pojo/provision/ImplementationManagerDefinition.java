@@ -21,6 +21,7 @@ package org.fabric3.implementation.pojo.provision;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ public class ImplementationManagerDefinition {
     private Map<InjectionSite, Injectable> construction = new HashMap<>();
     private Map<InjectionSite, Injectable> postConstruction = new HashMap<>();
     private Map<InjectionSite, Injectable> reinjection = new HashMap<>();
+    private URI classLoaderUri;
 
     /**
      * Returns the signature of the constructor that should be used.
@@ -157,4 +159,11 @@ public class ImplementationManagerDefinition {
         this.reinjectable = reinjectable;
     }
 
+    public void setClassLoaderUri(URI classLoader) {
+        this.classLoaderUri = classLoader;
+    }
+
+    public URI getClassLoaderUri() {
+        return classLoaderUri;
+    }
 }
