@@ -18,7 +18,9 @@ public class etcdProvider {
     @Provides
     public static Composite getComposite() {
         CompositeBuilder builder = CompositeBuilder.newBuilder(QNAME);
-        builder.component(SystemComponentBuilder.newBuilder(EtcdAgent.class).build());
+        SystemComponentBuilder componentBuilder = SystemComponentBuilder.newBuilder(EtcdAgent.class);
+        componentBuilder.reference("executorService","RuntimeThreadPoolExecutor");
+        builder.component(componentBuilder.build());
         builder.deployable();
         return builder.build();
     }
