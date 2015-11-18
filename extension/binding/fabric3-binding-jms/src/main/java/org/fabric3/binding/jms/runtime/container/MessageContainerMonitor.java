@@ -35,6 +35,9 @@ public interface MessageContainerMonitor {
     @Severe("Listener threw an exception for {0}")
     void listenerError(String uri, Throwable e);
 
+    @Severe("Error unsubscribing {0}")
+    void unsubscribeError(String uri, Throwable e);
+
     @Severe("Error refreshing connection for for {1}")
     void connectionError(String uri, Throwable e);
 

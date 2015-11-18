@@ -805,9 +805,11 @@ public class AdaptiveMessageContainer {
                 setRecoveryMarker();
                 boolean received = doReceive();
                 previousSucceeded = true;
-                return received;
-            } finally {
                 closeResources(false);
+                return received;
+            } catch (JMSException | Fabric3Exception e) {
+                closeResources(true);
+                throw e;
             }
         }
 
@@ -882,7 +884,7 @@ public class AdaptiveMessageContainer {
                     try {
                         session.unsubscribe(subscriptionId);
                     } catch (JMSException e) {
-                        monitor.listenerError(containerUri.toString(), e);
+                        monitor.unsubscribeError(containerUri.toString(), e);
                     }
                 }
                 JmsHelper.closeQuietly(session);
