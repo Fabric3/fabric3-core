@@ -62,6 +62,7 @@ import org.fabric3.spi.host.PortAllocator;
 import org.fabric3.spi.management.ManagementService;
 import org.fabric3.spi.runtime.event.EventService;
 import org.fabric3.spi.runtime.event.JoinDomainCompleted;
+import org.fabric3.spi.runtime.event.TransportStart;
 import org.fabric3.spi.security.AuthenticationService;
 import org.fabric3.spi.security.KeyStoreManager;
 import org.fabric3.spi.transport.Transport;
@@ -344,7 +345,7 @@ public class JettyServiceImpl implements JettyService, Transport {
                 managementService.export(MAPPINGS, "HTTP", "Servlet management beans", servletHandler);
                 managementService.export(SESSIONS, "HTTP", "Servlet session manager", sessionManager);
             }
-            eventService.subscribe(JoinDomainCompleted.class, event -> registerSockets());
+            eventService.subscribe(TransportStart.class, event -> registerSockets());
         } catch (Exception e) {
             throw new Fabric3Exception("Error starting Jetty service", e);
         } finally {
