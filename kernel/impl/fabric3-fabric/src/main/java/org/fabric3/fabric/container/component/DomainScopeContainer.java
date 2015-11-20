@@ -52,8 +52,16 @@ public class DomainScopeContainer extends SingletonScopeContainer {
     private final List<URI> deferredContexts = new ArrayList<>();
     boolean activated;
 
-    @Reference(required = false)
     protected DiscoveryAgent discoveryAgent;
+
+    @Reference(required = false)
+    public void setDiscoveryAgents(List<DiscoveryAgent> agents) {
+        if (agents.isEmpty()) {
+            return;
+        }
+        this.discoveryAgent = agents.get(0);
+        discoveryAgent.registerLeadershipListener(this::onLeaderChange);
+    }
 
     public DomainScopeContainer(@Reference HostInfo info, @Monitor ScopeContainerMonitor monitor) {
         super(Scope.DOMAIN, monitor);
@@ -63,9 +71,6 @@ public class DomainScopeContainer extends SingletonScopeContainer {
     @Init
     public void start() {
         super.start();
-        if (discoveryAgent != null) {
-            discoveryAgent.registerLeadershipListener(this::onLeaderChange);
-        }
     }
 
     @Destroy

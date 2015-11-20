@@ -91,6 +91,7 @@ public class EtcdAgent implements DiscoveryAgent, ConfigurationAgent {
     private Map<String, List<Consumer<String>>> configurationListeners = new HashMap<>(); // key to listeners
 
     private Map<String, Request> updatingEntries = new HashMap<>();
+    private Request leaderRequest;
 
     private volatile String pinnedAddress;
     private volatile String currentLeader;
@@ -138,7 +139,7 @@ public class EtcdAgent implements DiscoveryAgent, ConfigurationAgent {
 
     public boolean isLeader() {
         String leader = currentLeader;
-        return leader != null && leader.equals(info.getRuntimeName());
+        return leader != null && info.getRuntimeName().equals(leader);
     }
 
     @SuppressWarnings("unchecked")
@@ -170,6 +171,9 @@ public class EtcdAgent implements DiscoveryAgent, ConfigurationAgent {
 
     public void registerLeadershipListener(Consumer<Boolean> consumer) {
         leaderListeners.add(consumer);
+        if (isLeader())  {
+            consumer.accept(true);
+        }
     }
 
     public void unRegisterLeadershipListener(Consumer<Boolean> consumer) {
@@ -303,6 +307,14 @@ public class EtcdAgent implements DiscoveryAgent, ConfigurationAgent {
      */
     private void ttlUpdateTask() {
         while (active) {
+            Optional<Response> optional = executeUpdate("leader:" + info.getRuntimeName(), leaderRequest);
+            if (optional.isPresent()) {
+                Response response = optional.get();
+                if (!response.isSuccessful()) {
+                    createLeaderEntry();
+                    checkLeader();
+                }
+            }
             for (Map.Entry<String, Request> entry : updatingEntries.entrySet()) {
                 executeUpdate(entry.getKey(), entry.getValue());
             }
@@ -474,8 +486,8 @@ public class EtcdAgent implements DiscoveryAgent, ConfigurationAgent {
                 FormEncodingBuilder builder = new FormEncodingBuilder();
                 RequestBody lBody = builder.add("value", info.getRuntimeName()).add("ttl", expiration).add("prevExist", "true").build();
                 String address = pinnedAddress;
-                Request lRequest = new Request.Builder().url(address + V2_KEYS + key).put(lBody).build();
-                updatingEntries.put(key, lRequest);
+                leaderRequest = new Request.Builder().url(address + V2_KEYS + key).put(lBody).build();
+                //                updatingEntries.put(key, lRequest);
             }
         } catch (Exception e) {
             monitor.debug("Error performing leader election with etcd", e);
@@ -507,7 +519,7 @@ public class EtcdAgent implements DiscoveryAgent, ConfigurationAgent {
                 String previousLeader = currentLeader;
                 currentLeader = (String) nodes.get(0).get("value");
                 boolean isLeader = isLeader();
-                if (!currentLeader.equals(previousLeader)) {
+                if (currentLeader != null && !currentLeader.equals(previousLeader)) {
                     leaderListeners.forEach(c -> c.accept(isLeader));
                     if (isLeader) {
                         monitor.debug("Runtime elected leader for zone {0}", info.getZoneName());
@@ -566,9 +578,8 @@ public class EtcdAgent implements DiscoveryAgent, ConfigurationAgent {
                 Response response = client.newCall(request).execute();
                 if (!response.isSuccessful()) {
                     monitor.severe("Error registering {0} with etcd: {1}", key, response.code());
-                } else {
-                    return Optional.of(response);
                 }
+                return Optional.of(response);
             } catch (IOException e) {
                 monitor.severe("Error registering {0}. Waiting to retry.", key, e);
             }

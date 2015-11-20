@@ -37,9 +37,8 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class StartContextCommandExecutor implements CommandExecutor<StartContextCommand> {
-    private ScopeContainer compositeScopeContainer;
-    private ScopeContainer domainScopeContainer;
     private CommandExecutorRegistry commandExecutorRegistry;
+    private ScopeRegistry scopeRegistry;
     private ChannelManager channelManager;
     private ContextMonitor monitor;
 
@@ -49,9 +48,8 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
                                        @Reference ChannelManager channelManager,
                                        @Monitor ContextMonitor monitor) {
         this.commandExecutorRegistry = executorRegistry;
+        this.scopeRegistry = scopeRegistry;
         this.channelManager = channelManager;
-        this.compositeScopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
-        this.domainScopeContainer = scopeRegistry.getScopeContainer(Scope.DOMAIN);
         this.monitor = monitor;
     }
 
@@ -72,6 +70,11 @@ public class StartContextCommandExecutor implements CommandExecutor<StartContext
         if (channelManager != null) {
             channelManager.startContext(uri);
         }
+
+        // lazy get the containers as they may not be registered when the executor is initialized
+        // Related to https://fabric3.atlassian.net/browse/FABRIC-68
+        ScopeContainer compositeScopeContainer = scopeRegistry.getScopeContainer(Scope.COMPOSITE);
+        ScopeContainer domainScopeContainer = scopeRegistry.getScopeContainer(Scope.DOMAIN);
         compositeScopeContainer.startContext(uri);
         if (domainScopeContainer != null) {
             // domain scope not available during bootstrap
