@@ -110,7 +110,7 @@ public class Dependencies {
         artifacts.add(jaxbAPI);
 
         // add JAX-RS API
-        Artifact rsAPI = new DefaultArtifact("javax.ws.rs", "javax.ws.rs-api", "jar", "2.0");
+        Artifact rsAPI = new DefaultArtifact("javax.ws.rs", "javax.ws.rs-api", "jar", "2.0.1");
         artifacts.add(rsAPI);
 
         // add Node API
