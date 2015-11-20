@@ -119,6 +119,7 @@ public final class RsContainer extends HttpServlet {
         try {
             // register contribution resources
             ResourceConfig resourceConfig = new ResourceConfig();
+            resourceConfig.registerInstances(new Fabric3ApplicationEventListener());
             resourceConfig.register(JacksonFeature.class);
             resourceConfig.register(MultiPartFeature.class);
 

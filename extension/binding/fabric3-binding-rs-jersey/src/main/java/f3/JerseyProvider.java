@@ -6,6 +6,7 @@ import org.fabric3.api.Namespaces;
 import org.fabric3.api.annotation.model.Provides;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.Composite;
+import org.fabric3.binding.rs.runtime.RsContextTargetWireAttacher;
 import org.fabric3.binding.rs.runtime.RsSourceWireAttacher;
 import org.fabric3.binding.rs.runtime.RsTargetWireAttacher;
 import org.fabric3.binding.rs.runtime.builder.ProviderBuilder;
@@ -30,6 +31,7 @@ public class JerseyProvider {
         compositeBuilder.component(SystemComponentBuilder.newBuilder(NameBindingFilterProviderImpl.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(RsSourceWireAttacher.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(RsTargetWireAttacher.class).build());
+        compositeBuilder.component(SystemComponentBuilder.newBuilder(RsContextTargetWireAttacher.class).build());
         compositeBuilder.component(SystemComponentBuilder.newBuilder(ProviderBuilder.class).build());
         return compositeBuilder.build();
     }

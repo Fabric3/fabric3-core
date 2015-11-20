@@ -96,7 +96,6 @@ public class RsSourceWireAttacher implements SourceWireAttacher<RsWireSource> {
     }
 
     public void attach(RsWireSource source, PhysicalWireTarget target, Wire wire) throws Fabric3Exception {
-        URI sourceUri = source.getUri();
         if (started) {
             provision(source, wire);
         } else {

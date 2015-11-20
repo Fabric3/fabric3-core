@@ -19,7 +19,7 @@ import org.fabric3.spi.model.physical.PhysicalWireSource;
 @Key("org.fabric3.binding.rs.provision.RsWireTarget")
 public class RsTargetWireAttacher implements TargetWireAttacher<RsWireTarget> {
 
-    public void attach(PhysicalWireSource sourceDefinition, RsWireTarget target, Wire wire) throws Fabric3Exception {
+    public void attach(PhysicalWireSource source, RsWireTarget target, Wire wire) throws Fabric3Exception {
         List<InvocationChain> invocationChains = wire.getInvocationChains();
         URI uri = target.getUri();
         Class<?> interfaceClass = target.getProxyInterface();

@@ -19,8 +19,8 @@ package org.fabric3.api;
 import org.oasisopen.sca.RequestContext;
 
 /**
- * A Fabric3 extension to the OASIS SCA RequestContext API. Components may reference this interface when for fields or setters marked with @Context
- * instead of the SCA RequestContext variant. For example:
+ * A Fabric3 extension to the OASIS SCA RequestContext API. Components may reference this interface when fields or setters marked with @Context instead of the
+ * SCA RequestContext variant. For example:
  * <pre>
  * public class SomeComponent implements SomeService {
  *      &#064;Context
@@ -49,12 +49,12 @@ public interface Fabric3RequestContext extends RequestContext {
     <T> T getHeader(Class<T> type, String name);
 
     /**
-     * Sets a header value for the current request context. Headers will be propagated across threads for non-blocking invocations made by a component
-     * when processing a request. However, headers propagation across process boundaries is binding-specific. Some bindings may propagate headers
-     * while others may ignore them.
+     * Sets a header value for the current request context. Headers will be propagated across threads for non-blocking invocations made by a component when
+     * processing a request. However, headers propagation across process boundaries is binding-specific. Some bindings may propagate headers while others may
+     * ignore them.
      *
-     * Note that header values should be immutable since, unlike purely synchronous programming models, SCA's asynchronous model may result in
-     * multiple threads simultaneously accessing a header. For example, two non-blocking invocations to local services may access the same header.
+     * Note that header values should be immutable since, unlike purely synchronous programming models, SCA's asynchronous model may result in multiple threads
+     * simultaneously accessing a header. For example, two non-blocking invocations to local services may access the same header.
      *
      * @param name  the header name
      * @param value the header value
