@@ -226,6 +226,10 @@ public class DefaultFabric implements Fabric {
             try {
                 FileHelper.cleanDirectory(tempDirectory);
             } catch (Fabric3Exception e) {
+                //noinspection StatementWithEmptyBody
+                if (e.getCause() instanceof IOException) {
+                    // Classloader on Windows does not release locks on JAR files, ignore
+                }
                 if (tempDirectory.exists()) {
                     FileHelper.forceDeleteOnExit(tempDirectory);
                 }
