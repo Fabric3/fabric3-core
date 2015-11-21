@@ -120,7 +120,6 @@ public class DomainScopeContainerTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testStopContainer() throws Exception {
         DiscoveryAgent discoveryAgent = EasyMock.createMock(DiscoveryAgent.class);
-        discoveryAgent.registerLeadershipListener(EasyMock.isA(Consumer.class));
         EasyMock.expect(discoveryAgent.isLeader()).andReturn(false).times(2);
 
         scopeContainer.discoveryAgent = discoveryAgent;
