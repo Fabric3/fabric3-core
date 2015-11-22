@@ -48,6 +48,7 @@ if (ext.buildType != "kernel") {
                 'extension:other:spring:fabric3-spring-spi', 'extension:other:spring:fabric3-spring-security', 'extension:other:timer:fabric3-timer-spi',
                 'extension:other:timer:fabric3-timer-service', 'extension:other:tx:fabric3-tx', 'extension:other:tx:fabric3-atomikos-library',
                 'extension:other:tx:fabric3-atomikos', 'extension:other:tx:fabric3-atomikos-jms',
+                'extension:other:fabric3-hazelcast',
                 'extension:other:web:fabric3-contribution-war',
                 'extension:other:web:fabric3-contribution-scanner-war', 'extension:other:web:fabric3-container-web-spi', 'extension:other:web:fabric3-container-web-jetty'
 

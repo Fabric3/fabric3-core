@@ -603,7 +603,7 @@ public class EtcdAgent implements DiscoveryAgent, ConfigurationAgent {
                 Request request = new Request.Builder().url(address + V2_KEYS + authority + "/" + entryType + "/" + key).delete().build();
                 Response response = client.newCall(request).execute();
                 if (!response.isSuccessful()) {
-                    monitor.severe("Error un-registering entry {0} from etc: {1}", name, response.code());
+                    monitor.severe("Error un-registering entry {0} from etcd: {1}", name, response.code());
                 } else {
                     monitor.debug("Un-registered entry from etcd {0}", name);
                     return;

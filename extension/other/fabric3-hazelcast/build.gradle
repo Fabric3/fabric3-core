@@ -1,0 +1,18 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+    // add the SPI and Util modules to provided so they are not included in the contribution
+    providedCompile project(':kernel:api:fabric3-spi')
+    providedCompile project(':kernel:impl:fabric3-util')
+
+    providedCompile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion
+    providedCompile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion
+    providedCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+
+    compile group: 'com.hazelcast', name: 'hazelcast', version: hazelcastVersion
+
+}
+
+
+
