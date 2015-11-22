@@ -26,11 +26,13 @@ import org.fabric3.spi.discovery.ChannelEntry;
 import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
+import org.oasisopen.sca.annotation.EagerInit;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
  * Implements discovery and clustering based on Hazelcast.
  */
+@EagerInit
 public class HazelcastAgent implements DiscoveryAgent {
     private HazelcastInstance hazelcast;
     private HostInfo info;
