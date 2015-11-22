@@ -36,10 +36,15 @@ public class HazelcastServiceImpl implements HazelcastService {
         File dir = info.getBaseDir();
         if (dir != null) {
             File configFile = new File(dir, "config" + File.separator + "hazelcast.xml");
-            XmlConfigBuilder builder = new XmlConfigBuilder(new FileInputStream(configFile));
-            Config config = builder.build();
-            config.setInstanceName(getRuntimeKey());
-            hazelcast = Hazelcast.newHazelcastInstance(config);
+            if (configFile.exists()) {
+                XmlConfigBuilder builder = new XmlConfigBuilder(new FileInputStream(configFile));
+                Config config = builder.build();
+                config.setInstanceName(getRuntimeKey());
+                hazelcast = Hazelcast.newHazelcastInstance(config);
+            } else {
+                monitor.info("Hazelcast configuration not found in /config. Using default settings.");
+                hazelcast = Hazelcast.newHazelcastInstance();
+            }
         } else {
             monitor.info("Hazelcast configuration not found in /config. Using default settings.");
             hazelcast = Hazelcast.newHazelcastInstance();
