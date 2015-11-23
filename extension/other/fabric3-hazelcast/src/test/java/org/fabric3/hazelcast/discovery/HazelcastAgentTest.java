@@ -14,12 +14,14 @@ import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  *
  */
 
+@Ignore
 public class HazelcastAgentTest {
     private static HazelcastServiceImpl SERVICE;
     private static MonitorChannel MONITOR;
