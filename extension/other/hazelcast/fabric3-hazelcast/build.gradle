@@ -6,6 +6,8 @@ dependencies {
     providedCompile project(':kernel:api:fabric3-spi')
     providedCompile project(':kernel:impl:fabric3-util')
 
+    providedCompile project(':extension:other:hazelcast:fabric3-hazelcast-api')
+
     providedCompile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion
     providedCompile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonVersion
     providedCompile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion

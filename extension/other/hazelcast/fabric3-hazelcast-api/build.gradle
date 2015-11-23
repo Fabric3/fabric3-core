@@ -1,0 +1,10 @@
+apply plugin: 'fabric3-contribution'
+
+dependencies {
+
+    compile project(':kernel:api:fabric3-spi')
+
+}
+
+
+
