@@ -90,6 +90,16 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
         boolean extension = Boolean.valueOf(reader.getAttributeValue(F3, "extension"));
         manifest.setExtension(extension);
 
+        String bootLevelStr = reader.getAttributeValue(F3, "boot.level");
+
+        if (bootLevelStr != null) {
+            try {
+                manifest.setBootLevel(Integer.parseInt(bootLevelStr));
+            } catch (NumberFormatException e) {
+                context.addError(new InvalidValue("Invalid boot level: " + bootLevelStr, reader.getLocation(), e));
+            }
+        }
+
         String contextPath = reader.getAttributeValue(F3, "context");
         manifest.setContext(contextPath);
 
@@ -246,7 +256,7 @@ public class ContributionElementLoader implements TypeLoader<ContributionManifes
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String name = reader.getAttributeLocalName(i);
             if (!"extension".equals(name) && !"description".equals(name) && !"context".equals(name) && !"capabilities".equals(name)
-                && !"required-capabilities".equals(name)) {
+                && !"required-capabilities".equals(name) && !"boot.level".equals(name)) {
                 context.addError(new UnrecognizedAttribute(name, location));
             }
         }

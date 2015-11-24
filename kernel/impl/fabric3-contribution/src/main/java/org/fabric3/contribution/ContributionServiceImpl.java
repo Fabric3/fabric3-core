@@ -227,6 +227,9 @@ public class ContributionServiceImpl implements ContributionService {
         contributions.forEach(this::processManifest);
         // order the contributions based on their dependencies
         contributions = dependencyResolver.resolve(contributions);
+
+        List<Contribution> bootContributions = new ArrayList<>();
+
         for (Contribution contribution : contributions) {
             boolean requiresLoad = false;
             ContributionManifest manifest = contribution.getManifest();
@@ -239,8 +242,19 @@ public class ContributionServiceImpl implements ContributionService {
             if (requiresLoad) {
                 order.addIsolatedContribution(contribution.getUri());
             } else {
-                order.addBaseContribution(contribution.getUri());
+                if (manifest.getBootLevel() > -1) {
+                    bootContributions.add(contribution);
+                } else {
+                    order.addBaseContribution(contribution.getUri());
+                }
             }
+        }
+
+        // sort the boot contributions by boot level and add them to the order object
+        Collections.sort(bootContributions, (c1, c2) -> c1.getManifest().getBootLevel() - c2.getManifest().getBootLevel());
+
+        for (Contribution contribution : bootContributions) {
+            order.addBootstrapContribution(contribution.getUri());
         }
         return order;
     }

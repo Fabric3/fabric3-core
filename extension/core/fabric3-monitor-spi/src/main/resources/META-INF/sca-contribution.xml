@@ -2,6 +2,7 @@
 <contribution xmlns="http://docs.oasis-open.org/ns/opencsa/sca/200912"
               xmlns:f3="urn:fabric3.org"
               f3:extension="true"
+              f3:boot.level="0"
               f3:description="Monitor SPI extension">
     <import.java package="org.fabric3.spi.*" version="3.0.0"/>
 

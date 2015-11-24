@@ -23,13 +23,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maintains ordering for contributions based on manifest information.  Contributions are divided into two categories, base and isolated. Base
- * contributions only rely on boot runtime capabilities; isolated contributions may rely on capabilities provided by other extensions and must be
- * deployed after the base extensions.
+ * Maintains ordering for contributions based on manifest information.
+ *
+ * Contributions are divided into three categories, boot, base and isolated. Boot contributions are loaded prior to other contributions. Base contributions only
+ * rely on boot runtime capabilities. Isolated contributions may rely on capabilities provided by other extensions and must be deployed after the base
+ * extensions.
  */
 public class ContributionOrder {
+    private List<URI> bootstrap = new ArrayList<>();
     private List<URI> base = new ArrayList<>();
     private List<URI> isolated = new ArrayList<>();
+
+    public List<URI> getBootstrapContributions() {
+        return bootstrap;
+    }
+
+    public void addBootstrapContribution(URI uri) {
+        bootstrap.add(uri);
+    }
 
     public List<URI> getBaseContributions() {
         return base;

@@ -132,6 +132,11 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         try {
             // process manifests and order the contributions
             ContributionOrder order = contributionService.processManifests(contributions);
+
+            order.getBootstrapContributions().forEach(contributionService::processContents);
+            // base contributions are deployed in batch since they only rely on boot runtime capabilities
+            domain.include(order.getBootstrapContributions());
+
             order.getBaseContributions().forEach(contributionService::processContents);
             // base contributions are deployed in batch since they only rely on boot runtime capabilities
             domain.include(order.getBaseContributions());

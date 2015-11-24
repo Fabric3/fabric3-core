@@ -36,6 +36,7 @@ public class ContributionManifest implements Serializable {
     private static final long serialVersionUID = -4968254313720890686L;
     private String description;
     private boolean extension;
+    private int bootLevel = -1;
     private String context;
     private List<Export> exports = new ArrayList<>();
     private List<Import> imports = new ArrayList<>();
@@ -81,6 +82,25 @@ public class ContributionManifest implements Serializable {
      */
     public void setExtension(boolean extension) {
         this.extension = extension;
+    }
+
+    /**
+     * Returns the boot level of the manifest for extensions. If the level is greater than -1, the contribution extension will be loaded as a boot extension in
+     * ascending order.
+     *
+     * @return the boot level
+     */
+    public int getBootLevel() {
+        return bootLevel;
+    }
+
+    /**
+     * Sets the extension contribution boot level.
+     *
+     * @param bootLevel the level; -1 indicates the extension is not a boot contribution
+     */
+    public void setBootLevel(int bootLevel) {
+        this.bootLevel = bootLevel;
     }
 
     /**
