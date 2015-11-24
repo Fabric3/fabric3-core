@@ -52,6 +52,7 @@ public class ContainerConfiguration {
     private boolean localDelivery;
     private DestinationType destinationType;
     private String subscriptionId;
+    private long backoffPeriod = -1;
 
     public URI getUri() {
         return uri;
@@ -213,5 +214,13 @@ public class ContainerConfiguration {
 
     public String getSubscriptionId() {
         return subscriptionId;
+    }
+
+    public long getBackoffPeriod() {
+        return backoffPeriod;
+    }
+
+    public void setBackoffPeriod(long backoffPeriod) {
+        this.backoffPeriod = backoffPeriod;
     }
 }

@@ -51,6 +51,8 @@ import static org.fabric3.binding.jms.runtime.common.JmsRuntimeConstants.CACHE_N
  */
 @Management
 public class AdaptiveMessageContainer {
+    private static final int BACKOFF_RETRIES = 5;
+
     private final ConnectionManager connectionManager;
     private UnitOfWork work;
     private ContainerStatistics statistics;
@@ -69,10 +71,11 @@ public class AdaptiveMessageContainer {
     private int maxReceivers;
     private int idleLimit;
     private int maxMessagesToProcess;
-    private long recoveryInterval;
     private String subscriptionId;
     private boolean localDelivery;
     private String messageSelector;
+    private long recoveryInterval;
+    private long backoffPeriod;
 
     // listeners to receive incoming messages or errors
     private MessageListener messageListener;
@@ -121,6 +124,7 @@ public class AdaptiveMessageContainer {
         exceptionListener = configuration.getExceptionListener();
         messageSelector = configuration.getMessageSelector();
         subscriptionId = configuration.getSubscriptionId();
+        backoffPeriod = configuration.getBackoffPeriod();
         setReceiveTimeout(receiveTimeout);
         setMaxMessagesToProcess(configuration.getMaxMessagesToProcess());
         setMaxReceivers(configuration.getMaxReceivers());
@@ -544,20 +548,6 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Refreshes a connection.
-     */
-    private void refreshConnection() {
-        // loop until a connection has been obtained
-        while (isRunning()) {
-            if (connectionManager.refreshConnection()) {
-                return;
-            }
-            // wait and try again
-            sleep();
-        }
-    }
-
-    /**
      * Handle the given exception during a receive by delegating to an exception listener if the exception is a JMSException or sending it to the monitor.
      *
      * @param e the exception to handle
@@ -660,19 +650,6 @@ public class AdaptiveMessageContainer {
     }
 
     /**
-     * Sleep according to the specified recovery interval.
-     */
-    private void sleep() {
-        if (recoveryInterval > 0) {
-            try {
-                Thread.sleep(recoveryInterval);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
-
-    /**
      * Listens for messages from a destination and dispatches them to a message listener, managing transaction semantics and recovery if necessary.
      */
     private class MessageReceiver implements Runnable {
@@ -681,6 +658,7 @@ public class AdaptiveMessageContainer {
         private MessageConsumer consumer;
         private Object previousRecoveryMarker;
         private boolean previousSucceeded;
+        private int recoveryAttempt = 0;
         private int idleWorkCount = 0;
         private volatile boolean idle = true;
 
@@ -805,6 +783,7 @@ public class AdaptiveMessageContainer {
                 setRecoveryMarker();
                 boolean received = doReceive();
                 previousSucceeded = true;
+                recoveryAttempt = 0;
                 closeResources(false);
                 return received;
             } catch (JMSException | Fabric3Exception e) {
@@ -910,6 +889,38 @@ public class AdaptiveMessageContainer {
         private void setRecoveryMarker() {
             synchronized (recoverySyncMonitor) {
                 previousRecoveryMarker = recoveryMarker;
+            }
+        }
+
+        /**
+         * Refreshes a connection.
+         */
+        private void refreshConnection() {
+            // loop until a connection has been obtained
+            while (isRunning()) {
+                if (connectionManager.refreshConnection()) {
+                    return;
+                }
+                // wait and try again
+                sleep();
+            }
+        }
+
+        /**
+         * Sleep according to the specified recovery interval.
+         */
+        private void sleep() {
+            recoveryAttempt++;
+            if (recoveryInterval > 0) {
+                try {
+                    if (backoffPeriod > 0 && recoveryAttempt >= BACKOFF_RETRIES) {
+                        Thread.sleep(backoffPeriod);
+                    } else {
+                        Thread.sleep(recoveryInterval);
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
 

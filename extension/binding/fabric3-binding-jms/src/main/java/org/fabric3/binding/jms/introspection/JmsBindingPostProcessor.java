@@ -119,6 +119,7 @@ public class JmsBindingPostProcessor extends AbstractBindingPostProcessor<JMS> {
         metadata.setResponseTimeout(configuration.responseTimeout());
         metadata.setRecoveryInterval(configuration.recoveryInterval());
         metadata.setClientAcknowledge(configuration.clientAcknowledge());
+        metadata.setBackoffPeriod(configuration.backoffPeriod());
 
         parseResponse(configuration, metadata, implClass, implClass, context);
     }

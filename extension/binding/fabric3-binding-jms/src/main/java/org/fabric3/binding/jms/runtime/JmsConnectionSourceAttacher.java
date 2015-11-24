@@ -118,6 +118,7 @@ public class JmsConnectionSourceAttacher implements SourceConnectionAttacher<Jms
         configuration.setReceiveTimeout(metadata.getReceiveTimeout());
         configuration.setSubscriptionId(metadata.getSubscriptionId());
         configuration.setDurable(metadata.isDurable());
+        configuration.setBackoffPeriod(metadata.getBackoffPeriod());
         //        configuration.setDeliveryMode();
         //        configuration.setExceptionListener();
         //        configuration.setLocalDelivery();

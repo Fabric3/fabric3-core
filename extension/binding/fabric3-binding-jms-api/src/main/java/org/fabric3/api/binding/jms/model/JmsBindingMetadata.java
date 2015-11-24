@@ -56,6 +56,7 @@ public class JmsBindingMetadata extends ModelObject {
     private boolean localDelivery;
     private String subscriptionId;
     private boolean clientAcknowledge;
+    private long backoffPeriod = -1;
 
     public ConnectionFactoryDefinition getConnectionFactory() {
         return connectionFactory;
@@ -251,6 +252,14 @@ public class JmsBindingMetadata extends ModelObject {
         this.clientAcknowledge = clientAcknowledge;
     }
 
+    public long getBackoffPeriod() {
+        return backoffPeriod;
+    }
+
+    public void setBackoffPeriod(long backoffPeriod) {
+        this.backoffPeriod = backoffPeriod;
+    }
+
     public JmsBindingMetadata snapshot() {
         JmsBindingMetadata copy = new JmsBindingMetadata();
         copy.correlationScheme = this.correlationScheme;
@@ -292,6 +301,7 @@ public class JmsBindingMetadata extends ModelObject {
         copy.subscriptionId = this.subscriptionId;
         copy.activationSpec = this.activationSpec;
         copy.clientAcknowledge = this.clientAcknowledge;
+        copy.backoffPeriod = this.backoffPeriod;
         return copy;
     }
 
