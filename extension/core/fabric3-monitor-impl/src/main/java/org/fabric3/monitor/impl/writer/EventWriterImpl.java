@@ -37,7 +37,7 @@ public class EventWriterImpl implements EventWriter {
     private EventWriterMonitor monitor;
 
     private String timestampType = "formatted";
-    private String pattern = "%d:%m:%Y %H:%i:%s.%F";
+    private String pattern = "%d.%m.%Y %H:%i:%s.%F";
     private TimeZone timeZone = TimeZone.getDefault();
 
     private TimestampWriter timestampWriter;
