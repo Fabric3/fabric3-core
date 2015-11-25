@@ -199,4 +199,10 @@ public class JmsBindingBuilder extends AbstractBuilder {
         return this;
     }
 
+    public JmsBindingBuilder backoffPeriod(long period) {
+        checkState();
+        binding.getJmsMetadata().setBackoffPeriod(period);
+        return this;
+    }
+
 }
