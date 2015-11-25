@@ -1,9 +1,11 @@
 package f3;
 
 import javax.xml.namespace.QName;
+import java.util.Collections;
 
 import org.fabric3.api.Namespaces;
 import org.fabric3.api.annotation.model.Provides;
+import org.fabric3.api.model.type.RuntimeMode;
 import org.fabric3.api.model.type.builder.CompositeBuilder;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.hazelcast.discovery.HazelcastAgent;
@@ -21,6 +23,7 @@ public class HazelcastProvider {
         CompositeBuilder builder = CompositeBuilder.newBuilder(QNAME);
         builder.component(SystemComponentBuilder.newBuilder(HazelcastServiceImpl.class).build());
         builder.component(SystemComponentBuilder.newBuilder(HazelcastAgent.class).build());
+        builder.mode(Collections.singletonList(RuntimeMode.NODE));
         builder.deployable();
         return builder.build();
     }
