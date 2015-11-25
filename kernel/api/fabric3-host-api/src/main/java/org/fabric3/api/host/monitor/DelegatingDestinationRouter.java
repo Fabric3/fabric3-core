@@ -35,6 +35,8 @@ import org.oasisopen.sca.annotation.Reference;
  * This is used to allow bootstrap components to send monitor messages before a destination router has been loaded from a runtime extension.
  */
 public class DelegatingDestinationRouter implements DestinationRouter {
+    public static final String BOOT_FORMAT = "MM:dd:yyyy HH:mm:ss.SSS";
+
     private DestinationRouter delegate;
     private List<Entry> cache;
 
@@ -58,7 +60,7 @@ public class DelegatingDestinationRouter implements DestinationRouter {
      */
     public void flush(OutputStream stream) {
         if (cache != null) {
-            DateFormat format = new SimpleDateFormat("MM:dd:yyyy HH:mm:ss.SSS");
+            DateFormat format = new SimpleDateFormat(BOOT_FORMAT);
             for (Entry entry : cache) {
                 write(entry.level, entry.timestamp, entry.message, entry.values, stream, format);
             }

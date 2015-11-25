@@ -32,10 +32,14 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.fabric3.api.annotation.monitor.Info;
+import org.fabric3.api.annotation.monitor.MonitorLevel;
 import org.fabric3.api.annotation.monitor.Severe;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.host.classloader.MaskingClassLoader;
@@ -95,7 +99,6 @@ public class Fabric3Server implements Fabric3ServerMBean {
     public void start(Params params) throws Fabric3Exception {
 
         DelegatingDestinationRouter router = new DelegatingDestinationRouter();
-
         try {
             //  calculate config directories based on the mode the runtime is booted in
             File installDirectory = BootstrapHelper.getInstallDirectory(Fabric3Server.class);
@@ -126,6 +129,8 @@ public class Fabric3Server implements Fabric3ServerMBean {
             String zoneName = bootstrapService.parseZoneName(systemConfig, mode);
 
             productName = bootstrapService.parseProductName(systemConfig);
+
+            writeStart();
 
             String runtimeName = bootstrapService.getRuntimeName(domainName, zoneName, params.name, mode);
 
@@ -214,6 +219,13 @@ public class Fabric3Server implements Fabric3ServerMBean {
             shutdown();
             handleStartException(ex);
         }
+    }
+
+    private void writeStart() {
+        DateFormat format = new SimpleDateFormat(DelegatingDestinationRouter.BOOT_FORMAT);
+        Date timestamp = new Date(System.currentTimeMillis());
+        String message = "[" + MonitorLevel.INFO + " " + format.format(timestamp) + "] " + productName + " " + "starting...";
+        System.out.println(message);
     }
 
     public void shutdownRuntime() {
