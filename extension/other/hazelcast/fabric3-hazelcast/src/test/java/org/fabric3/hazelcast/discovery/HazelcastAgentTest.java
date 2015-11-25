@@ -27,6 +27,7 @@ public class HazelcastAgentTest {
     @Test
     public void testIsLeader() throws Exception {
         HostInfo info = EasyMock.createNiceMock(HostInfo.class);
+        EasyMock.expect(info.getZoneName()).andReturn("zone").anyTimes();
         EasyMock.replay(info);
 
         HazelcastAgent agent = new HazelcastAgent(SERVICE, info, MONITOR);
@@ -122,7 +123,7 @@ public class HazelcastAgentTest {
         HostInfo info = EasyMock.createNiceMock(HostInfo.class);
         EasyMock.expect(info.getDomain()).andReturn(URI.create("domain")).anyTimes();
         EasyMock.expect(info.getZoneName()).andReturn("zone").anyTimes();
-        EasyMock.expect(info.getRuntimeName()).andReturn("runtime1");
+        EasyMock.expect(info.getRuntimeName()).andReturn("runtime1").anyTimes();
 
         EasyMock.replay(info, MONITOR);
 

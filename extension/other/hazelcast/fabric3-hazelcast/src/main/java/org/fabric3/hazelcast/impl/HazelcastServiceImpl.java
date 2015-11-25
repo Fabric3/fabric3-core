@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import com.hazelcast.config.Config;
+import com.hazelcast.config.MemberAttributeConfig;
 import com.hazelcast.config.XmlConfigBuilder;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -33,22 +34,29 @@ public class HazelcastServiceImpl implements HazelcastService {
 
     @Init
     public void init() throws FileNotFoundException {
+        Config config;
         File dir = info.getBaseDir();
         if (dir != null) {
             File configFile = new File(dir, "config" + File.separator + "hazelcast.xml");
             if (configFile.exists()) {
                 XmlConfigBuilder builder = new XmlConfigBuilder(new FileInputStream(configFile));
-                Config config = builder.build();
-                config.setInstanceName(getRuntimeKey());
-                hazelcast = Hazelcast.newHazelcastInstance(config);
+                config = builder.build();
             } else {
                 monitor.info("Hazelcast configuration not found in /config. Using default settings.");
-                hazelcast = Hazelcast.newHazelcastInstance();
+                config = new XmlConfigBuilder().build();
             }
+
         } else {
             monitor.info("Hazelcast configuration not found in /config. Using default settings.");
-            hazelcast = Hazelcast.newHazelcastInstance();
+            config = new XmlConfigBuilder().build();
         }
+        MemberAttributeConfig attributeConfig = new MemberAttributeConfig();
+        attributeConfig.setStringAttribute("key", getRuntimeKey());
+        attributeConfig.setStringAttribute("zone", info.getZoneName());
+        attributeConfig.setStringAttribute("runtime", info.getRuntimeName());
+        config.setMemberAttributeConfig(attributeConfig);
+        hazelcast = Hazelcast.newHazelcastInstance(config);
+
     }
 
     @Destroy

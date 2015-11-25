@@ -14,8 +14,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.core.Member;
+import com.hazelcast.core.MemberAttributeEvent;
 import com.hazelcast.core.MembershipAdapter;
 import com.hazelcast.core.MembershipEvent;
+import com.hazelcast.core.MembershipListener;
 import org.fabric3.api.MonitorChannel;
 import org.fabric3.api.annotation.monitor.Monitor;
 import org.fabric3.api.host.Fabric3Exception;
@@ -27,6 +29,7 @@ import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
 import org.oasisopen.sca.annotation.EagerInit;
+import org.oasisopen.sca.annotation.Init;
 import org.oasisopen.sca.annotation.Reference;
 
 /**
@@ -53,10 +56,53 @@ public class HazelcastAgent implements DiscoveryAgent {
         mapper = new ObjectMapper();
     }
 
+    @Init
+    public void init() {
+        monitor.info("Joined domain {0} as [zone: {1}, runtime: {2}]", info.getDomain(), info.getZoneName(), info.getRuntimeName());
+        leaderStatus = isLeader();
+        if (leaderStatus) {
+            monitor.debug("Node is leader in zone {0}", info.getZoneName());
+        }
+
+        hazelcast.getCluster().addMembershipListener(new MembershipListener() {
+
+            public void memberAdded(MembershipEvent event) {
+                String zone = event.getMember().getStringAttribute("zone");
+                if (zone == null) {
+                    return; // ignore, not a runtime
+                }
+                String runtime = event.getMember().getStringAttribute("runtime");
+                monitor.debug("Node joined domain {0} [zone: {1}, runtime: {2}]", info.getDomain(), zone, runtime);
+            }
+
+            public void memberRemoved(MembershipEvent event) {
+                String zone = event.getMember().getStringAttribute("zone");
+                if (zone == null) {
+                    return; // ignore, not a runtime
+                }
+                String runtime = event.getMember().getStringAttribute("runtime");
+                monitor.debug("Node left domain {0} [zone: {1}, runtime: {2}]", info.getDomain(), zone, runtime);
+            }
+
+            public void memberAttributeChanged(MemberAttributeEvent event) {
+            }
+        });
+    }
+
     public boolean isLeader() {
-        Member oldestMember = hazelcast.getCluster().getMembers().iterator().next();
-        boolean leader = oldestMember.localMember();
-        leaderStatus = leader;
+        boolean leader = false;
+        for (Member member : hazelcast.getCluster().getMembers()) {
+            String zone = member.getStringAttribute("zone");
+            if (zone == null) {
+                continue;
+            }
+            if (info.getZoneName().equals(zone)) {
+                if (member.localMember()) {
+                    leader = true;
+                }
+                break;
+            }
+        }
         return leader;
     }
 
@@ -98,6 +144,7 @@ public class HazelcastAgent implements DiscoveryAgent {
             private void reportStatus() {
                 boolean status = HazelcastAgent.this.leaderStatus;
                 if (isLeader() != status) {
+                    monitor.debug("Node is now leader in zone {0}", info.getZoneName());
                     leaderStatus = status;
                     consumer.accept(status);
                 }
