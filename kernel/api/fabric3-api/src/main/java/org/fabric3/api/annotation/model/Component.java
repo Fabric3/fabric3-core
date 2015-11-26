@@ -31,7 +31,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Inherited
 public @interface Component {
-    public static final String DEFAULT_COMPOSITE = Namespaces.F3_PREFIX + "DefaultApplicationComposite";
+    String DEFAULT_COMPOSITE = Namespaces.F3_PREFIX + "DefaultApplicationComposite";
 
     /**
      * Specifies the composite qualified name
@@ -53,4 +53,11 @@ public @interface Component {
      * @return the namespaces
      */
     Namespace[] namespaces() default {};
+
+    /**
+     * Specifies the runtime environments to enable the component on.
+     *
+     * @return the environments
+     */
+    String[] environments() default {};
 }

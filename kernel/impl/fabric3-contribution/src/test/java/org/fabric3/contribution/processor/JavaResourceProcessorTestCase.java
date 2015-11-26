@@ -21,6 +21,7 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
 import org.fabric3.spi.contribution.Constants;
@@ -94,7 +95,12 @@ public class JavaResourceProcessorTestCase extends TestCase {
         componentProcessor = EasyMock.createMock(ComponentProcessor.class);
 
         metaDataStore = EasyMock.createMock(MetaDataStore.class);
-        processor = new JavaResourceProcessor(registry, componentProcessor, metaDataStore);
+
+        HostInfo info = EasyMock.createNiceMock(HostInfo.class);
+        EasyMock.expect(info.getEnvironment()).andReturn("production").anyTimes();
+        EasyMock.replay(info);
+
+        processor = new JavaResourceProcessor(registry, componentProcessor, metaDataStore, info);
 
         Contribution contribution = new Contribution(URI.create("test"));
         resource = new Resource(contribution, null, Constants.JAVA_COMPONENT_CONTENT_TYPE);

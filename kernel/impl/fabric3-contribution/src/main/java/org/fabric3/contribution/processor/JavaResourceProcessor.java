@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.host.contribution.Deployable;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.stream.Source;
 import org.fabric3.api.model.type.component.Component;
 import org.fabric3.api.model.type.component.Composite;
@@ -52,14 +53,19 @@ import org.oasisopen.sca.annotation.Reference;
  */
 @EagerInit
 public class JavaResourceProcessor implements ResourceProcessor {
-
     private ComponentProcessor componentProcessor;
     private MetaDataStore store;
+    private HostInfo info;
+
     private List<JavaResourceProcessorExtension> processorExtensions = Collections.emptyList();
 
-    public JavaResourceProcessor(@Reference ProcessorRegistry registry, @Reference ComponentProcessor componentProcessor, @Reference MetaDataStore store) {
+    public JavaResourceProcessor(@Reference ProcessorRegistry registry,
+                                 @Reference ComponentProcessor componentProcessor,
+                                 @Reference MetaDataStore store,
+                                 @Reference HostInfo info) {
         this.componentProcessor = componentProcessor;
         this.store = store;
+        this.info = info;
         registry.register(this);
     }
 
@@ -78,6 +84,9 @@ public class JavaResourceProcessor implements ResourceProcessor {
         Class<?> clazz = (Class<?>) resourceElement.getValue();
 
         org.fabric3.api.annotation.model.Component annotation = clazz.getAnnotation(org.fabric3.api.annotation.model.Component.class);
+
+        boolean disabled = annotation != null && !checkComponentEnabled(annotation);
+
         String name = clazz.getSimpleName();
         if (annotation != null && annotation.name().length() > 0) {
             name = annotation.name();
@@ -90,13 +99,30 @@ public class JavaResourceProcessor implements ResourceProcessor {
             definition.setContributionUri(context.getContributionUri());
             componentProcessor.process(definition, clazz, context);
 
-            ParsedComponentSymbol symbol = new ParsedComponentSymbol(definition);
+            ParsedComponentSymbol symbol = new ParsedComponentSymbol(definition, disabled);
             ResourceElement<ParsedComponentSymbol, QName> parsedElement = new ResourceElement<>(symbol, compositeName);
             resource.addResourceElement(parsedElement);
         } catch (IllegalArgumentException e) {
             InvalidComponentAnnotation error = new InvalidComponentAnnotation("Invalid composite name: " + name + " on class: " + clazz.getName(), e);
             context.addError(error);
         }
+    }
+
+    private boolean checkComponentEnabled(org.fabric3.api.annotation.model.Component annotation) {
+        if (annotation.environments().length > 0) {
+            String hostEnvironment = info.getEnvironment();
+            boolean enabled = false;
+            for (String environment : annotation.environments()) {
+                if (hostEnvironment.equals(environment)) {
+                    enabled = true;
+                    break;
+                }
+            }
+            if (!enabled) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private QName getCompositeName(ResourceElement<?, ?> resourceElement, org.fabric3.api.annotation.model.Component annotation) {
@@ -120,6 +146,11 @@ public class JavaResourceProcessor implements ResourceProcessor {
                 resourceElement = (ResourceElement<ParsedComponentSymbol, QName>) element;
                 break;
             }
+        }
+        if (resourceElement.getSymbol().disabled) {
+            // the component is disabled
+            resource.setState(ResourceState.PROCESSED);
+            return;
         }
         Component<JavaImplementation> definition = resourceElement.getSymbol().getKey();
         QName compositeName = resourceElement.getValue();
@@ -184,9 +215,11 @@ public class JavaResourceProcessor implements ResourceProcessor {
     }
 
     private class ParsedComponentSymbol extends Symbol<Component> {
+        private boolean disabled;
 
-        public ParsedComponentSymbol(Component definition) {
+        public ParsedComponentSymbol(Component definition, boolean disabled) {
             super(definition);
+            this.disabled = disabled;
         }
     }
 
