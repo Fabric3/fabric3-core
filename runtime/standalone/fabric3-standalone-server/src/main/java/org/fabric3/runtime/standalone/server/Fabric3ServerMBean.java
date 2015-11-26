@@ -26,6 +26,6 @@ public interface Fabric3ServerMBean {
     /**
      * Shuts down a runtime.
      */
-    public void shutdownRuntime();
+    void shutdownRuntime();
 
 }
