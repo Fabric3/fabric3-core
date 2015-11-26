@@ -25,6 +25,7 @@ import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.hazelcast.impl.HazelcastService;
 import org.fabric3.spi.discovery.AbstractEntry;
 import org.fabric3.spi.discovery.ChannelEntry;
+import org.fabric3.spi.discovery.ConfigurationAgent;
 import org.fabric3.spi.discovery.DiscoveryAgent;
 import org.fabric3.spi.discovery.EntryChange;
 import org.fabric3.spi.discovery.ServiceEntry;
@@ -36,7 +37,9 @@ import org.oasisopen.sca.annotation.Reference;
  * Implements discovery and clustering based on Hazelcast.
  */
 @EagerInit
-public class HazelcastAgent implements DiscoveryAgent {
+public class HazelcastAgent implements DiscoveryAgent, ConfigurationAgent {
+    private static final String PROPERTY_MAP = "fabric3Properties";
+
     private HazelcastInstance hazelcast;
     private HostInfo info;
     private MonitorChannel monitor;
@@ -47,6 +50,7 @@ public class HazelcastAgent implements DiscoveryAgent {
     private Map<Consumer, String> leadershipListeners = new HashMap<>();
     private Map<String, String> serviceListeners = new HashMap<>();
     private Map<String, String> channelListeners = new HashMap<>();
+    private Map<String, String> propertyListeners = new HashMap<>();
 
     public HazelcastAgent(@Reference HazelcastService hazelcastService, @Reference HostInfo info, @Monitor MonitorChannel monitor) {
         this.info = info;
@@ -229,6 +233,36 @@ public class HazelcastAgent implements DiscoveryAgent {
 
     private String getRuntimeKey() {
         return info.getDomain().toString() + ":" + info.getZoneName() + ":" + info.getRuntimeName();
+    }
+
+    public String getValue(String key) {
+        IMap<Object, Object> map = getPropertyMap();
+        Object value = map.get(key);
+        if (!(value instanceof String)) {
+            throw new Fabric3Exception("Property not serialized as a String: " + key);
+        }
+        return (String) value;
+    }
+
+    public void registerListener(String key, Consumer<String> listener) {
+        IMap<Object, Object> map = getPropertyMap();
+        BiConsumer<EntryChange, String> consumer = (type, value) -> listener.accept(value);
+        String id = map.addEntryListener(new EntryListenerAdapter<>(String.class, consumer, mapper, monitor), true);
+        propertyListeners.put(key, id);
+    }
+
+    @Override
+    public void unregisterListener(String key, Consumer<String> listener) {
+        IMap<Object, Object> map = getPropertyMap();
+        String id = propertyListeners.remove(key);
+        if (id == null) {
+            throw new Fabric3Exception("Listener not found: " + key);
+        }
+        map.removeEntryListener(id);
+    }
+
+    private IMap<Object, Object> getPropertyMap() {
+        return hazelcast.getMap(PROPERTY_MAP + ":" + info.getDomain());
     }
 
 }

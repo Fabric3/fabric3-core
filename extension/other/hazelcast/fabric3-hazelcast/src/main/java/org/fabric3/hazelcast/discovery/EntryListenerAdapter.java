@@ -11,15 +11,13 @@ import com.hazelcast.map.listener.EntryMergedListener;
 import com.hazelcast.map.listener.EntryRemovedListener;
 import com.hazelcast.map.listener.EntryUpdatedListener;
 import org.fabric3.api.MonitorChannel;
-import org.fabric3.spi.discovery.AbstractEntry;
 import org.fabric3.spi.discovery.EntryChange;
 
 /**
  *
  */
-public class EntryListenerAdapter<T extends AbstractEntry> implements EntryUpdatedListener<String, String>, EntryEvictedListener<String, String>,
-                                                                      EntryMergedListener<String, String>, EntryRemovedListener<String, String>,
-                                                                      EntryAddedListener<String, String> {
+public class EntryListenerAdapter<T> implements EntryUpdatedListener<String, String>, EntryEvictedListener<String, String>, EntryMergedListener<String, String>,
+                                                EntryRemovedListener<String, String>, EntryAddedListener<String, String> {
 
     private Class<T> type;
     private BiConsumer<EntryChange, T> listener;
