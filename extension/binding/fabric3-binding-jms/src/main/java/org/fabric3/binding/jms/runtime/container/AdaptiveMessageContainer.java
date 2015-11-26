@@ -859,13 +859,6 @@ public class AdaptiveMessageContainer {
 
         private void closeSession() {
             synchronized (connectionManager) {
-                if (isDurable() && session != null) {
-                    try {
-                        session.unsubscribe(subscriptionId);
-                    } catch (JMSException e) {
-                        monitor.unsubscribeError(containerUri.toString(), e);
-                    }
-                }
                 JmsHelper.closeQuietly(session);
             }
             session = null;
