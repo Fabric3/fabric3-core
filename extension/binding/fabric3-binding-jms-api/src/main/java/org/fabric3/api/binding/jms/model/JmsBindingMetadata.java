@@ -55,6 +55,7 @@ public class JmsBindingMetadata extends ModelObject {
     private boolean durable = false;
     private boolean localDelivery;
     private String subscriptionId;
+    private String subscriptionIdPrefix;
     private boolean clientAcknowledge;
     private long backoffPeriod = -1;
 
@@ -244,6 +245,14 @@ public class JmsBindingMetadata extends ModelObject {
         this.subscriptionId = id;
     }
 
+    public String getSubscriptionIdPrefix() {
+        return subscriptionIdPrefix;
+    }
+
+    public void setSubscriptionIdPrefix(String subscriptionIdPrefix) {
+        this.subscriptionIdPrefix = subscriptionIdPrefix;
+    }
+
     public boolean isClientAcknowledge() {
         return clientAcknowledge;
     }
@@ -299,6 +308,7 @@ public class JmsBindingMetadata extends ModelObject {
         copy.durable = this.durable;
         copy.localDelivery = this.localDelivery;
         copy.subscriptionId = this.subscriptionId;
+        copy.subscriptionIdPrefix = this.subscriptionIdPrefix;
         copy.activationSpec = this.activationSpec;
         copy.clientAcknowledge = this.clientAcknowledge;
         copy.backoffPeriod = this.backoffPeriod;

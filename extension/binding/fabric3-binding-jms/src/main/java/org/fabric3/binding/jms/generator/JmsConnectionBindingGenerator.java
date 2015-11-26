@@ -68,7 +68,8 @@ public class JmsConnectionBindingGenerator implements ConnectionBindingGenerator
 
         // set the client id specifier
         if (metadata.getSubscriptionId() == null && metadata.isDurable()) {
-            metadata.setSubscriptionId(JmsGeneratorHelper.getSubscriptionId(uri));
+            String prefix = metadata.getSubscriptionIdPrefix() != null ? metadata.getSubscriptionIdPrefix() + "-" : "";
+            metadata.setSubscriptionId(prefix+JmsGeneratorHelper.getSubscriptionId(uri));
         }
         String specifier = metadata.getSubscriptionId();
         metadata.setSubscriptionId(specifier);

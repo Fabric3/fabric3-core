@@ -72,6 +72,12 @@ public class JmsBindingBuilder extends AbstractBuilder {
         return this;
     }
 
+    public JmsBindingBuilder subscriptionIdPrefix(String id) {
+        checkState();
+        binding.getJmsMetadata().setSubscriptionIdPrefix(id);
+        return this;
+    }
+
     public JmsBindingBuilder connectionFactoryName(String name) {
         checkState();
         binding.getJmsMetadata().getConnectionFactory().setName(name);
