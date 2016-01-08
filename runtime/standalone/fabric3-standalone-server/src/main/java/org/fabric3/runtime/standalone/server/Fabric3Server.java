@@ -338,7 +338,7 @@ public class Fabric3Server implements Fabric3ServerMBean {
         for (String arg : args) {
             if (arg.startsWith("domain:")) {
                 params.domain = arg.substring(7);
-                if (params.name.trim().length() == 0) {
+                if (params.domain.trim().length() == 0) {
                     throw new IllegalArgumentException("Domain name not specified: " + arg);
                 }
             } else if (arg.startsWith("name:")) {
