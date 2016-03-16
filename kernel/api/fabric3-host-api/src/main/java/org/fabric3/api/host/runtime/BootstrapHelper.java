@@ -150,7 +150,10 @@ public final class BootstrapHelper {
         FileHelper.forceMkdir(targetConfigDir);
         FileHelper.copyDirectory(sourceConfigDir, targetConfigDir);
         FileHelper.forceMkdir(new File(targetDir, "data"));
-        FileHelper.forceMkdir(new File(targetDir, "deploy"));
+        File targetDeployDir = new File(targetDir, "deploy");
+        FileHelper.forceMkdir(targetDeployDir);
+        File sourceDeployDir = new File(targetConfigDir.getParent(), "deploy");
+        FileHelper.copyDirectory(sourceDeployDir, targetDeployDir);
         File repository = new File(targetDir, "repository");
         FileHelper.forceMkdir(repository);
         FileHelper.forceMkdir(new File(repository, "runtime"));
