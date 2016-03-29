@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 
 import org.fabric3.api.host.Fabric3Exception;
@@ -65,6 +66,16 @@ public class FileAppender implements Appender {
             fileChannel.write(buffer);
             if (reliable) {
                 fileChannel.force(false);
+            }
+        } catch (ClosedChannelException cce) {
+            try {
+                initializeChannel();
+                fileChannel.write(buffer);
+                if (reliable) {
+                    fileChannel.force(false);
+                }
+            } catch (IOException ioe) {
+                throw new Fabric3Exception(ioe);
             }
         } catch (IOException e) {
             throw new Fabric3Exception(e);
