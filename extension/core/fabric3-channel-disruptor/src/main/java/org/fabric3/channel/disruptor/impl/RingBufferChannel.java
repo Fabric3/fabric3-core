@@ -146,7 +146,7 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
         }
     }
 
-    public ChannelConnection unsubscribe(URI uri) {
+    public ChannelConnection unsubscribe(URI uri, String topic) {
         ChannelConnection connection = subscribers.remove(uri);
         Sequence sequence = sequences.get(uri);
         if (sequence != null) {
@@ -168,7 +168,7 @@ public class RingBufferChannel implements Channel, EventStreamHandler {
         return null;
     }
 
-    public Object getDirectConnection() {
+    public Object getDirectConnection(String topic) {
         return ringBuffer;
     }
 }

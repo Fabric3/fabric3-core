@@ -63,7 +63,7 @@ public class ChannelSourceAttacher implements SourceConnectionAttacher<ChannelSo
         URI uri = source.getUri();
         Channel channel = getChannel(uri, source.getChannelSide());
         URI targetUri = target.getUri();
-        channel.unsubscribe(targetUri);
+        channel.unsubscribe(targetUri, target.getTopic());
     }
 
     private Channel getChannel(URI uri, ChannelSide channelSide) throws Fabric3Exception {

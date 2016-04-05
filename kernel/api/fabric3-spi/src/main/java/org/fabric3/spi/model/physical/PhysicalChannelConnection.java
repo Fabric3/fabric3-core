@@ -32,6 +32,7 @@ public class PhysicalChannelConnection {
     private PhysicalConnectionSource source;
     private PhysicalConnectionTarget target;
     private Class<?> eventType;
+    private String topic;
 
     /**
      * Ctor.
@@ -79,6 +80,24 @@ public class PhysicalChannelConnection {
 
     public Class<?> getEventType() {
         return eventType;
+    }
+
+    /**
+     * Sets the topic name this connection is associated with.
+     *
+     * @param topic the topic
+     */
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    /**
+     * Returns the topic name this connection is associated with.
+     *
+     * @return topic the topic
+     */
+    public String getTopic() {
+        return topic;
     }
 
 }

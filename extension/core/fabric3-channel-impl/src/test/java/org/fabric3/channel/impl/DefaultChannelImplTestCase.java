@@ -31,13 +31,8 @@ import org.fabric3.spi.model.physical.ChannelSide;
  */
 public class DefaultChannelImplTestCase extends TestCase {
     private DefaultChannelImpl channel;
-    private FanOutHandler fanOutHandler;
 
     public void testAddRemoveHandler() throws Exception {
-        fanOutHandler.handle(EasyMock.notNull(), EasyMock.anyBoolean());
-        EasyMock.expectLastCall().times(2);
-        EasyMock.replay(fanOutHandler);
-
         BlockingHandler handler = new BlockingHandler();
         BlockingHandler handler2 = new BlockingHandler();
         channel.addHandler(handler);
@@ -55,7 +50,6 @@ public class DefaultChannelImplTestCase extends TestCase {
         handler2.setClosed(true);
 
         head.handle(new Object(), true);
-        EasyMock.verify(fanOutHandler);
     }
 
     public void testSubscribeUnsubscribe() throws Exception {
@@ -63,14 +57,12 @@ public class DefaultChannelImplTestCase extends TestCase {
         URI uri = URI.create("connection");
         ChannelConnection connection = EasyMock.createNiceMock(ChannelConnection.class);
 
-        fanOutHandler.addConnection(uri, connection);
-        EasyMock.expect(fanOutHandler.removeConnection(uri)).andReturn(connection);
-        EasyMock.replay(connection, fanOutHandler);
+        EasyMock.replay(connection);
 
         channel.subscribe(uri, connection);
-        assertEquals(connection, channel.unsubscribe(uri));
+        assertEquals(connection, channel.unsubscribe(uri, null));
 
-        EasyMock.verify(connection, fanOutHandler);
+        EasyMock.verify(connection);
 
     }
 
@@ -91,8 +83,7 @@ public class DefaultChannelImplTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        fanOutHandler = EasyMock.createMock(FanOutHandler.class);
-        channel = new DefaultChannelImpl(URI.create("channel"), fanOutHandler, ChannelSide.CONSUMER, URI.create("test"));
+        channel = new DefaultChannelImpl(URI.create("channel"), ChannelSide.CONSUMER, URI.create("test"));
     }
 
     private class BlockingHandler extends PassThroughHandler {

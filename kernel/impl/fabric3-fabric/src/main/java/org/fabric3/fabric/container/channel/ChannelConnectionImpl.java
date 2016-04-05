@@ -28,19 +28,22 @@ import org.fabric3.spi.util.Closeable;
  * Default implementation of a channel connection.
  */
 public class ChannelConnectionImpl implements ChannelConnection {
+    private String topic;
     private int sequence;
     private EventStream stream;
     private Closeable closeable;
 
     private Optional<Supplier<?>> directConnection = Optional.empty();
 
-    public ChannelConnectionImpl(EventStream stream, int sequence) {
+    public ChannelConnectionImpl(EventStream stream, String topic, int sequence) {
         this.stream = stream;
+        this.topic = topic;
         this.sequence = sequence;
     }
 
-    public ChannelConnectionImpl(Supplier<?> directConnection, int sequence) {
+    public ChannelConnectionImpl(Supplier<?> directConnection, String topic, int sequence) {
         this.directConnection = Optional.of(directConnection);
+        this.topic = topic;
         this.sequence = sequence;
     }
 
@@ -63,4 +66,9 @@ public class ChannelConnectionImpl implements ChannelConnection {
     public void setCloseable(Closeable closeable) {
         this.closeable = closeable;
     }
+
+    public String getTopic() {
+        return topic;
+    }
+
 }

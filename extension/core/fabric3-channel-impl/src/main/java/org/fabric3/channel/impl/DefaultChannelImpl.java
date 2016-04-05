@@ -17,7 +17,11 @@
 package org.fabric3.channel.impl;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
+import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
 import org.fabric3.spi.container.channel.EventStream;
@@ -27,24 +31,33 @@ import org.fabric3.spi.model.physical.ChannelSide;
 
 /**
  * The default Channel implementation.
+ *
+ * This implementation supports topics. Handlers are organized by topic name to ensure events are received and sent on the appropriate topic.
  */
 public class DefaultChannelImpl implements Channel {
     private URI uri;
     private URI contributionUri;
+    private ExecutorService executorService;
     private final ChannelSide channelSide;
 
-    private EventStreamHandler headHandler;
-    private EventStreamHandler tailHandler;
-    private EventStreamHandler inHandler;
-    private FanOutHandler fanOutHandler;
+    private TopicHandlers defaultTopicHandlers;
+    private Map<String, TopicHandlers> handlerMap = new HashMap<>();   // map of topics to handlers
 
-    public DefaultChannelImpl(URI uri, FanOutHandler fanOutHandler, ChannelSide channelSide, URI contributionUri) {
+    public DefaultChannelImpl(URI uri, ChannelSide channelSide, URI contributionUri) {
         this.uri = uri;
         this.channelSide = channelSide;
-        inHandler = new PassThroughHandler();
-        this.fanOutHandler = fanOutHandler;
-        inHandler.setNext(this.fanOutHandler);
         this.contributionUri = contributionUri;
+        SyncFanOutHandler fanOutHandler = new SyncFanOutHandler();
+        defaultTopicHandlers = new TopicHandlers(fanOutHandler, null);
+    }
+
+    public DefaultChannelImpl(URI uri, ChannelSide channelSide, URI contributionUri, ExecutorService executorService) {
+        this.uri = uri;
+        this.channelSide = channelSide;
+        this.contributionUri = contributionUri;
+        this.executorService = executorService;
+        AsyncFanOutHandler fanOutHandler = new AsyncFanOutHandler(executorService);
+        defaultTopicHandlers = new TopicHandlers(fanOutHandler, null);
     }
 
     public URI getUri() {
@@ -64,31 +77,31 @@ public class DefaultChannelImpl implements Channel {
     }
 
     public void addHandler(EventStreamHandler handler) {
-        if (headHandler == null) {
-            headHandler = handler;
-            inHandler.setNext(handler);
+        if (defaultTopicHandlers.headHandler == null) {
+            defaultTopicHandlers.headHandler = handler;
+            defaultTopicHandlers.inHandler.setNext(handler);
         } else {
-            tailHandler.setNext(handler);
+            defaultTopicHandlers.tailHandler.setNext(handler);
         }
-        tailHandler = handler;
-        tailHandler.setNext(fanOutHandler);
+        defaultTopicHandlers.tailHandler = handler;
+        defaultTopicHandlers.tailHandler.setNext(defaultTopicHandlers.fanOutHandler);
     }
 
     public void removeHandler(EventStreamHandler handler) {
-        EventStreamHandler current = headHandler;
+        EventStreamHandler current = defaultTopicHandlers.headHandler;
         EventStreamHandler previous = null;
         while (current != null) {
             if (current == handler) {
-                if (headHandler == current) {
-                    headHandler = current.getNext();
+                if (defaultTopicHandlers.headHandler == current) {
+                    defaultTopicHandlers.headHandler = current.getNext();
                 }
-                if (tailHandler == current) {
-                    tailHandler = previous == null ? headHandler : previous;
+                if (defaultTopicHandlers.tailHandler == current) {
+                    defaultTopicHandlers.tailHandler = previous == null ? defaultTopicHandlers.headHandler : previous;
                 }
                 if (previous != null) {
                     previous.setNext(current.getNext());
                 }
-                inHandler.setNext(headHandler);
+                defaultTopicHandlers.inHandler.setNext(defaultTopicHandlers.headHandler);
                 return;
             }
             previous = current;
@@ -97,27 +110,65 @@ public class DefaultChannelImpl implements Channel {
     }
 
     public void attach(EventStreamHandler handler) {
-        handler.setNext(inHandler);
+        handler.setNext(defaultTopicHandlers.inHandler);
     }
 
     public void attach(ChannelConnection connection) {
         EventStream stream = connection.getEventStream();
-        stream.getTailHandler().setNext(inHandler);
+        String topic = connection.getTopic();
+
+        TopicHandlers topicHandlers = getTopicHandlers(topic, true);
+        stream.getTailHandler().setNext(topicHandlers.inHandler);
     }
 
     public void subscribe(URI uri, ChannelConnection connection) {
-        fanOutHandler.addConnection(uri, connection);
+        String topic = connection.getTopic();
+        TopicHandlers topicHandlers = getTopicHandlers(topic, true);
+        topicHandlers.fanOutHandler.addConnection(uri, connection);
     }
 
-    public ChannelConnection unsubscribe(URI uri) {
-        return fanOutHandler.removeConnection(uri);
+    public ChannelConnection unsubscribe(URI uri, String topic) {
+        return getTopicHandlers(topic, false).fanOutHandler.removeConnection(uri);
     }
 
     public ChannelSide getChannelSide() {
         return channelSide;
     }
 
-    public Object getDirectConnection() {
-        return headHandler;
+    public Object getDirectConnection(String topic) {
+        return getTopicHandlers(topic, true).headHandler;
+    }
+
+    private TopicHandlers getTopicHandlers(String topic, boolean create) {
+        if (topic == null) {
+            return defaultTopicHandlers;
+        }
+        TopicHandlers topicHandlers = handlerMap.get(topic);
+        if (topicHandlers == null) {
+            if (create) {
+                FanOutHandler fanOutHandler = executorService != null ? new AsyncFanOutHandler(executorService) : new SyncFanOutHandler();
+                topicHandlers = new TopicHandlers(fanOutHandler, topic);
+                handlerMap.put(topic, topicHandlers);
+            } else {
+                throw new Fabric3Exception("Handlers not registered for topic: " + topic);
+            }
+        }
+        return topicHandlers;
+    }
+
+    private class TopicHandlers {
+        String topic;
+        EventStreamHandler inHandler;
+        FanOutHandler fanOutHandler;
+        EventStreamHandler headHandler;
+        EventStreamHandler tailHandler;
+
+        public TopicHandlers(FanOutHandler fanOutHandler, String topic) {
+            this.topic = topic;
+            inHandler = new PassThroughHandler();
+            this.fanOutHandler = fanOutHandler;
+            inHandler.setNext(this.fanOutHandler);
+        }
+
     }
 }

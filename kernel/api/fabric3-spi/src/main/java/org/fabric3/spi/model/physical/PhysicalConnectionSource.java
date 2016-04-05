@@ -49,7 +49,7 @@ public class PhysicalConnectionSource extends PhysicalAttachPoint {
      * @return the id
      */
     public String getSourceId() {
-        return getUri().toString() + "_source_" + this.getClass().getName();
+        return getUri().toString() + "_source_" + this.getClass().getName() + "#"+ getTopic();
     }
 
     /**

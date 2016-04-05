@@ -20,10 +20,7 @@ import java.net.URI;
 import java.util.concurrent.ExecutorService;
 
 import org.fabric3.api.host.Fabric3Exception;
-import org.fabric3.channel.impl.AsyncFanOutHandler;
 import org.fabric3.channel.impl.DefaultChannelImpl;
-import org.fabric3.channel.impl.FanOutHandler;
-import org.fabric3.channel.impl.SyncFanOutHandler;
 import org.fabric3.spi.container.builder.ChannelBuilder;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.model.physical.PhysicalChannel;
@@ -44,16 +41,13 @@ public class DefaultChannelBuilder implements ChannelBuilder {
         URI uri = physicalChannel.getUri();
         URI contributionUri = physicalChannel.getContributionUri();
 
-        FanOutHandler fanOutHandler;
         if (physicalChannel.isBound()) {
             // if a binding is set on the channel, make the channel synchronous since async behavior will be provided by the binding
-            fanOutHandler = new SyncFanOutHandler();
+            return new DefaultChannelImpl(uri, physicalChannel.getChannelSide(), contributionUri);
         } else {
             // the channel is local, have it implement asynchrony
-            fanOutHandler = new AsyncFanOutHandler(executorService);
+            return new DefaultChannelImpl(uri, physicalChannel.getChannelSide(), contributionUri, executorService);
         }
-
-        return new DefaultChannelImpl(uri, fanOutHandler, physicalChannel.getChannelSide(), contributionUri);
     }
 
     public void dispose(PhysicalChannel physicalChannel, Channel channel) throws Fabric3Exception {

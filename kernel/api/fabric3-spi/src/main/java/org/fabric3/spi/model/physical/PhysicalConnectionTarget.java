@@ -45,7 +45,7 @@ public class PhysicalConnectionTarget extends PhysicalAttachPoint {
      * @return the id
      */
     public String getTargetId() {
-        return getUri().toString() + "_target_" + this.getClass().getName();
+        return getUri().toString() + "_target_" + this.getClass().getName() + "#"+ getTopic();
     }
 
     /**

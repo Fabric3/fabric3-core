@@ -116,6 +116,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         List<PhysicalChannelConnection> connections = connectionGenerator.generateConsumer(consumer, channels);
 
         PhysicalChannelConnection connection = connections.get(0);  // safe as there is only one connection
+        connection.setTopic(topic);
         connection.getSource().setTopic(topic);
         connection.getTarget().setTopic(topic);
         channelConnector.connect(connection);
@@ -138,6 +139,7 @@ public class ChannelResolverImpl implements ChannelResolver {
         // the closeable will be set on the connection from the binding to the channel; it must be passed to the component
         Closeable closeable = null;
         for (PhysicalChannelConnection connection : connections) {
+            connection.setTopic(topic);
             connection.getSource().setTopic(topic);
             connection.getTarget().setTopic(topic);
             connection.getTarget().setConsumer(consumer);
@@ -153,6 +155,7 @@ public class ChannelResolverImpl implements ChannelResolver {
     private NonManagedConnectionSource connect(String topic, List<PhysicalChannelConnection> connections) {
         NonManagedConnectionSource source = null;
         for (PhysicalChannelConnection connection : connections) {
+            connection.setTopic(topic);
             connection.getSource().setTopic(topic);
             connection.getTarget().setTopic(topic);
             channelConnector.connect(connection);

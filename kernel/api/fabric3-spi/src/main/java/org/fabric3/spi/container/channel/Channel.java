@@ -70,7 +70,7 @@ public interface Channel {
      *
      * @param handler the handler to attach
      */
-    public void attach(EventStreamHandler handler);
+    void attach(EventStreamHandler handler);
 
     /**
      * Attach a connection to the channel so that it can flow events.
@@ -90,10 +90,11 @@ public interface Channel {
     /**
      * Unsubscribe from receiving events from the channel
      *
-     * @param uri the subscription URI
+     * @param uri   the subscription URI
+     * @param topic the topic; may be null
      * @return the unsubscribed connection
      */
-    ChannelConnection unsubscribe(URI uri);
+    ChannelConnection unsubscribe(URI uri, String topic);
 
     /**
      * Returns if the Channel receives producer events or sends events to consumers.
@@ -105,8 +106,9 @@ public interface Channel {
     /**
      * Returns a direct connection to the channel, typically the dispatcher such as a ring buffer.
      *
+     * @param topic the topic; may be null
      * @return a direct connection ot the channel
      */
-    Object getDirectConnection();
+    Object getDirectConnection(String topic);
 
 }

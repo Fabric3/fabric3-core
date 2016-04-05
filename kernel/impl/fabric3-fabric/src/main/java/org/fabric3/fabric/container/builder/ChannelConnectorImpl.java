@@ -27,13 +27,13 @@ import java.util.function.Supplier;
 import org.fabric3.api.host.Fabric3Exception;
 import org.fabric3.api.model.type.contract.DataType;
 import org.fabric3.fabric.container.channel.ChannelConnectionImpl;
+import org.fabric3.fabric.container.channel.ChannelManager;
 import org.fabric3.fabric.container.channel.EventStreamImpl;
 import org.fabric3.spi.container.builder.DirectConnectionFactory;
 import org.fabric3.spi.container.builder.SourceConnectionAttacher;
 import org.fabric3.spi.container.builder.TargetConnectionAttacher;
 import org.fabric3.spi.container.channel.Channel;
 import org.fabric3.spi.container.channel.ChannelConnection;
-import org.fabric3.fabric.container.channel.ChannelManager;
 import org.fabric3.spi.container.channel.EventStream;
 import org.fabric3.spi.container.channel.EventStreamHandler;
 import org.fabric3.spi.container.channel.TransformerHandlerFactory;
@@ -145,6 +145,7 @@ public class ChannelConnectorImpl implements ChannelConnector {
         if (source.isDirectConnection() || target.isDirectConnection()) {
             // handle direct connection
             int sequence = source.getSequence();
+            String topic = physicalConnection.getTopic();
             URI channelUri = physicalConnection.getChannelUri();
 
             Supplier<?> supplier;
@@ -159,25 +160,26 @@ public class ChannelConnectorImpl implements ChannelConnector {
                 // Return a Supplier of a Supplier to lazily initialize the connection. This is so the source attachment can be done before this call to
                 // getConnection. Otherwise, DirectConnectionFactory.getConnection() will be called before the source is attached and channel resources
                 // can be created
-                supplier = () -> factory.getConnection(channelUri, attachUri, type).get();
+                supplier = () -> factory.getConnection(channelUri, attachUri, type, physicalConnection.getTopic()).get();
             } else {
                 // get the direct connection to the local channel
                 Channel channel = channelManager.getChannel(channelUri, ChannelSide.COLLOCATED);
                 if (channel == null) {
                     throw new Fabric3Exception("Channel not found: " + channelUri);
                 }
-                supplier = channel::getDirectConnection;
+                supplier = () -> channel.getDirectConnection(topic);
             }
 
-            return new ChannelConnectionImpl(supplier, sequence);
+            return new ChannelConnectionImpl(supplier, topic, sequence);
         } else {
             // connect using an event stream
             ClassLoader loader = physicalConnection.getTarget().getClassLoader();
             Class<?> eventType = physicalConnection.getEventType();
             EventStream stream = new EventStreamImpl(eventType);
             addTypeTransformer(physicalConnection, stream, loader);
+            String topic = physicalConnection.getTopic();
             int sequence = source.getSequence();
-            return new ChannelConnectionImpl(stream, sequence);
+            return new ChannelConnectionImpl(stream, topic, sequence);
         }
     }
 

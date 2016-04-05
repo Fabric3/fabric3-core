@@ -38,7 +38,7 @@ public class PojoConnectionTarget extends PhysicalConnectionTarget {
      * @return the id
      */
     public String getTargetId() {
-        return getUri() + injectable.getName() + "_target_" + this.getClass().getName();
+        return getUri() + injectable.getName() + "_target_" + this.getClass().getName()+ "#"+ getTopic();
     }
 
     public AccessibleObject getConsumerObject() {

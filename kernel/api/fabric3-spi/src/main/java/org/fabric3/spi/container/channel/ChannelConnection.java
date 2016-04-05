@@ -35,11 +35,18 @@ import org.fabric3.spi.util.Closeable;
 public interface ChannelConnection {
 
     /**
+     * Returns the topic this connection is associated with.
+     *
+     * @return the topic this connection is associated with; may be null
+     */
+    String getTopic();
+
+    /**
      * Returns the sequence this connection should receive events from a channel.
      *
      * @return the sequence
      */
-    public int getSequence();
+    int getSequence();
 
     /**
      * Returns the connection event stream.

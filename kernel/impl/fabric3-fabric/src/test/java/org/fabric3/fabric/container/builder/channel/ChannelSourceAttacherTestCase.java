@@ -45,7 +45,7 @@ public class ChannelSourceAttacherTestCase extends TestCase {
         Channel channel = EasyMock.createMock((Channel.class));
         channel.subscribe(targetUri, connection);
         EasyMock.expectLastCall();
-        EasyMock.expect(channel.unsubscribe(targetUri)).andReturn(connection);
+        EasyMock.expect(channel.unsubscribe(targetUri, null)).andReturn(connection);
         connection.setCloseable(EasyMock.isA(Closeable.class));
         EasyMock.expect(channelManager.getChannel(channelUri, ChannelSide.PRODUCER)).andReturn(channel).times(2);
 
