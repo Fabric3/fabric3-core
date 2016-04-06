@@ -29,6 +29,7 @@ import org.fabric3.api.host.contribution.ContributionSource;
 import org.fabric3.api.host.domain.Domain;
 import org.fabric3.api.host.runtime.BootConfiguration;
 import org.fabric3.api.host.runtime.Fabric3Runtime;
+import org.fabric3.api.host.runtime.HostInfo;
 import org.fabric3.api.host.runtime.RuntimeCoordinator;
 import org.fabric3.api.host.runtime.RuntimeState;
 import org.fabric3.spi.runtime.event.EventService;
@@ -100,6 +101,7 @@ public class DefaultCoordinator implements RuntimeCoordinator {
         // signal runtime start
         eventService.publish(new RuntimeStart());
         state = RuntimeState.STARTED;
+        runtime.getComponent(HostInfo.class).notifyCallbacks();
     }
 
     public void startTransports() {

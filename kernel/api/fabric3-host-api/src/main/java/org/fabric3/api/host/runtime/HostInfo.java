@@ -125,4 +125,18 @@ public interface HostInfo extends ConfigurationContext {
      * @return true if the host environment is a Java EE container with XA-enabled
      */
     boolean isJavaEEXAEnabled();
+
+    /**
+     * Adds a callback that is invoked after the runtime and initial contributions have been started.
+     *
+     * @param callback the callback
+     */
+    default void addBootCallback(Runnable callback) {
+    }
+
+    /**
+     * Notifies the boot callbacks.
+     */
+    default void notifyCallbacks() {
+    }
 }

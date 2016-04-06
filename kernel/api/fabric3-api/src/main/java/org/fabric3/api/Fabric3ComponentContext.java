@@ -70,4 +70,10 @@ public interface Fabric3ComponentContext extends ComponentContext {
      */
     File getTempDirectory();
 
+    /**
+     * Adds a callback that is invoked after the runtime and initial contributions have been started.
+     *
+     * @param callback the callback
+     */
+    void addBootCallback(Runnable callback);
 }

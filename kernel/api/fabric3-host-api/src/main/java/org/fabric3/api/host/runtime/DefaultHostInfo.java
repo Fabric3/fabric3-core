@@ -21,6 +21,7 @@ package org.fabric3.api.host.runtime;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fabric3.api.host.os.OperatingSystem;
@@ -44,6 +45,8 @@ public class DefaultHostInfo implements HostInfo {
     private OperatingSystem operatingSystem;
     private boolean javaEEXAEnabled;
     private File dataDirectory;
+
+    private List<Runnable> callbacks = new ArrayList<>();
 
     /**
      * Constructor.
@@ -142,6 +145,14 @@ public class DefaultHostInfo implements HostInfo {
 
     public boolean isJavaEEXAEnabled() {
         return javaEEXAEnabled;
+    }
+
+    public void addBootCallback(Runnable callback) {
+       callbacks.add(callback);
+    }
+
+    public void notifyCallbacks() {
+       callbacks.forEach(Runnable::run);
     }
 
 }

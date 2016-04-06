@@ -19,6 +19,7 @@ package org.fabric3.plugin.runtime;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +45,8 @@ public class PluginHostInfoImpl implements PluginHostInfo {
     private File baseDir;
     private OperatingSystem operatingSystem;
     private File nativeDirectory;
+
+    private List<Runnable> callbacks = new ArrayList<>();
 
     public PluginHostInfoImpl(URI domain,
                               String environment,
@@ -145,6 +148,14 @@ public class PluginHostInfoImpl implements PluginHostInfo {
 
     public File getBuildDir() {
         return buildDir;
+    }
+
+    public void addBootCallback(Runnable callback) {
+       callbacks.add(callback);
+    }
+
+    public void notifyCallbacks() {
+       callbacks.forEach(Runnable::run);
     }
 
     public boolean isJavaEEXAEnabled() {

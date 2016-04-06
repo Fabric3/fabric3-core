@@ -101,4 +101,8 @@ public class PojoComponentContext implements Fabric3ComponentContext {
     public File getTempDirectory() {
         return info.getTempDir();
     }
+
+    public void addBootCallback(Runnable callback) {
+        info.addBootCallback(callback);
+    }
 }

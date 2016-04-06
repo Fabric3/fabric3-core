@@ -129,4 +129,8 @@ public class OASISWebComponentContext implements Fabric3ComponentContext {
         throw new UnsupportedOperationException();
     }
 
+    public void addBootCallback(Runnable callback) {
+        info.addBootCallback(callback);
+    }
+
 }
