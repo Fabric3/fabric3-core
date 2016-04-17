@@ -102,6 +102,11 @@ public final class RsContainer extends HttpServlet {
 
             workContext.setHeader("fabric3.httpRequest", req);
             workContext.setHeader("fabric3.httpResponse", res);
+            if (servlet.getWebComponent() == null) {
+                // not yet initialized
+                res.setStatus(404);
+                return;
+            }
             servlet.service(req, res);
         } catch (ServletException | IOException se) {
             se.printStackTrace();
