@@ -102,7 +102,7 @@ public final class RsContainer extends HttpServlet {
 
             workContext.setHeader("fabric3.httpRequest", req);
             workContext.setHeader("fabric3.httpResponse", res);
-            if (servlet.getWebComponent() == null) {
+            if (servlet == null || servlet.getWebComponent() == null) {
                 // not yet initialized
                 res.setStatus(404);
                 return;
@@ -303,7 +303,7 @@ public final class RsContainer extends HttpServlet {
         }
 
         public long getContentLengthLong() {
-          return delegate.getContentLengthLong();
+            return delegate.getContentLengthLong();
         }
 
         public String getContentType() {
