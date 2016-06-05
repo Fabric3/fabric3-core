@@ -35,6 +35,7 @@ import org.hibernate.IdentifierLoadAccess;
 import org.hibernate.LobHelper;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
+import org.hibernate.MultiIdentifierLoadAccess;
 import org.hibernate.NaturalIdLoadAccess;
 import org.hibernate.ReplicationMode;
 import org.hibernate.SQLQuery;
@@ -102,8 +103,8 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         return getSession().getSessionFactory();
     }
 
-    public Connection close() throws HibernateException {
-        return getSession().close();
+    public void close() throws HibernateException {
+        getSession().close();
     }
 
     public void cancelQuery() throws HibernateException {
@@ -142,12 +143,12 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         getSession().evict(object);
     }
 
-    public Object load(Class theClass, Serializable id, LockMode lockMode) throws HibernateException {
-        return getSession().load(theClass, id, lockMode);
+    public <T> T load(Class<T> theClass, Serializable id, LockMode lockMode) throws HibernateException {
+        return theClass.cast(getSession().load(theClass, id, lockMode));
     }
 
-    public Object load(Class aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
-        return getSession().load(aClass, serializable, lockOptions);
+    public <T> T load(Class<T> theClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+        return getSession().load(theClass, serializable, lockOptions);
     }
 
     public Object load(String entityName, Serializable id, LockMode lockMode) throws HibernateException {
@@ -158,7 +159,7 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         return getSession().load(s, serializable, lockOptions);
     }
 
-    public Object load(Class theClass, Serializable id) throws HibernateException {
+    public <T> T load(Class<T> theClass, Serializable id) throws HibernateException {
         return getSession().load(theClass, id);
     }
 
@@ -324,15 +325,15 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         getSession().clear();
     }
 
-    public Object get(Class clazz, Serializable id) throws HibernateException {
+    public <T> T get(Class<T> clazz, Serializable id) throws HibernateException {
         return getSession().get(clazz, id);
     }
 
-    public Object get(Class clazz, Serializable id, LockMode lockMode) throws HibernateException {
+    public <T> T get(Class<T> clazz, Serializable id, LockMode lockMode) throws HibernateException {
         return getSession().get(clazz, id, lockMode);
     }
 
-    public Object get(Class aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+    public <T> T get(Class<T> aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
         return getSession().get(aClass, serializable, lockOptions);
     }
 
@@ -356,15 +357,24 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         return getSession().byId(s);
     }
 
-    public IdentifierLoadAccess byId(Class aClass) {
-        return getSession().byId(aClass);
+    public <T> MultiIdentifierLoadAccess<T> byMultipleIds(Class<T> entityClass) {
+        return getSession().byMultipleIds(entityClass);
+    }
+
+    @Override
+    public MultiIdentifierLoadAccess byMultipleIds(String entityName) {
+        return getSession().byMultipleIds(entityName);
+    }
+
+    public <T> IdentifierLoadAccess<T> byId(Class<T> aClass) {
+        return (getSession().byId(aClass));
     }
 
     public NaturalIdLoadAccess byNaturalId(String s) {
         return getSession().byNaturalId(s);
     }
 
-    public NaturalIdLoadAccess byNaturalId(Class aClass) {
+    public <T> NaturalIdLoadAccess<T> byNaturalId(Class<T> aClass) {
         return getSession().byNaturalId(aClass);
     }
 
@@ -372,7 +382,7 @@ public class MultiThreadedSessionProxy implements Session, HibernateProxy {
         return getSession().bySimpleNaturalId(s);
     }
 
-    public SimpleNaturalIdLoadAccess bySimpleNaturalId(Class aClass) {
+    public <T> SimpleNaturalIdLoadAccess<T> bySimpleNaturalId(Class<T> aClass) {
         return getSession().bySimpleNaturalId(aClass);
     }
 

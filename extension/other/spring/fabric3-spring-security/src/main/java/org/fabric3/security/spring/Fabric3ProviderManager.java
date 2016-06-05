@@ -18,6 +18,8 @@ package org.fabric3.security.spring;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.SecuritySubject;
@@ -47,6 +49,16 @@ import org.springframework.security.core.Authentication;
  */
 @Service({AuthenticationManager.class, AuthenticationService.class})
 public class Fabric3ProviderManager extends ProviderManager implements AuthenticationService {
+    private static final AuthenticationProvider PROVIDER = new AuthenticationProvider() {
+        public Authentication authenticate(Authentication authentication) throws org.springframework.security.core.AuthenticationException {
+            return null;
+        }
+
+        public boolean supports(Class<?> authentication) {
+            return false;
+        }
+    };
+
     private AuthenticationProviderFactory factory;
     private ConfigurationParser parser;
     private AuthenticationManagerConfiguration configuration;
@@ -54,6 +66,7 @@ public class Fabric3ProviderManager extends ProviderManager implements Authentic
     private boolean disabled;
 
     public Fabric3ProviderManager(@Reference ConfigurationParser parser, @Reference AuthenticationProviderFactory factory, @Monitor SecurityMonitor monitor) {
+        super(new ArrayList<>(Collections.singleton(PROVIDER)));
         this.parser = parser;
         this.factory = factory;
         this.monitor = monitor;
@@ -61,7 +74,7 @@ public class Fabric3ProviderManager extends ProviderManager implements Authentic
 
     @Reference(required = false)
     public void setAuthenticationProviders(List<AuthenticationProvider> providers) {
-        super.setProviders(providers);
+        super.getProviders().addAll(providers);
     }
 
     @Property(required = false)
@@ -80,7 +93,7 @@ public class Fabric3ProviderManager extends ProviderManager implements Authentic
         setEraseCredentialsAfterAuthentication(configuration.isEraseCredentials());
         // instantiate providers
         List<AuthenticationProvider> providers = factory.create(configuration);
-        setProviders(providers);
+        super.getProviders().addAll(providers);
         super.afterPropertiesSet();
     }
 

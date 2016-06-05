@@ -18,6 +18,7 @@ package org.fabric3.security.spring;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.fabric3.api.SecuritySubject;
@@ -44,13 +45,27 @@ import org.springframework.security.core.Authentication;
 
 /**
  * Serves as a bridge between the Fabric3 security SPI and SpringSecurity for access control by implementing {@link AuthorizationService} and
- * <code>AccessDecisionManager</code> respectively. This allows Fabric3 code (e.g. transports) to check authorization using the Fabric3 security SPI
- * and Spring code to use the Spring Security API.
+ * <code>AccessDecisionManager</code> respectively. This allows Fabric3 code (e.g. transports) to check authorization using the Fabric3 security SPI and Spring
+ * code to use the Spring Security API.
  *
  * Access decisions are delegated to a Spring <code>AccessDecisionManager<code> instance.
  */
 @Service({AccessDecisionManager.class, AuthorizationService.class})
 public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager implements AuthorizationService {
+    private static final AccessDecisionVoter<?> VOTER = new AccessDecisionVoter<Object>() {
+        public boolean supports(ConfigAttribute attribute) {
+            return false;
+        }
+
+        public boolean supports(Class<?> clazz) {
+            return false;
+        }
+
+        public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
+            return ACCESS_ABSTAIN;
+        }
+    };
+
     private String managerType = "affirmative";
 
     private AccessDecisionManager delegate;
@@ -61,17 +76,17 @@ public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager 
     }
 
     @Reference(required = false)
-    public void setDecisionVoters(List<AccessDecisionVoter> voters) {
+    public void setDecisionVoters(List<AccessDecisionVoter<?>> voters) {
         if (voters.isEmpty()) {
             return;
         }
-        super.setDecisionVoters(voters);
+        super.getDecisionVoters().addAll(voters);
     }
 
     @Init
     public void init() throws Fabric3Exception {
         if (getDecisionVoters() == null || getDecisionVoters().isEmpty()) {
-            List<AccessDecisionVoter> voters = new ArrayList<>();
+            List<AccessDecisionVoter<?>> voters = new ArrayList<>();
             RoleVoter roleVoter = new RoleVoter();
             voters.add(roleVoter);
             AuthenticatedVoter authenticatedVoter = new AuthenticatedVoter();
@@ -80,20 +95,18 @@ public class Fabric3AccessDecisionManager extends AbstractAccessDecisionManager 
         }
 
         if ("affirmative".equals(managerType)) {
-            AffirmativeBased affirmativeBased = new AffirmativeBased();
-            affirmativeBased.setDecisionVoters(getDecisionVoters());
-            delegate = affirmativeBased;
+            delegate = new AffirmativeBased(getDecisionVoters());
         } else if ("consensus".equals(managerType)) {
-            ConsensusBased consensusBased = new ConsensusBased();
-            consensusBased.setDecisionVoters(getDecisionVoters());
-            delegate = consensusBased;
+            delegate = new ConsensusBased(getDecisionVoters());
         } else if ("unanimous".equals(managerType)) {
-            UnanimousBased unanimousBased = new UnanimousBased();
-            unanimousBased.setDecisionVoters(getDecisionVoters());
-            delegate = unanimousBased;
+            delegate = new UnanimousBased(getDecisionVoters());
         } else {
             throw new Fabric3Exception("Unknown access decision manager type: " + managerType);
         }
+    }
+
+    public Fabric3AccessDecisionManager() {
+        super(new ArrayList<>(Collections.singleton(VOTER)));
     }
 
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)

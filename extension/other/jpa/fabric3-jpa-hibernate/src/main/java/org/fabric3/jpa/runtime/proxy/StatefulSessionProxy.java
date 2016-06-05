@@ -35,6 +35,7 @@ import org.hibernate.IdentifierLoadAccess;
 import org.hibernate.LobHelper;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
+import org.hibernate.MultiIdentifierLoadAccess;
 import org.hibernate.NaturalIdLoadAccess;
 import org.hibernate.ReplicationMode;
 import org.hibernate.SQLQuery;
@@ -112,9 +113,9 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.getSessionFactory();
     }
 
-    public Connection close() throws HibernateException {
+    public void close() throws HibernateException {
         initSession();
-        return session.close();
+        session.close();
     }
 
     public void cancelQuery() throws HibernateException {
@@ -162,12 +163,12 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.evict(object);
     }
 
-    public Object load(Class theClass, Serializable id, LockMode lockMode) throws HibernateException {
+    public <T> T load(Class<T> theClass, Serializable id, LockMode lockMode) throws HibernateException {
         initSession();
         return session.load(theClass, id, lockMode);
     }
 
-    public Object load(Class aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+    public <T> T load(Class<T> aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
         initSession();
         return session.load(aClass, serializable, lockOptions);
     }
@@ -182,7 +183,7 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.load(s, serializable, lockOptions);
     }
 
-    public Object load(Class theClass, Serializable id) throws HibernateException {
+    public <T> T load(Class<T> theClass, Serializable id) throws HibernateException {
         initSession();
         return session.load(theClass, id);
     }
@@ -348,25 +349,21 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.createSQLQuery(queryString);
     }
 
-    
     public ProcedureCall getNamedProcedureCall(String name) {
         initSession();
         return session.getNamedProcedureCall(name);
     }
 
-    
     public ProcedureCall createStoredProcedureCall(String procedureName) {
         initSession();
         return session.createStoredProcedureCall(procedureName);
     }
 
-    
     public ProcedureCall createStoredProcedureCall(String procedureName, Class... resultClasses) {
         initSession();
         return session.createStoredProcedureCall(procedureName, resultClasses);
     }
 
-    
     public ProcedureCall createStoredProcedureCall(String procedureName, String... resultSetMappings) {
         initSession();
         return session.createStoredProcedureCall(procedureName, resultSetMappings);
@@ -387,17 +384,17 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.clear();
     }
 
-    public Object get(Class clazz, Serializable id) throws HibernateException {
+    public <T> T get(Class<T> clazz, Serializable id) throws HibernateException {
         initSession();
         return session.get(clazz, id);
     }
 
-    public Object get(Class clazz, Serializable id, LockMode lockMode) throws HibernateException {
+    public <T> T get(Class<T> clazz, Serializable id, LockMode lockMode) throws HibernateException {
         initSession();
         return session.get(clazz, id, lockMode);
     }
 
-    public Object get(Class aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+    public <T> T get(Class<T> aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
         initSession();
         return session.get(aClass, serializable, lockOptions);
     }
@@ -427,7 +424,17 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.byId(s);
     }
 
-    public IdentifierLoadAccess byId(Class aClass) {
+    public <T> MultiIdentifierLoadAccess<T> byMultipleIds(Class<T> entityClass) {
+        initSession();
+        return session.byMultipleIds(entityClass);
+    }
+
+    public MultiIdentifierLoadAccess byMultipleIds(String entityName) {
+        initSession();
+        return session.byMultipleIds(entityName);
+    }
+
+    public <T> IdentifierLoadAccess<T> byId(Class<T> aClass) {
         initSession();
         return session.byId(aClass);
     }
@@ -437,7 +444,7 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.byNaturalId(s);
     }
 
-    public NaturalIdLoadAccess byNaturalId(Class aClass) {
+    public <T> NaturalIdLoadAccess<T> byNaturalId(Class<T> aClass) {
         initSession();
         return session.byNaturalId(aClass);
     }
@@ -447,7 +454,7 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.bySimpleNaturalId(s);
     }
 
-    public SimpleNaturalIdLoadAccess bySimpleNaturalId(Class aClass) {
+    public <T> SimpleNaturalIdLoadAccess<T> bySimpleNaturalId(Class<T> aClass) {
         initSession();
         return session.bySimpleNaturalId(aClass);
     }
@@ -527,7 +534,6 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.getLobHelper();
     }
 
-    
     public void addEventListeners(SessionEventListener... listeners) {
         initSession();
         session.addEventListeners(listeners);
