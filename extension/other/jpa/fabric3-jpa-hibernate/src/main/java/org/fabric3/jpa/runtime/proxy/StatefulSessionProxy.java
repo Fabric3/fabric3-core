@@ -18,13 +18,24 @@
  */
 package org.fabric3.jpa.runtime.proxy;
 
+import java.io.Serializable;
+import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
+import javax.persistence.LockModeType;
+import javax.persistence.StoredProcedureQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.metamodel.Metamodel;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import java.io.Serializable;
-import java.sql.Connection;
-
 import org.fabric3.api.host.Fabric3Exception;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
@@ -38,7 +49,6 @@ import org.hibernate.LockOptions;
 import org.hibernate.MultiIdentifierLoadAccess;
 import org.hibernate.NaturalIdLoadAccess;
 import org.hibernate.ReplicationMode;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionEventListener;
 import org.hibernate.SessionFactory;
@@ -49,6 +59,9 @@ import org.hibernate.UnknownProfileException;
 import org.hibernate.jdbc.ReturningWork;
 import org.hibernate.jdbc.Work;
 import org.hibernate.procedure.ProcedureCall;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
+import org.hibernate.query.spi.NativeQueryImplementor;
 import org.hibernate.stat.SessionStatistics;
 import org.oasisopen.sca.ServiceRuntimeException;
 
@@ -73,6 +86,300 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         this.tm = tm;
     }
 
+    @Override
+    public void setHibernateFlushMode(FlushMode pFlushMode) {
+        initSession();
+        session.setHibernateFlushMode(pFlushMode);
+    }
+
+    @Override
+    public FlushMode getHibernateFlushMode() {
+        initSession();
+        return session.getHibernateFlushMode();
+    }
+
+    @Override
+    public boolean contains(String pS, Object pO) {
+        initSession();
+        return session.contains(pS, pO);
+    }
+
+    @Override
+    public <T> MultiIdentifierLoadAccess<T> byMultipleIds(Class<T> pClass) {
+        initSession();
+        return session.byMultipleIds(pClass);
+    }
+
+    @Override
+    public MultiIdentifierLoadAccess byMultipleIds(String pS) {
+        initSession();
+        return session.byMultipleIds(pS);
+    }
+
+    @Override
+    public <T> Query<T> createQuery(String pS, Class<T> pClass) {
+        initSession();
+        return session.createQuery(pS, pClass);
+    }
+
+    @Override
+    public <T> Query<T> createQuery(CriteriaQuery<T> pCriteriaQuery) {
+        initSession();
+        return session.createQuery(pCriteriaQuery);
+    }
+
+    @Override
+    public Query createQuery(CriteriaUpdate pCriteriaUpdate) {
+        initSession();
+        return session.createQuery(pCriteriaUpdate);
+    }
+
+    @Override
+    public Query createQuery(CriteriaDelete pCriteriaDelete) {
+        initSession();
+        return session.createQuery(pCriteriaDelete);
+    }
+
+    @Override
+    public <T> Query<T> createNamedQuery(String pS, Class<T> pClass) {
+        initSession();
+        return session.createNamedQuery(pS, pClass);
+    }
+
+    @Override
+    public Session getSession() {
+        initSession();
+        return session;
+    }
+
+    @Override
+    public void remove(Object pO) {
+        initSession();
+        session.remove(pO);
+    }
+
+    @Override
+    public <T> T find(Class<T> pClass, Object pO) {
+        initSession();
+        return session.find(pClass, pO);
+    }
+
+    @Override
+    public <T> T find(Class<T> pClass, Object pO, Map<String, Object> pMap) {
+        initSession();
+        return session.find(pClass, pO, pMap);
+    }
+
+    @Override
+    public <T> T find(Class<T> pClass, Object pO, LockModeType pLockModeType) {
+        initSession();
+        return session.find(pClass, pO, pLockModeType);
+    }
+
+    @Override
+    public <T> T find(Class<T> pClass, Object pO, LockModeType pLockModeType, Map<String, Object> pMap) {
+        initSession();
+        return session.find(pClass, pO, pLockModeType, pMap);
+    }
+
+    @Override
+    public <T> T getReference(Class<T> pClass, Object pO) {
+        initSession();
+        return session.getReference(pClass, pO);
+    }
+
+    @Override
+    public void setFlushMode(FlushModeType pFlushModeType) {
+        initSession();
+        session.setFlushMode(pFlushModeType);
+    }
+
+    @Override
+    public void lock(Object pO, LockModeType pLockModeType) {
+        initSession();
+        session.lock(pO, pLockModeType);
+    }
+
+    @Override
+    public void lock(Object pO, LockModeType pLockModeType, Map<String, Object> pMap) {
+        initSession();
+        session.lock(pO, pLockModeType, pMap);
+    }
+
+    @Override
+    public void refresh(Object pO, Map<String, Object> pMap) {
+        initSession();
+        session.refresh(pO, pMap);
+    }
+
+    @Override
+    public void refresh(Object pO, LockModeType pLockModeType) {
+        initSession();
+        session.refresh(pO, pLockModeType);
+    }
+
+    @Override
+    public void refresh(Object pO, LockModeType pLockModeType, Map<String, Object> pMap) {
+        initSession();
+        session.refresh(pO, pLockModeType, pMap);
+    }
+
+    @Override
+    public void detach(Object pO) {
+        initSession();
+        session.detach(pO);
+    }
+
+    @Override
+    public LockModeType getLockMode(Object pO) {
+        initSession();
+        return session.getLockMode(pO);
+    }
+
+    @Override
+    public void setProperty(String pS, Object pO) {
+        initSession();
+        session.setProperty(pS, pO);
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        initSession();
+        return session.getProperties();
+    }
+
+    @Override
+    public NativeQueryImplementor createNativeQuery(String pS, Class pClass) {
+        initSession();
+        return (NativeQueryImplementor) session.createNativeQuery(pS, pClass);
+    }
+
+    @Override
+    public StoredProcedureQuery createNamedStoredProcedureQuery(String pS) {
+        initSession();
+        return session.createNamedStoredProcedureQuery(pS);
+    }
+
+    @Override
+    public StoredProcedureQuery createStoredProcedureQuery(String pS) {
+        initSession();
+        return session.createStoredProcedureQuery(pS);
+    }
+
+    @Override
+    public StoredProcedureQuery createStoredProcedureQuery(String pS, Class... pClasses) {
+        initSession();
+        return session.createStoredProcedureQuery(pS, pClasses);
+    }
+
+    @Override
+    public StoredProcedureQuery createStoredProcedureQuery(String pS, String... pStrings) {
+        initSession();
+        return session.createStoredProcedureQuery(pS, pStrings);
+    }
+
+    @Override
+    public void joinTransaction() {
+        initSession();
+        session.joinTransaction();
+    }
+
+    @Override
+    public boolean isJoinedToTransaction() {
+        initSession();
+        return session.isJoinedToTransaction();
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> pClass) {
+        initSession();
+        return session.unwrap(pClass);
+    }
+
+    @Override
+    public Object getDelegate() {
+        initSession();
+        return session.getDelegate();
+    }
+
+    @Override
+    public EntityManagerFactory getEntityManagerFactory() {
+        initSession();
+        return session.getEntityManagerFactory();
+    }
+
+    @Override
+    public CriteriaBuilder getCriteriaBuilder() {
+        initSession();
+        return session.getCriteriaBuilder();
+    }
+
+    @Override
+    public Metamodel getMetamodel() {
+        initSession();
+        return session.getMetamodel();
+    }
+
+    @Override
+    public <T> EntityGraph<T> createEntityGraph(Class<T> pClass) {
+        initSession();
+        return session.createEntityGraph(pClass);
+    }
+
+    @Override
+    public EntityGraph<?> createEntityGraph(String pS) {
+        initSession();
+        return session.createEntityGraph(pS);
+    }
+
+    @Override
+    public EntityGraph<?> getEntityGraph(String pS) {
+        initSession();
+        return session.getEntityGraph(pS);
+    }
+
+    @Override
+    public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> pClass) {
+        initSession();
+        return session.getEntityGraphs(pClass);
+    }
+
+    @Override
+    public Integer getJdbcBatchSize() {
+        initSession();
+        return session.getJdbcBatchSize();
+    }
+
+    @Override
+    public void setJdbcBatchSize(int pI) {
+        initSession();
+        session.setJdbcBatchSize(pI);
+    }
+
+    @Override
+    public Query createNamedQuery(String pS) {
+        initSession();
+        return session.createNamedQuery(pS);
+    }
+
+    @Override
+    public NativeQuery createNativeQuery(String pS) {
+        initSession();
+        return session.createNativeQuery(pS);
+    }
+
+    @Override
+    public NativeQuery createNativeQuery(String pS, String pS1) {
+        initSession();
+        return session.createNativeQuery(pS, pS1);
+    }
+
+    @Override
+    public NativeQuery getNamedNativeQuery(String pS) {
+        initSession();
+        return session.getNamedNativeQuery(pS);
+    }
+
     public void persist(Object entity) {
         initSession();
         session.persist(entity);
@@ -93,7 +400,7 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.setFlushMode(flushMode);
     }
 
-    public FlushMode getFlushMode() {
+    public FlushModeType getFlushMode() {
         initSession();
         return session.getFlushMode();
     }
@@ -163,12 +470,12 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.evict(object);
     }
 
-    public <T> T load(Class<T> theClass, Serializable id, LockMode lockMode) throws HibernateException {
+    public Object load(Class theClass, Serializable id, LockMode lockMode) throws HibernateException {
         initSession();
         return session.load(theClass, id, lockMode);
     }
 
-    public <T> T load(Class<T> aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+    public Object load(Class aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
         initSession();
         return session.load(aClass, serializable, lockOptions);
     }
@@ -183,7 +490,7 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.load(s, serializable, lockOptions);
     }
 
-    public <T> T load(Class<T> theClass, Serializable id) throws HibernateException {
+    public Object load(Class theClass, Serializable id) throws HibernateException {
         initSession();
         return session.load(theClass, id);
     }
@@ -339,14 +646,9 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.createCriteria(entityName, alias);
     }
 
-    public org.hibernate.Query createQuery(String queryString) throws HibernateException {
+    public Query createQuery(String queryString) throws HibernateException {
         initSession();
         return session.createQuery(queryString);
-    }
-
-    public SQLQuery createSQLQuery(String queryString) throws HibernateException {
-        initSession();
-        return session.createSQLQuery(queryString);
     }
 
     public ProcedureCall getNamedProcedureCall(String name) {
@@ -369,12 +671,12 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.createStoredProcedureCall(procedureName, resultSetMappings);
     }
 
-    public org.hibernate.Query createFilter(Object collection, String queryString) throws HibernateException {
+    public Query createFilter(Object collection, String queryString) throws HibernateException {
         initSession();
         return session.createFilter(collection, queryString);
     }
 
-    public org.hibernate.Query getNamedQuery(String queryName) throws HibernateException {
+    public Query getNamedQuery(String queryName) throws HibernateException {
         initSession();
         return session.getNamedQuery(queryName);
     }
@@ -384,17 +686,17 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         session.clear();
     }
 
-    public <T> T get(Class<T> clazz, Serializable id) throws HibernateException {
+    public Object get(Class clazz, Serializable id) throws HibernateException {
         initSession();
         return session.get(clazz, id);
     }
 
-    public <T> T get(Class<T> clazz, Serializable id, LockMode lockMode) throws HibernateException {
+    public Object get(Class clazz, Serializable id, LockMode lockMode) throws HibernateException {
         initSession();
         return session.get(clazz, id, lockMode);
     }
 
-    public <T> T get(Class<T> aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
+    public Object get(Class aClass, Serializable serializable, LockOptions lockOptions) throws HibernateException {
         initSession();
         return session.get(aClass, serializable, lockOptions);
     }
@@ -424,17 +726,7 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.byId(s);
     }
 
-    public <T> MultiIdentifierLoadAccess<T> byMultipleIds(Class<T> entityClass) {
-        initSession();
-        return session.byMultipleIds(entityClass);
-    }
-
-    public MultiIdentifierLoadAccess byMultipleIds(String entityName) {
-        initSession();
-        return session.byMultipleIds(entityName);
-    }
-
-    public <T> IdentifierLoadAccess<T> byId(Class<T> aClass) {
+    public IdentifierLoadAccess byId(Class aClass) {
         initSession();
         return session.byId(aClass);
     }
@@ -444,7 +736,7 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.byNaturalId(s);
     }
 
-    public <T> NaturalIdLoadAccess<T> byNaturalId(Class<T> aClass) {
+    public NaturalIdLoadAccess byNaturalId(Class aClass) {
         initSession();
         return session.byNaturalId(aClass);
     }
@@ -454,7 +746,7 @@ public class StatefulSessionProxy implements Session, HibernateProxy {
         return session.bySimpleNaturalId(s);
     }
 
-    public <T> SimpleNaturalIdLoadAccess<T> bySimpleNaturalId(Class<T> aClass) {
+    public SimpleNaturalIdLoadAccess bySimpleNaturalId(Class aClass) {
         initSession();
         return session.bySimpleNaturalId(aClass);
     }

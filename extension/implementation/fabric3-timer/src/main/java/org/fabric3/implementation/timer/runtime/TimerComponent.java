@@ -88,7 +88,7 @@ public class TimerComponent extends JavaComponent {
             if (discoveryAgent != null) {
                 discoveryAgent.registerLeadershipListener(callback);
             }
-            if (RuntimeMode.NODE == info.getRuntimeMode() && !discoveryAgent.isLeader()) {
+            if (RuntimeMode.NODE == info.getRuntimeMode() && discoveryAgent != null && !discoveryAgent.isLeader()) {
                 // defer scheduling until this node becomes zone leader
                 return;
             }
