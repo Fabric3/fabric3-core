@@ -259,7 +259,10 @@ public class DefaultClassVisitor implements ClassVisitor {
 
     private boolean skipAnnotation(Annotation annotation) {
         Package pkg = annotation.annotationType().getPackage();
-        return pkg != null && (pkg.getName().startsWith("java.") || pkg.getName().startsWith("javax."));
+        return pkg != null && (
+                pkg.getName().startsWith("java.") || pkg.getName().startsWith("javax.")
+                        || "kotlin.Metadata".equals(annotation.annotationType().getName())
+                        || pkg.getName().startsWith("kotlin."));
     }
 
     @SuppressWarnings("unchecked")
